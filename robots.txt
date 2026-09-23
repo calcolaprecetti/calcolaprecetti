@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://calcolaprecetti.it/sitemap.xml
