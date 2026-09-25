@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calcolo interessi moratori D.Lgs. 231/2002 – calcolaprecetti.it</title>
+<link rel="canonical" href="https://calcolaprecetti.it/interessi-moratori/">
+<meta name="description" content="Calcolo gratuito degli interessi di mora nelle transazioni commerciali (D.Lgs. 231/2002): tasso BCE più 8 punti, periodo per periodo, con la fonte di ogni tasso e la tabella pronta per Word. Nessun cookie.">
+<meta property="og:title" content="Calcolo interessi moratori D.Lgs. 231/2002">
+<meta property="og:url" content="https://calcolaprecetti.it/interessi-moratori/">
+<meta property="og:image" content="https://calcolaprecetti.it/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="calcolaprecetti.it – Il conteggio del precetto, pronto per Word">
+<meta property="og:site_name" content="calcolaprecetti.it">
+<meta property="og:locale" content="it_IT">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="og:description" content="Interessi di mora nelle transazioni commerciali, semestre per semestre, con le fonti dei tassi.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#1E3F8C">
+<link rel="icon" href="/favicon-192.png" sizes="192x192" type="image/png">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="/"><img src="/logo.svg" alt="" width="28" height="28" style="vertical-align:-7px;margin-right:8px">calcolaprecetti.it</a>
+    <div class="top-actions">
+      <a class="tbtn" href="/">Calcolo del precetto</a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap intro">
+  <nav class="crumbs" aria-label="Percorso"><a href="/">Home</a> <span>›</span> Interessi moratori</nav>
+  <h1>Calcolo degli interessi moratori (D.Lgs. 231/2002)</h1>
+  <p>Interessi di mora nelle transazioni commerciali: tasso della BCE maggiorato di otto punti, calcolato semestre per semestre. Sotto ogni periodo trovi la fonte del tasso.</p>
+</div>
+
+<main class="wrap page">
+  <section class="panel mini" id="mini" data-mini='{"type":"mora"}'>
+    <div class="mini-form">
+      <div class="pair">
+        <label class="field"><span class="label">Capitale</span><span class="money"><span class="sign">€</span>
+          <input type="text" inputmode="decimal" data-s="cap" data-money placeholder="0,00"></span></label>
+        <label class="field"><span class="label">Interessi dal</span><input type="date" data-s="from"></label>
+        <label class="field"><span class="label">Fino al</span><input type="date" data-s="to"></label>
+      </div>
+      <details class="helper">
+        <summary>Calcola la decorrenza dalla fattura</summary>
+        <div class="helper-body">
+          <div class="pair">
+            <label class="field"><span class="label">Data della fattura</span><input type="date" data-s="fattura"></label>
+            <label class="field"><span class="label">Termine di pagamento</span><span class="money days">
+              <input type="text" inputmode="numeric" data-s="giorni"><span class="sign">giorni</span></span></label>
+          </div>
+          <button type="button" class="btn btn-secondary" id="miniFattura">Calcola la decorrenza</button>
+          <p class="hint" id="miniFatturaMsg">Senza patto, il termine è di 30 giorni e gli interessi decorrono dal giorno successivo, senza bisogno di costituire in mora (artt. 4 e 3 D.Lgs. n. 231/2002).</p>
+        </div>
+      </details>
+      <label class="check"><input type="checkbox" data-s="forfait"><span>Aggiungi € 40,00 di risarcimento forfettario delle spese di recupero (art. 6)</span></label>
+    </div>
+    <div class="mini-out">
+      <div class="warnings" id="miniWarn"></div>
+      <p class="empty" id="miniEmpty">Inserisci capitale, decorrenza e data finale.</p>
+      <div id="miniOut" hidden>
+        <dl class="totals" id="miniTotals"></dl>
+        <div class="scroll"><table class="det" id="miniTable"></table></div>
+        <p class="sources" id="miniSources"></p>
+      </div>
+      <div class="actions" id="miniActions" hidden>
+        <button type="button" class="btn btn-primary" id="miniCopy">Copia tabella per Word</button>
+        <a class="btn btn-secondary" href="/">Calcola tutto il precetto</a>
+      </div>
+    </div>
+  </section>
+
+  <article class="prose">
+    <h2>Quando si applicano</h2>
+    <p>Il D.Lgs. 9 ottobre 2002, n. 231 riguarda i pagamenti tra imprese e tra imprese e pubbliche amministrazioni, quando il contratto ha per oggetto la consegna di merci o la prestazione di servizi. Restano fuori i rapporti con i consumatori, i debiti da risarcimento e quelli verso chi non esercita attività d'impresa o professionale.</p>
+    <p>La particolarità è che gli interessi decorrono da soli, senza diffida: dal giorno successivo alla scadenza del termine di pagamento. Se il termine non è stato pattuito, è di trenta giorni dal ricevimento della fattura.</p>
+
+    <h2>Come si calcola il tasso</h2>
+    <p>Il tasso è quello di riferimento della BCE aumentato di otto punti percentuali. Il tasso di riferimento è fissato per semestre: quello in vigore il primo gennaio vale fino al 30 giugno, quello in vigore il primo luglio fino al 31 dicembre. Il Ministero dell'economia lo comunica in Gazzetta Ufficiale.</p>
+    <p>Di conseguenza un credito che attraversa più semestri non ha un tasso unico: va spezzato per periodi, ognuno con il suo tasso. È quello che fa il calcolatore qui sopra, indicando per ogni periodo giorni, tasso e fonte.</p>
+    <p>Le parti possono pattuire un tasso diverso, ma l'accordo che risulta gravemente iniquo per il creditore è nullo (art. 7).</p>
+
+    <h2>I € 40 di risarcimento forfettario</h2>
+    <p>Oltre agli interessi, il creditore ha diritto a un importo forfettario di € 40,00 per i costi di recupero, senza doverlo provare, salvo il maggior danno (art. 6). Nel precetto si indica come voce separata.</p>
+
+    <h2>Esempio</h2>
+    <p>Fattura di € 1.394,25 scaduta, con interessi dal 25 settembre 2025 al 21 settembre 2026.</p>
+    <div class="calc">
+      <div>2° semestre 2025, 98 giorni: 1.394,25 × 10,15% × 98 / 365 = 38,00</div>
+      <div>1° semestre 2026, 181 giorni: 1.394,25 × 10,15% × 181 / 365 = 70,18</div>
+      <div>2° semestre 2026, 83 giorni: 1.394,25 × 10,40% × 83 / 365 = 32,97</div>
+    </div>
+    <p class="res">Interessi € 141,15; con il capitale, € 1.535,40.</p>
+
+    <h2>Tassi applicati</h2>
+    <p>Il tasso di mora è il tasso di riferimento più otto punti. Ultimo aggiornamento del sito: <span id="updated"></span>.</p>
+    <div class="scroll"><table class="det rates" id="ratesTable"></table></div>
+
+    <h2>Domande frequenti</h2>
+    <h3>Da quando decorrono gli interessi se la fattura non indica un termine?</h3>
+    <p>Dal giorno successivo alla scadenza dei trenta giorni dal ricevimento della fattura. Se la data di ricevimento è incerta, il termine decorre dal ricevimento della merce o dalla prestazione del servizio.</p>
+    <h3>Serve una messa in mora?</h3>
+    <p>No: gli interessi decorrono automaticamente alla scadenza, senza costituzione in mora.</p>
+    <h3>Nel precetto posso applicare il tasso del D.Lgs. 231/2002?</h3>
+    <p>Solo se lo prevede il titolo esecutivo. Il precetto non può modificare quanto stabilito nel provvedimento: se il decreto ingiuntivo riconosce gli interessi moratori commerciali, si applicano quelli; se riconosce gli interessi legali, si resta ai legali.</p>
+    <h3>Gli interessi si calcolano su 360 o su 365 giorni?</h3>
+    <p>Qui su 365, come è prassi nei conteggi giudiziari; ogni periodo è arrotondato al centesimo. Il primo e l'ultimo giorno sono compresi.</p>
+
+    <h2>Poi serve il precetto?</h2>
+    <p>Se hai già un titolo esecutivo, dal <a href="/">calcolo delle somme del precetto</a> ottieni il prospetto completo: capitale, interessi, spese liquidate nel titolo, acconti già ricevuti e compenso per l'atto, con la tabella pronta da incollare in Word.</p>
+  </article>
+</main>
+
+<section class="wrap contact" id="suggerimenti" aria-labelledby="contactTitle">
+  <div class="contact-box">
+    <div class="contact-text">
+      <h2 id="contactTitle">Suggerimenti</h2>
+      <p>Hai trovato un errore o ti servirebbe una funzione in più? Scrivimi: ogni segnalazione aiuta a migliorare il calcolo.</p>
+      <p class="hint">Non inserire nei messaggi dati personali di clienti o di terzi.</p>
+    </div>
+    <div class="contact-actions">
+      <a class="btn btn-secondary" id="mailBtn" href="#suggerimenti">Scrivimi un suggerimento</a>
+      <span class="contact-mail" id="mailText"></span>
+    </div>
+  </div>
+</section>
+
+<footer class="wrap foot">
+  <nav class="foot-links" aria-label="Informazioni">
+    <a href="/#privacy">Privacy</a>
+    <a href="/#note-legali">Note legali</a>
+    <a href="/#tassi">Tassi e parametri</a>
+    <a href="/#verifica">Casi di verifica</a>
+    <a href="/#registro">Aggiornamenti</a>
+    <a href="#suggerimenti">Suggerimenti</a>
+  </nav>
+  <nav class="foot-links" aria-label="Altri calcoli">
+    <span class="foot-lab">Altri calcoli:</span>
+    <a href="/">Somme del precetto</a>
+  </nav>
+  <p>Nessun cookie: i dati inseriti restano sul tuo dispositivo. Il calcolo è uno strumento di supporto: verifica sempre gli importi prima di inserirli in un atto.</p>
+</footer>
+
+<noscript><p style="padding:16px">Per usare il calcolo attiva JavaScript nel browser.</p></noscript>
+<script src="/assets/core.js" defer></script>
+<script src="/assets/mini.js" defer></script>
+</body>
+</html>
