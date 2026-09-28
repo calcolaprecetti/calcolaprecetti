@@ -533,7 +533,8 @@
       '<table><caption>Interessi legali</caption><tbody>' + leg + '</tbody></table>' +
       '<table><caption>Interessi moratori</caption><tbody>' + rows.join('') + '</tbody></table>' +
       '<table><caption>Compenso medio del precetto</caption><tbody>' + prec + '</tbody></table>';
-    $('#updated').textContent = TABELLE.aggiornamento;
+    $$('.js-updated').forEach(function (e) { e.textContent = TABELLE.aggiornamento; });
+    $$('.js-titolare').forEach(function (e) { e.textContent = SITO.titolare; });
   }
   var CASES = [
     { t: 'Interessi legali in un solo anno',
@@ -603,12 +604,26 @@
     $('#mailBtn').href = 'mailto:' + SITO.email + '?subject=' + encodeURIComponent('Suggerimento per ' + SITO.nome);
     $('#mailText').textContent = SITO.email;
   }
+  // Le sezioni informative restano nascoste: si aprono solo dai link del piè di pagina, una alla volta
   function openSection(id) {
     var d = document.getElementById(id);
     if (!d) return;
+    if (d.tagName === 'DETAILS' && d.closest('#info')) {
+      $$('#info details').forEach(function (x) { if (x !== d) { x.open = false; x.hidden = true; } });
+      $('#info').hidden = false;
+      d.hidden = false;
+    }
     d.open = true;
     d.scrollIntoView({ block: 'start' });
   }
+  $$('#info details').forEach(function (x) {
+    x.addEventListener('toggle', function () {
+      if (x.open) return;
+      x.hidden = true;
+      $('#info').hidden = !$$('#info details').some(function (y) { return !y.hidden; });
+      if (location.hash === '#' + x.id) history.replaceState(null, '', location.pathname);
+    });
+  });
 
   /* ---------- avvio ---------- */
   bindStatic();

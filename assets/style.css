@@ -168,13 +168,31 @@ details.detail>summary{cursor:pointer;font-weight:600;color:var(--ink)}
 .contact-actions{display:flex;flex-direction:column;align-items:flex-start;gap:6px}
 .contact-mail{font-size:.9rem;color:var(--muted);user-select:all}
 
-/* piè di pagina e sezioni legali */
-.foot{border-top:1px solid var(--line);padding-top:18px;padding-bottom:18px;color:var(--muted);font-size:.9rem}
-.foot-links{display:flex;flex-wrap:wrap;gap:6px 20px;margin:0 0 6px}
-.foot-links a{font-weight:600;text-decoration:none}
-.foot-links a:hover{text-decoration:underline}
-.foot p{margin:0}
-.legal{padding-bottom:110px}
+/* barra dei calcoli */
+.tools{border-bottom:1px solid var(--line);background:#fff}
+.tools .wrap{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+.tools .wrap::-webkit-scrollbar{display:none}
+.tools a{display:inline-flex;align-items:center;min-height:46px;padding:0 14px;color:var(--muted);font-weight:600;text-decoration:none;white-space:nowrap;border-bottom:3px solid transparent;margin-bottom:-1px}
+.tools a:first-child{padding-left:0}
+.tools a:hover{color:var(--ink)}
+.tools a[aria-current=page]{color:var(--ink);border-bottom-color:var(--ink)}
+
+/* sezioni informative e piè di pagina */
+.legal{padding-bottom:28px}
+.legal[hidden],.legal details[hidden]{display:none}
+.foot{background:var(--panel);border-top:1px solid var(--line);padding:32px 0 24px;color:var(--muted);font-size:.92rem}
+.foot-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px 20px}
+.foot-about{grid-column:1/-1}
+@media(min-width:720px){.foot-about{grid-column:auto}}
+@media(min-width:720px){.foot-grid{grid-template-columns:minmax(0,1.6fr) repeat(3,minmax(0,1fr));gap:32px}}
+.foot-brand{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:1.05rem;color:var(--text);text-decoration:none}
+.foot-about p{margin:8px 0 0;max-width:38ch;line-height:1.5}
+.foot-col{display:flex;flex-direction:column;gap:8px}
+.foot-col h2{font-size:.78rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text);margin:0 0 2px}
+.foot-col a{color:var(--muted);text-decoration:none}
+.foot-col a:hover{color:var(--ink);text-decoration:underline}
+.foot-bottom{margin:28px 0 0;padding-top:16px;border-top:1px solid var(--line);font-size:.84rem;line-height:1.5}
+@media(max-width:959px){.home .foot{padding-bottom:100px}}
 .legal details{border-top:1px solid var(--line);padding:14px 0}
 .legal summary{cursor:pointer;font-weight:600}
 .legal .body{max-width:75ch;font-size:.95rem;padding-top:8px}
@@ -189,14 +207,14 @@ details.detail>summary{cursor:pointer;font-weight:600;color:var(--ink)}
 .mobilebar{position:fixed;left:0;right:0;bottom:0;z-index:10;display:flex;align-items:center;justify-content:space-between;gap:12px;background:#fff;border-top:1px solid var(--line);padding:10px 16px calc(10px + env(safe-area-inset-bottom));transition:transform .2s ease}
 .mobilebar strong{font-size:1.15rem;font-variant-numeric:tabular-nums}
 .mobilebar.hide{transform:translateY(110%)}
-@media(min-width:960px){.mobilebar{display:none}.legal{padding-bottom:40px}}
+@media(min-width:960px){.mobilebar{display:none}}
 .toast{position:fixed;left:50%;bottom:86px;transform:translateX(-50%);z-index:20;display:flex;align-items:center;gap:14px;background:var(--text);color:#fff;padding:10px 16px;border-radius:8px;font-size:.95rem;box-shadow:0 6px 20px rgba(0,0,0,.18)}
 .toast button{background:none;border:0;color:#fff;font-weight:700;text-decoration:underline;cursor:pointer;padding:0}
 @media(min-width:960px){.toast{bottom:24px}}
 @media(prefers-reduced-motion:reduce){.mobilebar,details.more>summary .t::before{transition:none}}
 
 @media print{
-  .top,.intro,.form,.actions,.paste-hint,.status,.foot,.legal,.contact,.mobilebar,.warnings,.toast{display:none!important}
+  .top,.tools,.intro,.form,.actions,.paste-hint,.status,.foot,.legal,.contact,.mobilebar,.warnings,.toast{display:none!important}
   .layout{display:block;padding:0}
   .panel{background:none;padding:0}
   .sheet{border:0;padding:0}
@@ -268,7 +286,6 @@ details.detail>summary{cursor:pointer;font-weight:600;color:var(--ink)}
 .prose .calc div{padding:2px 0}
 .prose .res{font-weight:600}
 .prose .scroll{max-width:none}
-.foot-lab{color:var(--muted)}
 @media(min-width:900px){.prose{max-width:72ch}}
 
 /* la prosa delle pagine per argomento resta allineata a sinistra */

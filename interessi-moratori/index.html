@@ -28,11 +28,15 @@
 <header class="top">
   <div class="wrap">
     <a class="brand" href="/"><img src="/logo.svg" alt="" width="28" height="28" style="vertical-align:-7px;margin-right:8px">calcolaprecetti.it</a>
-    <div class="top-actions">
-      <a class="tbtn" href="/">Calcolo del precetto</a>
-    </div>
   </div>
 </header>
+<nav class="tools" aria-label="Calcoli disponibili">
+  <div class="wrap">
+    <a href="/">Somme del precetto</a>
+    <a href="/interessi-moratori/" aria-current="page">Interessi moratori</a>
+  </div>
+</nav>
+
 
 <div class="wrap intro">
   <nav class="crumbs" aria-label="Percorso"><a href="/">Home</a> <span>›</span> Interessi moratori</nav>
@@ -101,7 +105,7 @@
     <p class="res">Interessi € 141,15; con il capitale, € 1.535,40.</p>
 
     <h2>Tassi applicati</h2>
-    <p>Il tasso di mora è il tasso di riferimento più otto punti. Ultimo aggiornamento del sito: <span id="updated"></span>.</p>
+    <p>Il tasso di mora è il tasso di riferimento più otto punti. Ultimo aggiornamento del sito: <span class="js-updated"></span>.</p>
     <div class="scroll"><table class="det rates" id="ratesTable"></table></div>
 
     <h2>Domande frequenti</h2>
@@ -133,21 +137,35 @@
   </div>
 </section>
 
-<footer class="wrap foot">
-  <nav class="foot-links" aria-label="Informazioni">
-    <a href="/#privacy">Privacy</a>
-    <a href="/#note-legali">Note legali</a>
-    <a href="/#tassi">Tassi e parametri</a>
-    <a href="/#verifica">Casi di verifica</a>
-    <a href="/#registro">Aggiornamenti</a>
-    <a href="#suggerimenti">Suggerimenti</a>
-  </nav>
-  <nav class="foot-links" aria-label="Altri calcoli">
-    <span class="foot-lab">Altri calcoli:</span>
-    <a href="/">Somme del precetto</a>
-  </nav>
-  <p>Nessun cookie: i dati inseriti restano sul tuo dispositivo. Il calcolo è uno strumento di supporto: verifica sempre gli importi prima di inserirli in un atto.</p>
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-about">
+        <a class="foot-brand" href="/"><img src="/logo.svg" alt="" width="24" height="24">calcolaprecetti.it</a>
+        <p>Strumenti gratuiti per il conteggio del precetto. Nessun cookie: i dati che inserisci restano sul tuo dispositivo.</p>
+      </div>
+      <nav class="foot-col" aria-label="Calcoli">
+        <h2>Calcoli</h2>
+        <a href="/">Somme del precetto</a>
+        <a href="/interessi-moratori/">Interessi moratori</a>
+      </nav>
+      <nav class="foot-col" aria-label="Verifiche">
+        <h2>Verifiche</h2>
+        <a href="/#tassi">Tassi e fonti</a>
+        <a href="/#verifica">Casi di verifica</a>
+        <a href="/#registro">Registro aggiornamenti</a>
+      </nav>
+      <nav class="foot-col" aria-label="Informazioni">
+        <h2>Informazioni</h2>
+        <a href="/#privacy">Privacy</a>
+        <a href="/#note-legali">Note legali</a>
+        <a href="#suggerimenti">Suggerimenti</a>
+      </nav>
+    </div>
+    <p class="foot-bottom">Tassi aggiornati a <span class="js-updated"></span> · A cura di <span class="js-titolare"></span> · Strumento di supporto: verifica sempre gli importi prima di inserirli in un atto.</p>
+  </div>
 </footer>
+
 
 <noscript><p style="padding:16px">Per usare il calcolo attiva JavaScript nel browser.</p></noscript>
 <script src="/assets/core.js" defer></script>

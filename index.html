@@ -24,15 +24,22 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="stylesheet" href="/assets/style.css">
 </head>
-<body>
+<body class="home">
 <header class="top">
   <div class="wrap">
-    <a class="brand" href="./"><img src="/logo.svg" alt="" width="28" height="28" style="vertical-align:-7px;margin-right:8px">calcolaprecetti.it</a>
+    <a class="brand" href="/"><img src="/logo.svg" alt="" width="28" height="28" style="vertical-align:-7px;margin-right:8px">calcolaprecetti.it</a>
     <div class="top-actions">
       <button type="button" class="tbtn" id="btnNew">Nuovo calcolo</button>
     </div>
   </div>
 </header>
+<nav class="tools" aria-label="Calcoli disponibili">
+  <div class="wrap">
+    <a href="/" aria-current="page">Somme del precetto</a>
+    <a href="/interessi-moratori/">Interessi moratori</a>
+  </div>
+</nav>
+
 
 <div class="wrap intro">
   <h1>Calcolo delle somme del precetto</h1>
@@ -211,29 +218,43 @@
   </div>
 </section>
 
-<footer class="wrap foot">
-  <nav class="foot-links" aria-label="Informazioni">
-    <a href="#privacy" data-open="privacy">Privacy</a>
-    <a href="#note-legali" data-open="note-legali">Note legali</a>
-    <a href="#tassi" data-open="tassi">Tassi e parametri</a>
-    <a href="#verifica" data-open="verifica">Casi di verifica</a>
-    <a href="#registro" data-open="registro">Aggiornamenti</a>
-    <a href="#suggerimenti">Suggerimenti</a>
-  </nav>
-  <nav class="foot-links" aria-label="Altri calcoli">
-    <span class="foot-lab">Altri calcoli:</span>
-    <a href="/interessi-moratori/">Interessi moratori D.Lgs. 231/2002</a>
-  </nav>
-  <p>Nessun cookie: i dati inseriti restano sul tuo dispositivo. Tassi aggiornati a <a href="#registro" data-open="registro" id="updated"></a>.</p>
+<section class="wrap legal" id="info" hidden>
+  <details id="privacy" hidden><summary>Informativa privacy</summary><div class="body" id="privacyBody"></div></details>
+  <details id="note-legali" hidden><summary>Note legali</summary><div class="body" id="legalBody"></div></details>
+  <details id="verifica" hidden><summary>Casi di verifica</summary><div class="body" id="casesBody"></div></details>
+  <details id="registro" hidden><summary>Registro degli aggiornamenti</summary><div class="body" id="registroBody"></div></details>
+  <details id="tassi" hidden><summary>Tassi e parametri usati</summary><div class="body"><p>Interessi su 365 giorni, per periodi (anno solare per i legali, semestre per i moratori) arrotondati al centesimo; il primo e l'ultimo giorno sono compresi. Acconti imputati ex art. 1194 c.c. prima alle spese liquidate nel titolo, poi agli interessi maturati, infine al capitale; con più voci, prima alla più antica (art. 1193 c.c.). Dal giorno dopo l'acconto gli interessi maturano sul capitale residuo. Compenso del precetto secondo la tabella 6 del D.M. 55/2014 con i valori del D.M. 147/2022, sullo scaglione dato dal credito residuo (capitale, interessi e spese, al netto degli acconti); rimborso forfettario sui compensi, C.P.A. su compensi e rimborso, IVA sul totale. Accanto a ogni tasso è indicata la fonte.</p><div class="rates-grid" id="ratesGrid"></div></div></details>
+</section>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-about">
+        <a class="foot-brand" href="/"><img src="/logo.svg" alt="" width="24" height="24">calcolaprecetti.it</a>
+        <p>Strumenti gratuiti per il conteggio del precetto. Nessun cookie: i dati che inserisci restano sul tuo dispositivo.</p>
+      </div>
+      <nav class="foot-col" aria-label="Calcoli">
+        <h2>Calcoli</h2>
+        <a href="/">Somme del precetto</a>
+        <a href="/interessi-moratori/">Interessi moratori</a>
+      </nav>
+      <nav class="foot-col" aria-label="Verifiche">
+        <h2>Verifiche</h2>
+        <a href="#tassi" data-open="tassi">Tassi e fonti</a>
+        <a href="#verifica" data-open="verifica">Casi di verifica</a>
+        <a href="#registro" data-open="registro">Registro aggiornamenti</a>
+      </nav>
+      <nav class="foot-col" aria-label="Informazioni">
+        <h2>Informazioni</h2>
+        <a href="#privacy" data-open="privacy">Privacy</a>
+        <a href="#note-legali" data-open="note-legali">Note legali</a>
+        <a href="#suggerimenti">Suggerimenti</a>
+      </nav>
+    </div>
+    <p class="foot-bottom">Tassi aggiornati a <span class="js-updated"></span> · A cura di <span class="js-titolare"></span> · Strumento di supporto: verifica sempre gli importi prima di inserirli in un atto.</p>
+  </div>
 </footer>
 
-<div class="wrap legal">
-  <details id="privacy"><summary>Informativa privacy</summary><div class="body" id="privacyBody"></div></details>
-  <details id="note-legali"><summary>Note legali</summary><div class="body" id="legalBody"></div></details>
-  <details id="verifica"><summary>Casi di verifica</summary><div class="body" id="casesBody"></div></details>
-  <details id="registro"><summary>Registro degli aggiornamenti</summary><div class="body" id="registroBody"></div></details>
-  <details id="tassi"><summary>Tassi e parametri usati</summary><div class="body"><p>Interessi su 365 giorni, per periodi (anno solare per i legali, semestre per i moratori) arrotondati al centesimo; il primo e l'ultimo giorno sono compresi. Acconti imputati ex art. 1194 c.c. prima alle spese liquidate nel titolo, poi agli interessi maturati, infine al capitale; con più voci, prima alla più antica (art. 1193 c.c.). Dal giorno dopo l'acconto gli interessi maturano sul capitale residuo. Compenso del precetto secondo la tabella 6 del D.M. 55/2014 con i valori del D.M. 147/2022, sullo scaglione dato dal credito residuo (capitale, interessi e spese, al netto degli acconti); rimborso forfettario sui compensi, C.P.A. su compensi e rimborso, IVA sul totale. Accanto a ogni tasso è indicata la fonte.</p><div class="rates-grid" id="ratesGrid"></div></div></details>
-</div>
 
 <div class="mobilebar" id="mobilebar">
   <span>Totale <strong id="mbTotal">€&nbsp;0,00</strong></span>

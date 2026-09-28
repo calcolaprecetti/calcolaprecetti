@@ -140,8 +140,8 @@
     tbl.innerHTML = '<thead><tr><th>Periodo</th><th class="r">Tasso BCE</th><th class="r">Tasso di mora</th><th>Fonte</th></tr></thead><tbody>' +
       rows.join('') + '</tbody>';
   }
-  var upd = document.getElementById('updated');
-  if (upd) upd.textContent = TABELLE.aggiornamento;
+  $$('.js-updated').forEach(function (e) { e.textContent = TABELLE.aggiornamento; });
+  if (typeof SITO !== 'undefined') $$('.js-titolare').forEach(function (e) { e.textContent = SITO.titolare; });
   var ml = document.getElementById('mailBtn');
   if (ml && typeof SITO !== 'undefined') {
     ml.href = 'mailto:' + SITO.email + '?subject=' + encodeURIComponent('Suggerimento per ' + SITO.nome);
