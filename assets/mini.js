@@ -1,3 +1,4 @@
+/*! calcolaprecetti.it - (c) 2026 il titolare indicato nelle Note legali (https://calcolaprecetti.it/#note-legali). Tutti i diritti riservati. Vietata la riproduzione, anche parziale, senza autorizzazione scritta. Licenza: file LICENSE. */
 /* Calcolatore compatto delle pagine per argomento: legge la configurazione da data-mini */
 (function () {
   'use strict';

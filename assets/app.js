@@ -1,3 +1,4 @@
+/*! calcolaprecetti.it - (c) 2026 il titolare indicato nelle Note legali (https://calcolaprecetti.it/#note-legali). Tutti i diritti riservati. Vietata la riproduzione, anche parziale, senza autorizzazione scritta. Licenza: file LICENSE. */
 (function () {
   'use strict';
   var C = Core;
@@ -507,6 +508,7 @@
       '<p>' + esc(SITO.nome) + ' è uno strumento gratuito di ausilio al calcolo delle somme da intimare con l\'atto di precetto. I risultati dipendono dai dati inseriti e dalle tabelle indicate in «Tassi e parametri usati»: vanno sempre verificati prima dell\'uso in un atto e non costituiscono consulenza legale.</p>' +
       '<p>Nei limiti consentiti dalla legge, il titolare non risponde di errori od omissioni derivanti dall\'uso dello strumento.</p>' +
       '<p>Titolare del sito: ' + v(SITO.titolare) + ', ' + v(SITO.email) + '.</p>' +
+      '<h3>Diritti d\'autore</h3><p>Il codice del sito, i testi, la grafica e il logo sono opere protette dalla legge sul diritto d\'autore (L. 22 aprile 1941, n. 633), compresi i programmi per elaboratore. Tutti i diritti sono riservati al titolare: non è consentito copiarli, modificarli o riutilizzarli, in tutto o in parte, senza autorizzazione scritta. Resta libero l\'uso dello strumento per i propri calcoli. I tassi e i dati normativi riportati provengono da fonti pubbliche.</p>' +
       '<p>Caratteri tipografici: EB Garamond e Titillium Web, con licenza SIL Open Font License 1.1.</p>';
   }
   function renderRates() {

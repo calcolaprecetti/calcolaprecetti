@@ -1,3 +1,4 @@
+/*! calcolaprecetti.it - (c) 2026 il titolare indicato nelle Note legali (https://calcolaprecetti.it/#note-legali). Tutti i diritti riservati. Vietata la riproduzione, anche parziale, senza autorizzazione scritta. Licenza: file LICENSE. */
 /* =====================================================================
    DATI DEL SITO (informativa privacy, note legali, contatti)
    Per cambiare titolare o email basta modificare queste righe.

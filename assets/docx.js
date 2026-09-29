@@ -1,3 +1,4 @@
+/*! calcolaprecetti.it - (c) 2026 il titolare indicato nelle Note legali (https://calcolaprecetti.it/#note-legali). Tutti i diritti riservati. Vietata la riproduzione, anche parziale, senza autorizzazione scritta. Licenza: file LICENSE. */
 /* Generatore .docx minimo, senza librerie esterne (ZIP non compresso). */
 var Docx = (function () {
   var TABLE = (function () {
