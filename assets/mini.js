@@ -11,7 +11,7 @@
   function pad(n) { return (n < 10 ? '0' : '') + n; }
   function todayIso() { var d = new Date(); return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
 
-  var st = { cap: '', from: '', to: todayIso(), rate: '', forfait: false, fattura: '', giorni: '30' };
+  var st = { cap: '', from: '', to: todayIso(), rate: '', forfait: false, fattura: '', giorni: '30', agri: false, pre2013: false };
 
   function fmtInput(el) { var v = C.parseNum(el.value); el.value = isFinite(v) ? C.num(v) : ''; }
 
@@ -25,13 +25,16 @@
       return;
     }
     empty.hidden = true;
-    var r = C.interest(cap, type, from, to, { rate: C.parseNum(st.rate), domanda: null });
+    var r = C.interest(cap, type, from, to, { rate: C.parseNum(st.rate), domanda: null, points: st.pre2013 ? 7 : 8, extra: st.agri ? 4 : 0 });
     r.warnings.forEach(function (w) {
       if (w === 'fromAfterEnd') msgs.push('La decorrenza è successiva alla data finale: non maturano interessi.');
-      if (w === 'moraTooOld') msgs.push('I tassi in tabella partono dal 01.01.2013.');
+      if (w === 'moraTooOld') msgs.push('I tassi in tabella partono dal 01.07.2002, quando è entrato in vigore il D.Lgs. 231/2002.');
+      if (w === 'pre2013') msgs.push("Per i periodi anteriori al 2013: se il contratto è stato concluso prima del 1° gennaio 2013, spunta l'opzione dedicata (tasso BCE più 7 punti).");
+      if (w === 'agri2015') msgs.push('Fino al 3 luglio 2015 la maggiorazione per i prodotti agricoli e alimentari era di 2 punti, non 4: per i periodi anteriori il calcolo va adattato.');
       if (w === 'legalTooOld') msgs.push('I tassi in tabella partono dal 01.01.1997.');
       if (w === 'future') msgs.push("Per i periodi successivi all'ultimo tasso pubblicato è stato usato l'ultimo disponibile.");
     });
+    msgs = msgs.filter(function (x, i) { return msgs.indexOf(x) === i; });
     warn.innerHTML = msgs.map(function (m) { return '<p class="warn">' + esc(m) + '</p>'; }).join('');
     var forfait = st.forfait ? 40 : 0;
     var tot = C.r2(cap + r.total + forfait);
@@ -125,21 +128,32 @@
   }
   if ($('#miniCopy')) $('#miniCopy').addEventListener('click', copy);
 
-  /* ---------- tabella dei tassi della pagina ---------- */
+  /* ---------- tasso in vigore (riquadro di risposta immediata) ---------- */
+  var now = C.moraNow(C.toDay(todayIso()));
+  if ($('#nowRate') && now.rate !== null) {
+    $('#nowRate').textContent = C.pct(now.rate);
+    $('#nowSem').textContent = now.sem;
+    $('#nowSrc').textContent = 'Tasso BCE ' + C.pct(now.base) + ' + 8 punti. ' + now.src + '.' +
+      (now.pending ? ' In attesa del comunicato per il semestre in corso.' : '');
+    if ($('#nowAgri')) $('#nowAgri').textContent = C.pct(now.rate + 4);
+  }
+
+  /* ---------- tabella dei tassi dal 2002 ---------- */
   var tbl = document.getElementById('ratesTable');
   if (tbl) {
-    var rows = [], y0 = 2013, last2 = C.toDay(TABELLE.moraPubblicatiFinoAl), p = new Date(last2 * 86400000);
-    for (var y = p.getUTCFullYear(); y >= y0; y--) {
+    var rows = [], last2 = C.toDay(TABELLE.moraPubblicatiFinoAl), p = new Date(last2 * 86400000), d2013 = C.toDay('2013-01-01');
+    for (var y = p.getUTCFullYear(); y >= 2002; y--) {
       for (var h = 2; h >= 1; h--) {
         var day = C.toDay(y + '-' + (h === 1 ? '01-01' : '07-01'));
-        if (day > last2) continue;
+        if (day > last2 || (y === 2002 && h === 1)) continue;
         var b = C.rateAt(C.BCE, day), row = C.rowAt(C.BCE, day), own = row && row[0] === day && row[2] ? row[2] : '';
-        rows.push('<tr><td>' + h + '° semestre ' + y + '</td><td class="r">' + C.pct(b) + '</td><td class="r"><strong>' +
-          C.pct(b + TABELLE.maggiorazioneMora) + '</strong></td><td class="s">' + esc(own || '—') + '</td></tr>');
+        rows.push('<tr><td>' + h + '° sem. ' + y + '</td><td class="r">' + C.pct(b) + '</td><td class="r">' +
+          (day >= d2013 ? '<strong>' + C.pct(b + 8) + '</strong>' : '—') + '</td><td class="r">' + C.pct(b + 7) +
+          '</td><td class="s">' + esc(own || 'Comunicato MEF') + '</td></tr>');
       }
     }
-    tbl.innerHTML = '<thead><tr><th>Periodo</th><th class="r">Tasso BCE</th><th class="r">Tasso di mora</th><th>Fonte</th></tr></thead><tbody>' +
-      rows.join('') + '</tbody>';
+    tbl.innerHTML = '<thead><tr><th>Periodo</th><th class="r">Tasso BCE</th><th class="r">Contratti dal 2013</th>' +
+      '<th class="r">Contratti fino al 2012</th><th>Fonte</th></tr></thead><tbody>' + rows.join('') + '</tbody>';
   }
   $$('.js-updated').forEach(function (e) { e.textContent = TABELLE.aggiornamento; });
   if (typeof SITO !== 'undefined') $$('.js-titolare').forEach(function (e) { e.textContent = SITO.titolare; });

@@ -294,3 +294,17 @@ details.detail>summary{cursor:pointer;font-weight:600;color:var(--ink)}
 .page .mini{max-width:none}
 .cal .actions{margin-top:12px}
 .cal .hint{margin-top:10px}
+
+/* pagina interessi moratori: risposta immediata, opzioni, tabella */
+.answer{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;margin:0 0 18px}
+@media(min-width:720px){.answer{grid-template-columns:minmax(0,1fr) minmax(0,1.2fr)}}
+.answer-item{background:#fff;border:1px solid var(--line);border-left:4px solid var(--ink);border-radius:10px;padding:14px 18px;display:flex;flex-direction:column;gap:2px}
+.answer-lab{font-size:.86rem;color:var(--muted)}
+.answer-val{font-size:1.6rem;font-weight:700;color:var(--text);line-height:1.2;font-variant-numeric:lining-nums tabular-nums}
+.answer-val.formula{font-size:1.15rem;font-weight:600;padding:6px 0 2px}
+.answer-note{font-size:.84rem;color:var(--muted);line-height:1.4}
+.mini-title{font-size:1.15rem;font-weight:600;margin:0 0 14px}
+.mini-opts{display:flex;flex-direction:column;gap:6px;margin-top:12px}
+.mini-opts .check{margin-top:0}
+.det.rates th,.det.rates td{white-space:nowrap}
+.det.rates td.s{white-space:normal;min-width:200px}

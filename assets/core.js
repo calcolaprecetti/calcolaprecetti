@@ -38,6 +38,11 @@ var SITO = {
    4) Registro - aggiungere IN CIMA a "registro" una riga con la data e
       cosa è cambiato; aggiornare "aggiornamento" (mese a fondo pagina).
 
+   5) Ogni gennaio - nella pagina interessi-moratori/index.html cambiare
+      l'anno (es. 2026 -> 2027) nel titolo, nella descrizione e
+      nell'intestazione, e aggiornare il paragrafo «Tasso degli interessi
+      moratori» con i tassi dell'anno nuovo.
+
    Regole: decimali con il punto (2.40, non 2,40); date AAAA-MM-GG;
    testi tra apostrofi (se il testo contiene un apostrofo, racchiuderlo
    tra virgolette doppie); virgola a fine riga come nelle righe presenti.
@@ -72,6 +77,11 @@ var TABELLE = {
   ],
   legaliPubblicatiFinoAl: '2026-12-31',
   bce: [ // [dal, tasso di riferimento BCE %, fonte] — al moratorio si aggiungono 8 punti
+    // dal 2002 al 2012: regime previgente, per i contratti conclusi fino al 31.12.2012 si aggiungono 7 punti
+    ['2002-07-01', 3.35], ['2003-01-01', 2.85], ['2003-07-01', 2.10], ['2004-01-01', 2.02], ['2004-07-01', 2.01],
+    ['2005-01-01', 2.09], ['2005-07-01', 2.05], ['2006-01-01', 2.25], ['2006-07-01', 2.83], ['2007-01-01', 3.58],
+    ['2007-07-01', 4.07], ['2008-01-01', 4.20], ['2008-07-01', 4.10], ['2009-01-01', 2.50], ['2009-07-01', 1.00],
+    ['2011-07-01', 1.25], ['2012-01-01', 1.00],
     ['2013-01-01', 0.75], ['2013-07-01', 0.50], ['2014-01-01', 0.25], ['2014-07-01', 0.15],
     ['2015-01-01', 0.05], ['2016-07-01', 0.00], ['2023-01-01', 2.50], ['2023-07-01', 4.00],
     ['2024-01-01', 4.50],
@@ -88,6 +98,7 @@ var TABELLE = {
   ],
   rimborsoForfettario: 15, cpa: 4, iva: 22,
   registro: [ // [data, cosa è cambiato] — le righe più recenti in alto
+    ['2026-10-06', "Pagina del calcolo interessi moratori ampliata: tassi dal 2002 con il regime dei contratti anteriori al 2013 (tasso BCE + 7 punti), maggiorazione per prodotti agricoli e alimentari, guida e domande frequenti."],
     ['2026-09-25', "Sito diviso in più pagine: motore di calcolo, tassi e stile ora in file condivisi nella cartella assets. Nuova pagina dedicata agli interessi moratori del D.Lgs. 231/2002."],
     ['2026-09-24', "Aggiunti gli acconti con imputazione ex art. 1194 c.c., la fonte di ogni tasso (decreti MEF e comunicati in G.U.), i casi di verifica e il calcolo dei termini del precetto."],
     ['2026-09-22', "Pubblicazione del sito. Interessi legali dal 1997 al 2026 (ultimo: 1,60% dal 01.01.2026); interessi moratori dal 2013 al 2° semestre 2026 (ultimo: tasso BCE 2,40%, mora 10,40% dal 01.07.2026); compenso del precetto secondo il D.M. 147/2022."]
@@ -149,6 +160,7 @@ var Core = (function () {
   var LEG = TABELLE.legali.map(function (r) { return [toDay(r[0]), r[1], r[2] || '']; });
   var BCE = TABELLE.bce.map(function (r) { return [toDay(r[0]), r[1], r[2] || '']; });
   var LEG_LAST = toDay(TABELLE.legaliPubblicatiFinoAl);
+  var DAY2013 = toDay('2013-01-01'), DAY_AGRI = toDay('2015-07-04');
   var MORA_LAST = toDay(TABELLE.moraPubblicatiFinoAl);
 
   function rowAt(table, day) {
@@ -213,10 +225,14 @@ var Core = (function () {
           rate = rateAt(LEG, sg[0]);
           src = 'Tasso legale ' + parts(sg[0]).y + ': ' + legalSource(sg[0]);
         } else {
+          var points = opt.points === undefined ? TABELLE.maggiorazioneMora : opt.points, extra = opt.extra || 0;
           base = rateAt(BCE, sg[0]);
-          rate = base === null ? null : base + TABELLE.maggiorazioneMora;
-          if (base !== null) src = 'Tasso BCE ' + pct(base) + ' + ' + TABELLE.maggiorazioneMora + ' punti (' + semName(sg[0]) +
+          rate = base === null ? null : base + points + extra;
+          if (base !== null) src = 'Tasso BCE ' + pct(base) + ' + ' + points + ' punti' +
+            (extra ? ' + ' + extra + ' punti (prodotti agricoli e alimentari)' : '') + ' (' + semName(sg[0]) +
             (type === 'legal1284' ? ', art. 1284, comma 4, c.c.' : '') + '): ' + moraSource(sg[0]);
+          if (base !== null && points === 8 && sg[0] < DAY2013) res.warnings.push('pre2013');
+          if (base !== null && extra && sg[0] < DAY_AGRI) res.warnings.push('agri2015');
         }
         if (rate === null) { res.warnings.push(kind === 'legal' ? 'legalTooOld' : 'moraTooOld'); return; }
         if (kind === 'legal' && sg[0] > LEG_LAST) res.warnings.push('future');
@@ -273,7 +289,9 @@ var Core = (function () {
     fromAfterEnd: 'la decorrenza è successiva alla data del conteggio, quindi non maturano interessi.',
     missingDomanda: 'indica la data della domanda giudiziale; per ora gli interessi sono calcolati tutti al tasso legale.',
     missingRate: 'indica il tasso convenzionale.',
-    moraTooOld: 'i tassi moratori in tabella partono dal 01.01.2013; per i periodi precedenti usa un tasso convenzionale.',
+    moraTooOld: 'i tassi moratori in tabella partono dal 01.07.2002; per i periodi precedenti usa un tasso convenzionale.',
+    pre2013: 'per i contratti conclusi prima del 01.01.2013 il tasso di mora è il tasso BCE più 7 punti, non 8: per questi casi usa la pagina del calcolo interessi moratori o il tasso convenzionale.',
+    agri2015: 'fino al 03.07.2015 la maggiorazione per i prodotti agricoli e alimentari era di 2 punti.',
     legalTooOld: 'i tassi legali in tabella partono dal 01.01.1997.',
     future: "per i periodi successivi all'ultimo tasso pubblicato è stato usato l'ultimo disponibile."
   };
@@ -457,7 +475,13 @@ var Core = (function () {
     return out;
   }
 
-  return { compute: compute, interest: interest, toDay: toDay, fmtDate: fmtDate, isoOf: isoOf, parseNum: parseNum,
+  function moraNow(today) {
+    var last = MORA_LAST, day = today > last ? last : today;
+    var base = rateAt(BCE, day);
+    return { day: day, base: base, rate: base === null ? null : base + TABELLE.maggiorazioneMora, sem: semName(day),
+             src: moraSource(day), pending: today > last };
+  }
+  return { moraNow: moraNow, semName: semName, compute: compute, interest: interest, toDay: toDay, fmtDate: fmtDate, isoOf: isoOf, parseNum: parseNum,
            eur: eur, num: num, pct: pct, r2: r2, scaglione: scaglione, rateAt: rateAt, rowAt: rowAt, LEG: LEG, BCE: BCE,
            moraSource: moraSource, legalSource: legalSource, termini: termini, weekday: weekday, holiday: holiday, easter: easter };
 })();
