@@ -1,6 +1,9 @@
-/*! calcolaprecetti.it - (c) 2026 il titolare indicato nelle Note legali (https://calcolaprecetti.it/#note-legali). Tutti i diritti riservati. Vietata la riproduzione, anche parziale, senza autorizzazione scritta. Licenza: file LICENSE. */
+/*! calcolaprecetti.it - (c) 2026 il titolare indicato nelle Note legali (https://calcolaprecetti.it/note-legali/). Tutti i diritti riservati. Vietata la riproduzione, anche parziale, senza autorizzazione scritta. Licenza: file LICENSE. */
 (function () {
   'use strict';
+  // indirizzi della versione precedente (calcolaprecetti.it/#privacy e simili): ora sono pagine
+  var MOVED = { tassi: '/tassi/', verifica: '/tassi/#verifica', registro: '/tassi/#registro', privacy: '/privacy/', 'note-legali': '/note-legali/', termini: '/termini-precetto/' };
+  if (MOVED[location.hash.slice(1)]) { location.replace(MOVED[location.hash.slice(1)]); return; }
   var C = Core;
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
@@ -14,11 +17,10 @@
   function defaults() {
     return { end: todayIso(), items: [newItem()], titolo: 'di', spese: '', compensi: '',
              feeMode: 'medio', feeFree: '', rf: true, cpa: true, iva: false, extras: [],
-             acconti: [], titleDate: '', fonti: true,
-             tNotifica: '', tGiorni: '10', tBis: false, tBisFrom: '', tBisTo: '' };
+             acconti: [], titleDate: '', fonti: true };
   }
   var state = defaults();
-  var last = null, lastT = null;
+  var last = null, caseShown = false, shownTotal = null, sweepTimer = null;
 
   function esc(s) {
     return String(s).replace(/[&<>"']/g, function (c) {
@@ -191,9 +193,8 @@
   }
 
   /* ---------- campi fissi ---------- */
-  var TEXTS = [['endDate', 'end'], ['spese', 'spese'], ['compensi', 'compensi'], ['feeFree', 'feeFree'], ['titleDate', 'titleDate'],
-               ['tNotifica', 'tNotifica'], ['tGiorni', 'tGiorni'], ['tBisFrom', 'tBisFrom'], ['tBisTo', 'tBisTo']];
-  var CHECKS = [['optIva', 'iva'], ['optRf', 'rf'], ['optCpa', 'cpa'], ['optFonti', 'fonti'], ['tBis', 'tBis']];
+  var TEXTS = [['endDate', 'end'], ['spese', 'spese'], ['compensi', 'compensi'], ['feeFree', 'feeFree'], ['titleDate', 'titleDate']];
+  var CHECKS = [['optIva', 'iva'], ['optRf', 'rf'], ['optCpa', 'cpa'], ['optFonti', 'fonti']];
 
   function syncStatic() {
     TEXTS.forEach(function (f) { $('#' + f[0]).value = state[f[1]]; });
@@ -262,11 +263,12 @@
     if (empty) $('#status').textContent = '';
     $('#mbTotal').textContent = C.eur(empty ? 0 : res.total);
     $('#srTotal').textContent = empty ? '' : 'Totale ' + C.eur(res.total);
-    if (empty) return;
+    if (empty) { shownTotal = null; $('#mbTotal').classList.remove('tot-hl'); return; }
 
     $('#table tbody').innerHTML = res.rows.map(function (r) {
       return '<tr' + (r.acconto ? ' class="acc"' : '') + '><td>' + esc(r.label) + '</td><td class="amt">' + C.eur(r.amount) + '</td></tr>';
-    }).join('') + '<tr class="total"><td>TOTALE COMPLESSIVO</td><td class="amt">' + C.eur(res.total) + '</td></tr>';
+    }).join('') + '<tr class="total"><td>TOTALE COMPLESSIVO</td><td class="amt"><span class="tot-hl">' + C.eur(res.total) + '</span></td></tr>';
+    animate(res.total);
     var showSrc = state.fonti && res.sources.length;
     $('#sources').hidden = !showSrc;
     $('#sources').textContent = showSrc ? sourcesText(res) : '';
@@ -295,6 +297,23 @@
   }
   function sourcesText(res) { return 'Fonti dei tassi: ' + res.sources.join('; ') + '.'; }
 
+  /* ---------- due animazioni minime: il prospetto entra quando compare, l'evidenziatore ripassa il totale quando cambia ---------- */
+  function sweep(el) { el.classList.remove('sweep'); void el.offsetWidth; el.classList.add('sweep'); }
+  function animate(total) {
+    var first = shownTotal === null;
+    if (first) sweep($('#sheet'));
+    $('#mbTotal').classList.add('tot-hl');
+    if (total !== shownTotal) {
+      clearTimeout(sweepTimer);
+      sweepTimer = setTimeout(function () { // a calcolo fermo, non a ogni tasto
+        var t = $('#table tr.total .tot-hl');
+        if (t) sweep(t);
+        sweep($('#mbTotal'));
+      }, first ? 250 : 450);
+    }
+    shownTotal = total;
+  }
+
   function renderFee(res) {
     var sc = res.scaglione, info = $('#feeInfo');
     $$('#feeSeg [data-v]').forEach(function (v) { v.textContent = (!res.empty && sc) ? C.eur(sc[v.dataset.v]) : ''; });
@@ -315,84 +334,7 @@
     renderResults(last);
     renderFee(last);
     renderMoreSummary();
-    renderTermini();
-  }
-
-  /* ---------- termini del precetto ---------- */
-  function dayFull(n) { return C.weekday(n) + ' ' + C.fmtDate(n); }
-  function why(n) { var h = C.holiday(n); return h === 'domenica' ? 'di domenica' : h ? 'in un giorno festivo' : 'di sabato'; }
-  function renderTermini() {
-    $('#tBisFields').hidden = !state.tBis;
-    var t = C.termini({ notifica: state.tNotifica, giorni: state.tGiorni, bis: state.tBis, bisFrom: state.tBisFrom, bisTo: state.tBisTo });
-    lastT = t;
-    $('#tWarnings').innerHTML = t ? t.warnings.map(function (w) { return '<p class="warn">' + esc(w) + '</p>'; }).join('') : '';
-    $('#tEmpty').hidden = !!t;
-    $('#tOut').hidden = !t;
-    $('#tActions').hidden = !t;
-    $('#tNote').hidden = !t;
-    if (!t) { $('#tOut').innerHTML = ''; return; }
-    var out = [];
-    out.push(['Scadenza del termine per adempiere (' + t.giorni + ' giorni, art. 480 c.p.c.)',
-      dayFull(t.adempiere) + (t.adempiereProrogato !== t.adempiere ? '<span class="n">Cade ' + why(t.adempiere) + ': prorogato a ' + dayFull(t.adempiereProrogato) + ' (art. 155 c.p.c.).</span>' : '')]);
-    out.push(["Si può iniziare l'esecuzione dal (art. 482 c.p.c.)", dayFull(t.esecuzioneDal)]);
-    if (t.sospeso) {
-      out.push(['Efficacia del precetto (art. 481 c.p.c.)', 'Termine sospeso dal ' + C.fmtDate(t.bisFrom) +
-        '<span class="n">Istanza ex art. 492-bis c.p.c.: dalla comunicazione dell\'esito restano ' + t.giorniResidui + ' giorni.</span>']);
-    } else {
-      out.push(["Il precetto perde efficacia se l'esecuzione non inizia entro (art. 481 c.p.c.)",
-        dayFull(t.efficacia) +
-        (t.efficaciaProrogata !== t.efficacia ? '<span class="n">Cade ' + why(t.efficacia) + ': prorogato a ' + dayFull(t.efficaciaProrogata) + ' (art. 155 c.p.c.). Per prudenza, conviene non attendere la proroga.</span>' : '') +
-        (t.sospensione ? '<span class="n">Compresi ' + t.sospensione + ' giorni di sospensione per l\'istanza ex art. 492-bis c.p.c. (dal ' + C.fmtDate(t.bisFrom) + ' al ' + C.fmtDate(t.bisTo) + ').</span>' : '')]);
-    }
-    $('#tOut').innerHTML = out.map(function (o) { return '<div><dt>' + esc(o[0]) + '</dt><dd>' + o[1] + '</dd></div>'; }).join('');
-    renderCalLinks();
-  }
-  function icsDate(n) { return C.isoOf(n).replace(/-/g, ''); }
-  function calEvent() { // evento principale: la scadenza dei 90 giorni
-    var t = lastT;
-    if (!t || t.sospeso) return null;
-    return { day: t.efficacia,
-             title: "Precetto: ultimo giorno per iniziare l'esecuzione (art. 481 c.p.c.)",
-             desc: 'Precetto notificato il ' + C.fmtDate(t.notifica) + '. Calcolo di ' + SITO.nome + ' da verificare.' };
-  }
-  function renderCalLinks() {
-    var ev = calEvent(), g = $('#tGcal'), o = $('#tOutlook');
-    if (!g || !o) return;
-    g.hidden = o.hidden = !ev;
-    if (!ev) return;
-    g.href = 'https://calendar.google.com/calendar/render?action=TEMPLATE' +
-      '&text=' + encodeURIComponent(ev.title) +
-      '&dates=' + icsDate(ev.day) + '/' + icsDate(ev.day + 1) +
-      '&details=' + encodeURIComponent(ev.desc);
-    o.href = 'https://outlook.live.com/calendar/0/deeplink/compose?path=' + encodeURIComponent('/calendar/action/compose') +
-      '&rru=addevent&allday=true' +
-      '&startdt=' + C.isoOf(ev.day) + '&enddt=' + C.isoOf(ev.day + 1) +
-      '&subject=' + encodeURIComponent(ev.title) + '&body=' + encodeURIComponent(ev.desc);
-  }
-  function icsText(s) { return String(s).replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,'); }
-  function doIcs() {
-    var t = lastT;
-    if (!t) return;
-    var now = new Date(), stamp = now.getUTCFullYear() + pad(now.getUTCMonth() + 1) + pad(now.getUTCDate()) + 'T' + pad(now.getUTCHours()) + pad(now.getUTCMinutes()) + pad(now.getUTCSeconds()) + 'Z';
-    var base = 'Precetto notificato il ' + C.fmtDate(t.notifica) + '. Calcolo di ' + SITO.nome + ' da verificare.';
-    function ev(day, title, desc, alarm) {
-      return ['BEGIN:VEVENT', 'UID:' + icsDate(day) + '-' + Math.random().toString(36).slice(2) + '@' + SITO.nome, 'DTSTAMP:' + stamp,
-        'DTSTART;VALUE=DATE:' + icsDate(day), 'DTEND;VALUE=DATE:' + icsDate(day + 1), 'SUMMARY:' + icsText(title), 'DESCRIPTION:' + icsText(desc)]
-        .concat(alarm ? ['BEGIN:VALARM', 'TRIGGER:-P7D', 'ACTION:DISPLAY', 'DESCRIPTION:' + icsText('Tra 7 giorni scade il termine per iniziare l\'esecuzione'), 'END:VALARM'] : [])
-        .concat(['END:VEVENT']);
-    }
-    var lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//' + SITO.nome + '//Termini del precetto//IT', 'CALSCALE:GREGORIAN']
-      .concat(ev(t.esecuzioneDal, "Precetto: si può iniziare l'esecuzione", base))
-      .concat(t.sospeso ? [] : ev(t.efficacia, "Precetto: ultimo giorno per iniziare l'esecuzione (art. 481 c.p.c.)", base, true))
-      .concat(['END:VCALENDAR']);
-    var blob = new Blob([lines.join('\r\n') + '\r\n'], { type: 'text/calendar;charset=utf-8' });
-    var url = URL.createObjectURL(blob), a = document.createElement('a');
-    a.href = url;
-    a.download = 'termini-precetto-' + C.isoOf(t.notifica) + '.ics';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
+    if (caseShown) { caseShown = false; $('#caseMsg').hidden = true; } // il caso di verifica resta indicato finché non si cambia un dato
   }
 
   /* ---------- esportazione ---------- */
@@ -489,143 +431,33 @@
     showToast('Calcolo azzerato.', function () { state = prev; refresh(); });
   }
 
-  /* ---------- testi legali e tabelle ---------- */
-  function v(s) { return /^\[.*\]$/.test(s) ? '<mark style="background:var(--mark)">' + esc(s) + '</mark>' : esc(s); }
-  function renderLegal() {
-    $('#privacyBody').innerHTML =
-      '<h3>Titolare del trattamento</h3><p>' + v(SITO.titolare) + ', contattabile all\'indirizzo ' + v(SITO.email) + '.</p>' +
-      '<h3>Quali dati vengono trattati</h3>' +
-      '<p>Il sito non usa cookie né altri strumenti di tracciamento e non carica contenuti da siti di terzi. I dati inseriti nel calcolo sono elaborati solo nel tuo browser: non vengono inviati al titolare né a terzi e non vengono conservati, quindi si cancellano chiudendo o ricaricando la pagina.</p>' +
-      '<p>Come per qualsiasi sito, il servizio di hosting (' + esc(SITO.hosting) + ') registra nei propri log tecnici alcuni dati di navigazione, come indirizzo IP, data e ora della richiesta, pagina visitata e tipo di browser, per la sicurezza e il funzionamento del servizio. Il titolare non usa questi dati per identificare i visitatori né per profilazione.</p>' +
-      '<h3>Se scrivi un suggerimento</h3><p>Se scrivi a ' + v(SITO.email) + ', i dati contenuti nel messaggio (indirizzo email, eventuale nome e contenuto) sono usati solo per rispondere e valutare il suggerimento, sulla base del legittimo interesse (art. 6, par. 1, lett. f, GDPR), e vengono cancellati quando non servono più. La casella di posta è fornita da ' + esc(SITO.fornitoreEmail) + '. Ti chiedo di non inserire nei messaggi dati personali di clienti o di terzi.</p>' +
-      '<h3>Finalità e base giuridica</h3><p>Sicurezza e corretto funzionamento del sito, sulla base del legittimo interesse (art. 6, par. 1, lett. f, Reg. UE 2016/679).</p>' +
-      '<h3>Destinatari e trasferimenti</h3><p>I dati di navigazione sono trattati dal fornitore di hosting secondo la propria informativa. ' + esc(SITO.trasferimento) + '</p>' +
-      '<h3>Collegamenti a Google Calendar e Outlook</h3><p>Nella sezione dei termini del precetto trovi due collegamenti facoltativi che aprono Google Calendar o Outlook.com con la scadenza già compilata. Se li usi, la data e il titolo dell\'appuntamento vengono inviati al servizio scelto, che li tratta come titolare autonomo secondo la propria informativa; non viene inviato nulla finché non li clicchi. Il file da scaricare, invece, resta sul tuo dispositivo.</p>' +
-      '<h3>Conservazione</h3><p>I dati di navigazione sono conservati dal fornitore per il tempo necessario alle finalità di sicurezza, secondo le sue politiche.</p>' +
-      '<h3>Diritti</h3><p>Puoi esercitare i diritti previsti dagli artt. 15-22 del GDPR (accesso, rettifica, cancellazione, limitazione, opposizione) scrivendo a ' + v(SITO.email) + ' e proporre reclamo al Garante per la protezione dei dati personali (garanteprivacy.it).</p>' +
-      '<p>Ultimo aggiornamento: ' + esc(SITO.informativaAggiornata) + '.</p>';
-    $('#legalBody').innerHTML =
-      '<p>' + esc(SITO.nome) + ' è uno strumento gratuito di ausilio al calcolo delle somme da intimare con l\'atto di precetto. I risultati dipendono dai dati inseriti e dalle tabelle indicate in «Tassi e parametri usati»: vanno sempre verificati prima dell\'uso in un atto e non costituiscono consulenza legale.</p>' +
-      '<p>Nei limiti consentiti dalla legge, il titolare non risponde di errori od omissioni derivanti dall\'uso dello strumento.</p>' +
-      '<p>Titolare del sito: ' + v(SITO.titolare) + ', ' + v(SITO.email) + '.</p>' +
-      '<h3>Diritti d\'autore</h3><p>Il codice del sito, i testi, la grafica e il logo sono opere protette dalla legge sul diritto d\'autore (L. 22 aprile 1941, n. 633), compresi i programmi per elaboratore. Tutti i diritti sono riservati al titolare: non è consentito copiarli, modificarli o riutilizzarli, in tutto o in parte, senza autorizzazione scritta. Resta libero l\'uso dello strumento per i propri calcoli. I tassi e i dati normativi riportati provengono da fonti pubbliche.</p>' +
-      '<p>Caratteri tipografici: EB Garamond e Titillium Web, con licenza SIL Open Font License 1.1.</p>';
-  }
-  function renderRates() {
-    var leg = TABELLE.legali.slice().reverse().map(function (r, i, arr) {
-      var y = +r[0].slice(0, 4);
-      var to = i === 0 ? +TABELLE.legaliPubblicatiFinoAl.slice(0, 4) : +arr[i - 1][0].slice(0, 4) - 1;
-      return '<tr><td>' + (to > y ? y + '–' + to : y) + (r[2] ? '<span class="s">' + esc(r[2]) + '</span>' : '') + '</td><td>' + C.pct(r[1]) + '</td></tr>';
-    }).join('');
-    var rows = [], lastDay = C.toDay(TABELLE.moraPubblicatiFinoAl), endY = +TABELLE.moraPubblicatiFinoAl.slice(0, 4);
-    for (var y = endY; y >= 2013; y--) {
-      for (var h = 2; h >= 1; h--) {
-        var day = C.toDay(y + (h === 1 ? '-01-01' : '-07-01'));
-        if (day > lastDay) continue;
-        var b = C.rateAt(C.BCE, day), row = C.rowAt(C.BCE, day), own = row && row[0] === day && row[2] ? row[2] : '';
-        rows.push('<tr><td>' + h + '° semestre ' + y + '<span class="s">Tasso BCE ' + C.pct(b) + (own ? ' – ' + esc(own) : '') + '</span></td><td>' +
-          C.pct(b + TABELLE.maggiorazioneMora) + '</td></tr>');
-      }
-    }
-    var prec = TABELLE.precetto.map(function (t, i) {
-      var from = i === 0 ? 0.01 : TABELLE.precetto[i - 1][0] + 0.01;
-      return '<tr><td>' + C.eur(from) + ' – ' + C.eur(t[0]) + '</td><td>' + C.eur(t[1]) + '</td></tr>';
-    }).join('');
-    $('#ratesGrid').innerHTML =
-      '<table><caption>Interessi legali</caption><tbody>' + leg + '</tbody></table>' +
-      '<table><caption>Interessi moratori</caption><tbody>' + rows.join('') + '</tbody></table>' +
-      '<table><caption>Compenso medio del precetto</caption><tbody>' + prec + '</tbody></table>';
+  /* ---------- piè di pagina e contatti ---------- */
+  function renderFoot() {
     $$('.js-updated').forEach(function (e) { e.textContent = TABELLE.aggiornamento; });
     $$('.js-titolare').forEach(function (e) { e.textContent = SITO.titolare; });
-  }
-  var CASES = [
-    { t: 'Interessi legali in un solo anno',
-      d: 'Capitale € 10.000,00, interessi legali dal 01.01.2026 al 30.06.2026, senza spese né compenso di precetto.',
-      c: ['181 giorni al tasso legale 2026 (1,60%):', '10.000,00 × 1,60% × 181 / 365 = 79,34'],
-      r: 'Interessi € 79,34; totale € 10.079,34.',
-      load: function () {
-        var it = newItem(); it.amount = '10.000,00'; it.type = 'legal'; it.from = '2026-01-01';
-        return Object.assign(defaults(), { end: '2026-06-30', items: [it], feeMode: 'free', feeFree: '' });
-      } },
-    { t: 'Interessi moratori su più semestri',
-      d: 'Capitale € 1.394,25, interessi moratori ex D.Lgs. 231/2002 dal 25.09.2025 al 21.09.2026, senza spese né compenso di precetto.',
-      c: ['2° semestre 2025, 98 giorni: 1.394,25 × 10,15% × 98 / 365 = 38,00', '1° semestre 2026, 181 giorni: 1.394,25 × 10,15% × 181 / 365 = 70,18',
-          '2° semestre 2026, 83 giorni: 1.394,25 × 10,40% × 83 / 365 = 32,97'],
-      r: 'Interessi € 141,15; totale € 1.535,40.',
-      load: function () {
-        var it = newItem(); it.amount = '1.394,25'; it.type = 'mora'; it.from = '2025-09-25';
-        return Object.assign(defaults(), { end: '2026-09-21', items: [it], feeMode: 'free', feeFree: '' });
-      } },
-    { t: 'Acconto imputato ex art. 1194 c.c.',
-      d: 'Capitale € 5.000,00 con interessi moratori dal 01.01.2026; spese liquidate nel titolo del 15.12.2025 € 400,00; acconto di € 1.000,00 il 01.04.2026; conteggio al 30.06.2026, senza compenso di precetto.',
-      c: ['Interessi dal 01.01 al 01.04.2026, 91 giorni: 5.000,00 × 10,15% × 91 / 365 = 126,53',
-          'Acconto: 400,00 alle spese, 126,53 agli interessi, 473,47 al capitale; capitale residuo 4.526,53',
-          'Interessi dal 02.04 al 30.06.2026, 90 giorni: 4.526,53 × 10,15% × 90 / 365 = 113,29',
-          '5.000,00 + 126,53 + 113,29 + 400,00 − 1.000,00 = 4.639,82'],
-      r: 'Totale € 4.639,82.',
-      load: function () {
-        var it = newItem(); it.amount = '5.000,00'; it.type = 'mora'; it.from = '2026-01-01';
-        var p = newAcconto(); p.date = '2026-04-01'; p.amount = '1.000,00';
-        return Object.assign(defaults(), { end: '2026-06-30', items: [it], spese: '400,00', feeMode: 'free', feeFree: '', acconti: [p], titleDate: '2025-12-15' });
-      } },
-    { t: 'Termini del precetto',
-      d: 'Precetto notificato il 01.10.2026 con il termine di 10 giorni; istanza ex art. 492-bis presentata il 20.10.2026, esito comunicato il 10.11.2026.',
-      c: ['10 giorni: 11.10.2026, domenica, prorogato a lunedì 12.10.2026; esecuzione dal 13.10.2026',
-          '90 giorni: 30.12.2026, più 21 giorni di sospensione (dal 20.10 al 10.11.2026) = 20.01.2027'],
-      r: 'Efficacia fino a mercoledì 20.01.2027.',
-      termini: true,
-      load: function () {
-        return Object.assign(JSON.parse(JSON.stringify(state)), { tNotifica: '2026-10-01', tGiorni: '10', tBis: true, tBisFrom: '2026-10-20', tBisTo: '2026-11-10' });
-      } }
-  ];
-  function renderCases() {
-    $('#casesBody').innerHTML = '<p>Conteggi svolti a mano, con i tassi indicati in «Tassi e parametri usati». Caricali nel calcolatore e confronta il risultato.</p>' +
-      CASES.map(function (c, i) {
-        return '<div class="case"><h3>' + esc(c.t) + '</h3><p>' + esc(c.d) + '</p><div class="calc">' +
-          c.c.map(function (l) { return '<div>' + esc(l) + '</div>'; }).join('') + '</div><p class="res">' + esc(c.r) + '</p>' +
-          '<button type="button" class="linkbtn" data-case="' + i + '">Carica nel calcolatore</button></div>';
-      }).join('');
-    $$('[data-case]').forEach(function (b) {
-      b.addEventListener('click', function () {
-        var c = CASES[+b.dataset.case], prev = JSON.parse(JSON.stringify(state));
-        state = c.load();
-        refresh();
-        var target = c.termini ? $('#termini') : ($('#prospetto').getBoundingClientRect().top < 0 || innerWidth < 960 ? $('#prospetto') : $('.intro'));
-        target.scrollIntoView({ block: 'start' });
-        showToast('Caso caricato: confronta il risultato.', function () { state = prev; refresh(); });
-      });
-    });
-  }
-  function renderRegistro() {
-    $('#registroBody').innerHTML = '<p>Ogni modifica ai tassi, alle tabelle o ai criteri di calcolo, con la data in cui è stata pubblicata sul sito.</p><ul class="reg">' +
-      TABELLE.registro.map(function (r) {
-        return '<li><time datetime="' + esc(r[0]) + '">' + C.fmtDate(C.toDay(r[0])) + '</time>' + esc(r[1]) + '</li>';
-      }).join('') + '</ul>';
   }
   function renderContact() {
     $('#mailBtn').href = 'mailto:' + SITO.email + '?subject=' + encodeURIComponent('Suggerimento per ' + SITO.nome);
     $('#mailText').textContent = SITO.email;
   }
-  // Le sezioni informative restano nascoste: si aprono solo dai link del piè di pagina, una alla volta
-  function openSection(id) {
-    var d = document.getElementById(id);
-    if (!d) return;
-    if (d.tagName === 'DETAILS' && d.closest('#info')) {
-      $$('#info details').forEach(function (x) { if (x !== d) { x.open = false; x.hidden = true; } });
-      $('#info').hidden = false;
-      d.hidden = false;
-    }
-    d.open = true;
-    d.scrollIntoView({ block: 'start' });
+
+  /* ---------- casi di verifica: la pagina «Tassi e verifiche» apre /#caso-1, /#caso-2... (dati in core.js, CASI) ---------- */
+  function caseFromHash() {
+    var m = /^#caso-(\d+)$/.exec(location.hash), c = m && typeof CASI !== 'undefined' ? CASI[+m[1] - 1] : null;
+    if (!c || c.pagina !== 'precetto') return;
+    var d = JSON.parse(JSON.stringify(c.dati));
+    d.items = (d.items || []).map(function (x) { return Object.assign(newItem(), x); });
+    d.acconti = (d.acconti || []).map(function (x) { return Object.assign(newAcconto(), x); });
+    d.extras = (d.extras || []).map(function (x) { return Object.assign(newExtra(), x); });
+    state = Object.assign(defaults(), d);
+    refresh();
+    var msg = $('#caseMsg');
+    msg.textContent = 'Caso di verifica «' + c.titolo + '». Risultato atteso: ' + c.risultato.charAt(0).toLowerCase() + c.risultato.slice(1);
+    msg.hidden = false;
+    caseShown = true;
+    if (history.replaceState) history.replaceState(null, '', location.pathname + location.search);
+    if (innerWidth < 960) $('#prospetto').scrollIntoView({ block: 'start' });
   }
-  $$('#info details').forEach(function (x) {
-    x.addEventListener('toggle', function () {
-      if (x.open) return;
-      x.hidden = true;
-      $('#info').hidden = !$$('#info details').some(function (y) { return !y.hidden; });
-      if (location.hash === '#' + x.id) history.replaceState(null, '', location.pathname);
-    });
-  });
 
   /* ---------- avvio ---------- */
   bindStatic();
@@ -639,18 +471,15 @@
   });
   $('#btnCopy').addEventListener('click', doCopy);
   $('#btnDocx').addEventListener('click', doDocx);
-  $('#tIcs').addEventListener('click', doIcs);
   $('#btnPrint').addEventListener('click', function () { try { window.print(); } catch (e) { /* non disponibile */ } });
-  $$('[data-open]').forEach(function (a) {
-    a.addEventListener('click', function (e) { e.preventDefault(); openSection(a.dataset.open); history.replaceState(null, '', '#' + a.dataset.open); });
-  });
-  renderLegal();
+  renderFoot();
   renderContact();
-  renderRates();
-  renderCases();
-  renderRegistro();
   refresh();
-  if (location.hash && document.getElementById(location.hash.slice(1)) && document.getElementById(location.hash.slice(1)).tagName === 'DETAILS') openSection(location.hash.slice(1));
+  caseFromHash();
+  window.addEventListener('hashchange', function () { // stessa pagina: indirizzo cambiato a mano o caso aperto di nuovo
+    if (MOVED[location.hash.slice(1)]) location.replace(MOVED[location.hash.slice(1)]);
+    else caseFromHash();
+  });
 
   if ('IntersectionObserver' in window) {
     var bar = $('#mobilebar');

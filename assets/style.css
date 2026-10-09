@@ -1,4 +1,4 @@
-/*! calcolaprecetti.it - (c) 2026 il titolare indicato nelle Note legali (https://calcolaprecetti.it/#note-legali). Tutti i diritti riservati. Vietata la riproduzione, anche parziale, senza autorizzazione scritta. Licenza: file LICENSE. */
+/*! calcolaprecetti.it - (c) 2026 il titolare indicato nelle Note legali (https://calcolaprecetti.it/note-legali/). Tutti i diritti riservati. Vietata la riproduzione, anche parziale, senza autorizzazione scritta. Licenza: file LICENSE. */
 @font-face{font-family:"EB Garamond";src:url("/fonts/EBGaramond.woff2") format("woff2");font-weight:400 800;font-style:normal;font-display:swap}
 @font-face{font-family:"Titillium Web";src:url("/fonts/TitilliumWeb-Regular.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
 @font-face{font-family:"Titillium Web";src:url("/fonts/TitilliumWeb-SemiBold.woff2") format("woff2");font-weight:600;font-style:normal;font-display:swap}
@@ -6,7 +6,7 @@
 :root{
   --bg:#FFFFFF; --panel:#F4F6F9; --ink:#1E3F8C; --ink-dark:#16306B; --ink-soft:#EEF2FA;
   --text:#1F2530; --muted:#5A6472; --line:#E1E5EB; --line-strong:#C3CAD5;
-  --mark:#FFF1A6; --radius:8px; --wrap:1120px;
+  --mark:#FFF1A6; --hl:#FFD84D; --radius:8px; --wrap:1120px;
   --sans:"Titillium Web","Segoe UI",system-ui,-apple-system,Roboto,sans-serif;
   --serif:"EB Garamond",Garamond,"Times New Roman",serif;
 }
@@ -184,8 +184,8 @@ details.detail>summary{cursor:pointer;font-weight:600;color:var(--ink)}
 .foot{background:var(--panel);border-top:1px solid var(--line);padding:32px 0 24px;color:var(--muted);font-size:.92rem}
 .foot-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px 20px}
 .foot-about{grid-column:1/-1}
-@media(min-width:720px){.foot-about{grid-column:auto}}
-@media(min-width:720px){.foot-grid{grid-template-columns:minmax(0,1.6fr) repeat(3,minmax(0,1fr));gap:32px}}
+@media(min-width:720px){.foot-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:28px 24px}.foot-about p{max-width:60ch}}
+@media(min-width:1000px){.foot-grid{grid-template-columns:minmax(0,1.5fr) repeat(3,minmax(0,1fr));gap:32px}.foot-about{grid-column:auto}.foot-about p{max-width:38ch}}
 .foot-brand{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:1.05rem;color:var(--text);text-decoration:none}
 .foot-about p{margin:8px 0 0;max-width:38ch;line-height:1.5}
 .foot-col{display:flex;flex-direction:column;gap:8px}
@@ -259,7 +259,7 @@ details.detail>summary{cursor:pointer;font-weight:600;color:var(--ink)}
 .reg time{display:block;font-weight:600}
 .rates-grid .s{display:block;font-size:.76rem;color:var(--muted);line-height:1.3;padding-right:8px}
 .rates-grid td{vertical-align:top}
-@media print{.termini-wrap,.check.fonti{display:none!important}}
+@media print{.termini-wrap,.check.fonti,.after,.home .g-hero{display:none!important}}
 
 /* pagine per argomento */
 .crumbs{font-size:.88rem;color:var(--muted);margin:0 0 10px}
@@ -308,3 +308,303 @@ details.detail>summary{cursor:pointer;font-weight:600;color:var(--ink)}
 .mini-opts .check{margin-top:0}
 .det.rates th,.det.rates td{white-space:nowrap}
 .det.rates td.s{white-space:normal;min-width:200px}
+
+/* ===== nuova struttura: pagina dei termini, tassi e verifiche, privacy, note legali ===== */
+main.page{padding-top:20px}
+
+/* stesso stile delle guide in tutte le pagine: apertura, titoli delle sezioni, testo, riquadri */
+@media(min-width:940px){.g-hero.solo{grid-template-columns:minmax(0,1fr);padding-top:36px}}
+.g-hero.solo{padding-bottom:4px}
+.g-hero.solo .g-lead{max-width:62ch}
+.g-hero.solo .g-lead .linkbtn{font-size:inherit}
+.prose p{font-size:1.06rem;line-height:1.65}
+.prose h2{font-family:var(--serif);font-weight:500;font-size:clamp(1.55rem,3.2vw,1.9rem);line-height:1.15;letter-spacing:-.005em;margin:46px 0 10px;text-wrap:balance;font-variant-numeric:lining-nums}
+.prose h3{font-size:1.12rem;font-weight:600;line-height:1.3;margin:22px 0 6px}
+.answer{gap:18px;margin-bottom:24px}
+.answer-item{background:#fff;border:1px solid var(--line-strong);border-radius:4px;box-shadow:7px 7px 0 var(--ink-soft);padding:14px 20px 14px}
+.answer-lab{font-size:.88rem}
+.answer-val{font-family:var(--serif);font-weight:500;font-size:2.3rem;line-height:1.1;letter-spacing:-.005em;font-variant-numeric:lining-nums}
+.answer-val.formula{font-family:var(--serif);font-size:1.45rem;font-weight:500;padding:6px 0 2px}
+@media(max-width:600px){.answer-item{box-shadow:5px 5px 0 var(--ink-soft)}}
+.after{margin:14px 2px 0;font-size:.95rem;font-weight:600}
+.after a{text-underline-offset:2px}
+.after a::after{content:" →"}
+.case-msg{background:var(--ink-soft);border-left:3px solid var(--ink);padding:8px 12px;border-radius:6px;font-size:.9rem;line-height:1.4;margin:0 0 12px;font-weight:600;color:var(--ink-dark)}
+.page .termini{margin:0 0 28px;padding:22px 24px}
+@media(max-width:600px){.page .termini{padding:16px}}
+.page .termini h2{font-size:1.15rem;margin:0 0 6px}
+
+/* rimando alle guide da mandare al cliente */
+.send{background:#fff;border:1px solid var(--line-strong);border-radius:4px;padding:16px 20px 12px;box-shadow:7px 7px 0 var(--ink-soft);margin:32px 0 12px}
+.send-l{font-size:.76rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--ink);margin:0 0 4px!important;line-height:1.4}
+.prose .send h2{font-size:1.45rem;margin:0 0 6px}
+.send ul{list-style:none;margin:10px 0 0;padding:0}
+.send li{padding:9px 0;border-top:1px solid var(--line);line-height:1.45}
+.send li a{font-weight:600}
+.send li span{display:block;color:var(--muted);font-size:.92rem}
+@media(max-width:600px){.send{padding:14px 16px 10px;box-shadow:5px 5px 0 var(--ink-soft)}}
+
+/* pagina «Tassi e verifiche» */
+.jump{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 6px}
+.jump a{display:inline-flex;align-items:center;min-height:36px;padding:0 14px;border:1px solid var(--line-strong);border-radius:999px;background:#fff;color:var(--ink);font-weight:600;font-size:.92rem;text-decoration:none}
+.jump a:hover{border-color:var(--ink);background:var(--ink-soft)}
+.prose section{scroll-margin-top:12px}
+.prose section>h2{scroll-margin-top:12px}
+.prose ul.crit{margin:0 0 10px;padding-left:1.15em}
+.prose ul.crit li{margin:6px 0;line-height:1.55}
+.prose ul.crit li::marker{color:var(--ink)}
+.prose .det.rates{margin-top:4px}
+#tabLegali tbody tr:first-child td,#tabMora tbody tr:first-child td{background:var(--ink-soft)}
+.tab-note{font-size:.86rem;color:var(--muted);margin:8px 0 0!important;line-height:1.45}
+.prose .case{border-top:1px solid var(--line)}
+.prose .case:first-of-type{border-top:0}
+.prose .case .linkbtn{display:inline-block;margin-top:2px}
+
+/* privacy e note legali */
+.legal-page h2{font-size:clamp(1.35rem,2.6vw,1.6rem);margin:34px 0 8px}
+.legal-page>h2:first-child{margin-top:8px}
+.legal-page .hint{margin-top:18px}
+
+/* piè di pagina: LinkedIn */
+.foot-social{display:inline-flex;align-items:center;gap:6px;margin-top:12px;color:var(--muted);font-weight:600;text-decoration:none}
+.foot-social:hover{color:var(--ink);text-decoration:underline;text-underline-offset:2px}
+.foot-social svg{flex:none}
+
+/* pagina «Chi sono» (variante con un sito solo) */
+.ph{background:var(--mark);border-radius:3px;padding:0 .18em;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.foot-bottom a{color:inherit;text-underline-offset:2px}
+.chi{display:grid;grid-template-columns:minmax(0,1fr);gap:24px 56px;align-items:start;padding-bottom:12px}
+@media(min-width:900px){.chi{grid-template-columns:minmax(0,1fr) 360px}}
+.chi .prose{margin:0}
+.chi-card{background:#fff;border:1px solid var(--line-strong);border-radius:4px;box-shadow:7px 7px 0 var(--ink-soft);padding:16px 20px 8px}
+.chi-card h2{font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink);margin:0 0 4px}
+.chi-card dl{margin:0}
+.chi-card dl div{display:grid;grid-template-columns:76px minmax(0,1fr);gap:10px;padding:9px 0;border-top:1px solid var(--line)}
+.chi-card dl div:first-child{border-top:0}
+.chi-card dt{font-size:.74rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding-top:.25em}
+.chi-card dd{margin:0;overflow-wrap:anywhere}
+.chi-head{display:flex;align-items:center;gap:14px 22px}
+.chi-head .g-title{margin-bottom:8px}
+.chi-photo{flex:none;width:112px;height:112px;border-radius:50%;object-fit:cover;background:var(--panel);border:1px dashed var(--line-strong);display:flex;align-items:center;justify-content:center;color:var(--muted);font-weight:600;font-size:.9rem}
+img.chi-photo{border:0;box-shadow:0 0 0 4px #fff,0 0 0 5px var(--line)}
+@media(max-width:600px){.chi-photo{width:84px;height:84px}}
+
+/* calcolo delle somme: due animazioni minime (il prospetto entra, l'evidenziatore ripassa il totale) */
+.tot-hl{background-image:linear-gradient(101deg,rgba(255,216,77,0) 0,var(--hl) 2%,rgba(255,216,77,.82) 32%,var(--hl) 97%,rgba(255,216,77,0) 100%);background-repeat:no-repeat;background-size:100% .72em;background-position:0 74%;padding:0 .2em;margin:0 -.2em;border-radius:.5em .2em .45em .25em/.3em .5em .25em .5em}
+.tot-hl.sweep{animation:cp-sweep .6s cubic-bezier(.25,.8,.35,1)}
+@keyframes cp-sweep{from{background-size:0 .72em}to{background-size:100% .72em}}
+.sheet.sweep{animation:cp-in .35s ease-out}
+@keyframes cp-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.tot-hl.sweep,.sheet.sweep{animation:none}}
+@media print{.tot-hl{background:none!important;padding:0;margin:0}}
+
+/* «Chi sono»: la foto e i contatti entrano piano (l'evidenziatore del titolo è quello di tutte le pagine) */
+img.chi-photo{animation:chi-photo .5s ease-out both}
+@keyframes chi-photo{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}
+.chi-card{animation:chi-up .5s .35s ease-out both}
+@keyframes chi-up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){img.chi-photo,.chi-card{animation:none}}
+.chi-head .g-title mark{white-space:nowrap}
+@media(max-width:600px){.chi-head .g-title{font-size:clamp(1.85rem,8vw,2.2rem)}}
+
+/* ===== guide =====
+   Impianto: un atto ripassato con l'evidenziatore. Titoli in Garamond, testo in Titillium,
+   una colonna di lettura con l'indice a lato; i passi sono numerati perché l'ordine conta. */
+.hl,.g-title mark,.g-brief mark,.g-num::before{background-image:linear-gradient(101deg,rgba(255,216,77,0) 0,var(--hl) 1.8%,rgba(255,216,77,.82) 32%,var(--hl) 97%,rgba(255,216,77,0) 100%);border-radius:.7em .25em .6em .3em/.35em .6em .3em .7em}
+/* il tratto copre solo la fascia bassa della riga, come un evidenziatore vero, e non tocca la riga sopra */
+.hl,.g-title mark,.g-brief mark{background-color:transparent;background-repeat:no-repeat;background-size:100% .7em;background-position:0 68%;color:inherit;padding:.02em .26em .08em;margin:0 -.16em;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+/* il marchio: all'apertura di ogni pagina l'evidenziatore del titolo scorre da sinistra a destra */
+.g-title mark{animation:hl-in .9s .15s cubic-bezier(.25,.8,.35,1) both}
+@keyframes hl-in{from{background-size:0 .7em}to{background-size:100% .7em}}
+@media(prefers-reduced-motion:reduce){.g-title mark{animation:none}}
+@media(max-width:480px){.tools .wrap{gap:0}.tools a{padding:0 8px;font-size:15px}.tools .tl{display:none}.tools .tm{display:inline-block}.tools .tm::first-letter{text-transform:uppercase}}
+@media(max-width:369px){.tools a{padding:0 6px;font-size:14.5px}}
+.tools a[aria-current]{color:var(--ink);border-bottom-color:var(--ink)}
+
+/* apertura */
+.g-hero{display:grid;grid-template-columns:minmax(0,1fr);gap:28px;padding-top:28px;padding-bottom:8px}
+@media(min-width:940px){.g-hero{grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:56px;align-items:end;padding-top:40px}}
+.g-title{font-family:var(--serif);font-weight:500;font-size:clamp(2.2rem,5.6vw,3.5rem);line-height:1.05;letter-spacing:-.012em;margin:0 0 16px;text-wrap:balance;font-variant-numeric:lining-nums}
+.g-lead{font-size:clamp(1.1rem,2.2vw,1.28rem);line-height:1.45;margin:0;max-width:44ch;color:var(--text)}
+.g-meta{display:flex;flex-wrap:wrap;gap:2px 16px;margin:18px 0 0;font-size:.88rem;color:var(--muted)}
+@media(min-width:600px){.g-meta{gap:4px 10px}.g-meta span+span::before{content:"·";margin-right:10px;color:var(--line-strong)}}
+.g-brief{background:#fff;border:1px solid var(--line-strong);border-radius:4px;padding:18px 22px 8px;box-shadow:7px 7px 0 var(--ink-soft)}
+.g-brief h2{font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink);margin:0 0 4px}
+.g-brief ul{list-style:none;margin:0;padding:0}
+.g-brief li{padding:11px 0;border-top:1px solid var(--line);line-height:1.5}
+.g-brief li:first-child{border-top:0}
+.g-brief mark{font-weight:600}
+
+/* colonna di lettura e indice */
+.g-layout{display:grid;grid-template-columns:minmax(0,1fr);gap:20px;padding-top:36px;padding-bottom:28px}
+@media(min-width:1000px){.g-layout{grid-template-columns:minmax(0,1fr) 240px;gap:72px;align-items:start;padding-top:48px}.g-toc{order:2;position:sticky;top:calc(20px + env(safe-area-inset-top,0px))}}
+.g-toc{font-size:.92rem;border-left:1px solid var(--line-strong);padding:2px 0 2px 16px}
+.g-toc h2{font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text);margin:0 0 8px}
+.g-toc ol{list-style:none;margin:0;padding:0;display:grid;gap:7px}
+.g-toc a{color:var(--muted);text-decoration:none;line-height:1.35;display:block}
+.g-toc a:hover{color:var(--ink);text-decoration:underline}
+.g-main{min-width:0;max-width:68ch;font-size:1.06rem;line-height:1.65}
+.g-main>*:first-child{margin-top:0}
+.g-main h2{font-family:var(--serif);font-weight:500;font-size:clamp(1.6rem,3.4vw,2rem);line-height:1.15;letter-spacing:-.005em;margin:52px 0 12px;text-wrap:balance;font-variant-numeric:lining-nums;scroll-margin-top:16px}
+.g-main h3{font-size:1.14rem;font-weight:600;line-height:1.3;margin:24px 0 6px;text-wrap:balance}
+.g-main p{margin:0 0 12px}
+.g-main ul{margin:0 0 12px;padding-left:1.15em}
+.g-steps ul{list-style:disc}
+.g-main li{margin:5px 0}
+.g-main li::marker{color:var(--ink)}
+.g-main .g-sub{color:var(--muted);margin-top:-4px}
+
+/* passi numerati */
+.g-steps{list-style:none;margin:20px 0 0;padding:0}
+.g-step{display:grid;grid-template-columns:52px minmax(0,1fr);gap:0 18px;position:relative;padding-bottom:30px;margin:0;scroll-margin-top:16px}
+.g-step:last-child{padding-bottom:4px}
+.g-step::before{content:"";position:absolute;left:25px;top:54px;bottom:4px;width:1px;background:var(--line-strong)}
+.g-step:last-child::before{display:none}
+.g-num{position:relative;isolation:isolate;width:52px;height:50px;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-weight:500;font-size:2.5rem;line-height:1;color:var(--ink);font-variant-numeric:lining-nums}
+.g-num::before{content:"";position:absolute;z-index:-1;left:5px;right:5px;bottom:9px;height:17px;transform:rotate(-4deg)}
+.g-step h3{margin:6px 0 6px;font-size:1.22rem}
+.g-when{font-size:.76rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:10px 0 0!important}
+.g-when+h3{margin-top:2px}
+/* sul telefono il numero resta accanto al titolo e il testo del passo usa tutta la larghezza */
+@media(max-width:560px){
+.g-step{grid-template-columns:38px minmax(0,1fr);gap:0 12px;padding:18px 0 10px;border-top:1px solid var(--line)}
+.g-step:first-child{border-top:0;padding-top:0}
+.g-step::before{display:none}
+.g-step>div:last-child{display:contents}
+.g-step>div:last-child>*{grid-column:1/-1}
+.g-step>div:last-child>.g-when,.g-step>div:last-child>h3{grid-column:2}
+.g-num{grid-row:1/span 2;width:38px;height:42px;font-size:2rem}
+.g-num::before{left:2px;right:2px;bottom:8px;height:14px}
+}
+.g-law{display:grid;grid-template-columns:minmax(0,1fr);gap:4px;margin:8px 0 12px;padding:0}
+.g-law div{display:grid;grid-template-columns:92px minmax(0,1fr);gap:10px}
+.g-law dt{font-size:.76rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding-top:.32em}
+.g-law dd{margin:0}
+
+/* riquadri */
+.g-note{background:var(--ink-soft);border-radius:8px;padding:14px 18px;margin:16px 0}
+.g-note>:last-child{margin-bottom:0}
+.g-note-l{display:block;font-size:.76rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--ink);margin-bottom:4px}
+.g-note.att{background:var(--mark)}
+.g-note.att .g-note-l{color:#5C4A00}
+.g-conto{background:#fff;border:1px solid var(--line-strong);border-radius:4px;padding:16px 20px 14px;margin:16px 0;box-shadow:7px 7px 0 var(--ink-soft)}
+.g-conto-t{font-size:.9rem;color:var(--muted);margin:0 0 10px!important;line-height:1.4}
+.g-conto-t b{color:var(--text);font-weight:600}
+.g-rows{font-family:var(--serif);font-size:1.1rem;line-height:1.35;font-variant-numeric:lining-nums tabular-nums}
+.g-row{display:flex;align-items:flex-end;gap:8px;padding:4px 0}
+.g-row .l{min-width:0}
+.g-row .d{flex:1 1 20px;min-width:14px;border-bottom:1px dotted #8A93A1;margin-bottom:.34em}
+.g-row .v{white-space:nowrap}
+.g-row.tot{font-weight:600;padding-top:8px;margin-top:4px;border-top:1px solid var(--line-strong)}
+.g-row.tot .v{background:var(--hl);padding:0 .35em;border-radius:.5em .2em .45em .25em/.3em .5em .25em .5em}
+.g-conto-n{font-size:.86rem;color:var(--muted);margin:10px 0 0!important;line-height:1.45}
+
+/* strumento */
+.g-tool{margin:22px 0;padding:22px 24px}
+.g-tool .g-note-l{margin-bottom:2px}
+.g-tool h2,.g-tool h3,.g-tool .g-tool-t{font-family:var(--sans);font-size:1.22rem;font-weight:600;line-height:1.3;letter-spacing:0;margin:0 0 14px}
+.g-tool .pair{gap:14px}
+.g-tool .hint{margin-top:10px}
+.g-solo{display:block;max-width:280px}
+.g-out{margin-top:16px;border-top:1px solid var(--line-strong);padding-top:16px}
+.g-out .totals{margin-bottom:6px}
+.g-out .tlist{margin-bottom:10px}
+.g-out .g-today{font-weight:600;margin:0 0 10px}
+.g-tool .actions{margin-top:14px}
+.g-tool .btn{white-space:normal;text-align:center;padding-top:8px;padding-bottom:8px}
+@media(max-width:600px){.g-tool{padding:18px 16px}}
+
+/* linea del tempo del precetto, in scala: 10 giorni su 90 */
+.g-bar{margin:18px 0 20px}
+.g-track{display:flex;height:18px;border-radius:3px;overflow:hidden;background:var(--line)}
+.g-track .a{flex:0 0 11.111%;background:var(--hl)}
+.g-track .b{flex:1 1 auto;background:var(--ink)}
+.g-ticks{position:relative;height:1.7em;font-size:.86rem;color:var(--muted);font-variant-numeric:tabular-nums;margin-top:4px}
+.g-ticks span{position:absolute;top:0;white-space:nowrap}
+.g-ticks .t0{left:0}
+.g-ticks .t10{left:11.111%;transform:translateX(-50%)}
+.g-ticks .t90{right:0}
+.g-key{list-style:none;margin:8px 0 0!important;padding:0!important;display:grid;gap:8px}
+.g-key li{display:grid;grid-template-columns:14px minmax(0,1fr);gap:10px;margin:0;align-items:start}
+.g-key i{width:14px;height:14px;border-radius:2px;margin-top:.42em;background:var(--line-strong)}
+.g-key .ka{background:var(--hl)}
+.g-key .kb{background:var(--ink)}
+.g-key .k0,.g-key .k9{background:none;border:2px solid var(--text)}
+
+/* tabella dei costi */
+.g-main .det{font-size:.95rem}
+.g-main .det th,.g-main .det td{padding:7px 8px}
+.g-main .det.costi td:first-child,.g-main .det.costi th:first-child{padding-left:0}
+.g-main .det.costi td{white-space:nowrap}
+.g-main .det tr.on td{background:var(--mark)}
+@media(max-width:560px){.g-main .det.costi th{white-space:normal;vertical-align:bottom;line-height:1.25}.g-main .det.costi th,.g-main .det.costi td{padding-left:6px;padding-right:0}}
+.g-cap{font-size:.86rem;color:var(--muted);line-height:1.5;margin-top:10px!important}
+
+/* glossario, domande, chiusura */
+.g-gloss{margin:0;border-top:1px solid var(--line-strong)}
+.g-gloss div{display:grid;grid-template-columns:minmax(0,1fr);gap:2px 20px;padding:12px 0;border-bottom:1px solid var(--line)}
+@media(min-width:640px){.g-gloss div{grid-template-columns:190px minmax(0,1fr)}}
+.g-gloss dt{font-weight:600}
+.g-gloss dd{margin:0}
+.g-faq h3{margin-top:22px}
+.g-err{list-style:none;padding:0!important;margin:0!important;border-top:1px solid var(--line-strong)}
+.g-err li{padding:12px 0;margin:0;border-bottom:1px solid var(--line)}
+.g-move{background:var(--ink);color:#fff;border-radius:12px;padding:28px 28px 26px;margin:52px 0 0;scroll-margin-top:16px}
+.g-main .g-move h2{color:#fff;margin:0 0 10px}
+.g-move mark{background:var(--hl);color:var(--text);padding:0 .22em .04em;border-radius:.5em .2em .45em .25em/.3em .5em .25em .5em}
+.g-move p{font-size:1.14rem;line-height:1.5;max-width:54ch;margin:0 0 4px}
+.g-move ul{margin:8px 0 4px;padding-left:1.15em}
+.g-main .g-move li::marker{color:var(--hl)}
+.g-move .actions{margin-top:18px}
+.g-move .btn-primary{background:#fff;color:var(--ink)}
+.g-move .btn-primary:hover{background:var(--ink-soft)}
+.g-move .btn-secondary{background:transparent;color:#fff;border-color:rgba(255,255,255,.75)}
+.g-move .btn-secondary:hover{background:rgba(255,255,255,.12)}
+.g-move a:focus-visible{outline-color:#fff}
+.g-move .btn{white-space:normal;text-align:center;padding-top:9px;padding-bottom:9px}
+@media(max-width:600px){.g-move{padding:22px 18px;margin-left:-8px;margin-right:-8px}}
+.g-end{margin-top:28px;padding-top:16px;border-top:1px solid var(--line);font-size:.9rem;color:var(--muted);line-height:1.55}
+.g-end p{margin:0 0 8px}
+.g-end details summary{cursor:pointer;font-weight:600;color:var(--ink);width:max-content;max-width:100%}
+.g-end details p{margin-top:8px}
+
+/* barra per gli avvocati: copia il collegamento della guida */
+.g-share{background:var(--ink-soft);border-bottom:1px solid var(--line)}
+.g-share .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;padding-top:10px;padding-bottom:10px}
+.g-share p{margin:0;flex:1 1 340px;font-size:.93rem;line-height:1.4}
+.g-share-btns{display:flex;flex-wrap:wrap;gap:8px}
+.g-share .btn{min-height:38px;padding:0 14px;font-size:.93rem}
+.g-share .btn:hover{background:var(--ink);color:#fff}
+.g-share-msg{flex-basis:100%;font-size:.88rem;font-weight:600;color:var(--ink);overflow-wrap:anywhere}
+.g-share-msg:empty{display:none}
+
+/* indice delle guide */
+.g-index>h2{scroll-margin-top:12px}
+.g-atto{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
+@media(min-width:760px){.g-atto{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}}
+.g-atto a{display:flex;flex-direction:column;gap:3px;height:100%;background:#fff;border:1px solid var(--line);border-left:4px solid var(--ink);border-radius:10px;padding:14px 18px 16px;color:var(--text);text-decoration:none}
+.g-atto a:hover{border-color:var(--ink);background:var(--ink-soft)}
+.g-atto .k{font-size:.74rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.g-atto strong{font-size:1.14rem;color:var(--ink);line-height:1.3}
+.g-atto .d{font-size:.93rem;color:var(--muted);line-height:1.45}
+.g-how{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
+@media(min-width:760px){.g-how{grid-template-columns:repeat(3,minmax(0,1fr));gap:28px}}
+.g-how li{border-top:2px solid var(--text);padding-top:10px;line-height:1.5}
+.g-how b{display:block;font-size:1.05rem}
+.g-index{padding-top:36px;padding-bottom:36px}
+.g-index>h2{font-family:var(--serif);font-weight:500;font-size:clamp(1.6rem,3.4vw,2rem);line-height:1.15;margin:44px 0 6px}
+.g-index>h2:first-child{margin-top:0}
+.g-index>.g-sub{color:var(--muted);margin:0 0 18px;max-width:62ch}
+.g-path{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:minmax(0,1fr);gap:22px}
+@media(min-width:860px){.g-path{grid-template-columns:repeat(3,minmax(0,1fr));gap:28px}}
+.g-card{display:flex;flex-direction:column;height:100%;background:#fff;border:1px solid var(--line-strong);border-radius:4px;padding:18px 22px 20px;box-shadow:7px 7px 0 var(--ink-soft);color:var(--text);text-decoration:none}
+.g-card:hover{border-color:var(--ink);box-shadow:7px 7px 0 var(--hl)}
+.g-card .g-num{margin:0 0 6px -8px}
+.g-card h3{font-family:var(--serif);font-weight:500;font-size:1.6rem;line-height:1.12;margin:0 0 8px;text-wrap:balance}
+.g-card p{margin:0 0 14px;line-height:1.5}
+.g-card .g-for{margin-top:auto;font-size:.86rem;color:var(--muted)}
+.g-card .g-go{font-weight:600;color:var(--ink);margin-top:6px}
+.g-toolslist{list-style:none;margin:0;padding:0;border-top:1px solid var(--line-strong);max-width:68ch}
+.g-toolslist li{padding:12px 0;border-bottom:1px solid var(--line)}
+.g-toolslist a{font-weight:600}
+@media print{.g-toc,.g-tool,.g-move .actions,.g-share{display:none!important}.g-hero,.g-layout{display:block}.g-brief,.g-conto,.g-card{box-shadow:none}.g-move{background:none;color:var(--text);border:1px solid var(--text)}.g-main .g-move h2{color:var(--text)}}

@@ -1,0 +1,169 @@
+<!doctype html>
+<!-- calcolaprecetti.it - (c) 2026 il titolare indicato nelle Note legali (https://calcolaprecetti.it/note-legali/). Tutti i diritti riservati. Vietata la riproduzione, anche parziale, senza autorizzazione scritta. Licenza: file LICENSE. -->
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tassi, fonti e verifiche: interessi legali, moratori e compenso del precetto</title>
+<link rel="canonical" href="https://calcolaprecetti.it/tassi/">
+<meta name="description" content="Le tabelle usate dai calcoli di calcolaprecetti.it: interessi legali dal 1997, interessi moratori dal 2002 semestre per semestre, compenso del precetto secondo il D.M. 147/2022, con la fonte di ogni valore, i casi di verifica e il registro degli aggiornamenti.">
+<meta property="og:title" content="Tassi, fonti e verifiche: interessi legali, moratori e compenso del precetto">
+<meta property="og:url" content="https://calcolaprecetti.it/tassi/">
+<meta property="og:image" content="https://calcolaprecetti.it/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="calcolaprecetti.it – Il conteggio del precetto, pronto per Word">
+<meta property="og:site_name" content="calcolaprecetti.it">
+<meta property="og:locale" content="it_IT">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="og:description" content="Interessi legali e moratori, compenso del precetto: le tabelle del sito con le fonti e i casi di verifica.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#1E3F8C">
+<link rel="icon" href="/favicon-192.png" sizes="192x192" type="image/png">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/style.css">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebPage", "name": "Tassi, fonti e verifiche", "url": "https://calcolaprecetti.it/tassi/", "description": "Le tabelle usate dai calcoli di calcolaprecetti.it: interessi legali dal 1997, interessi moratori dal 2002 semestre per semestre, compenso del precetto secondo il D.M. 147/2022, con la fonte di ogni valore, i casi di verifica e il registro degli aggiornamenti.", "inLanguage": "it-IT", "isPartOf": {"@type": "WebSite", "name": "calcolaprecetti.it", "url": "https://calcolaprecetti.it/"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://calcolaprecetti.it/"}, {"@type": "ListItem", "position": 2, "name": "Tassi e verifiche", "item": "https://calcolaprecetti.it/tassi/"}]}]}</script>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="/"><img src="/logo.svg" alt="" width="28" height="28" style="vertical-align:-7px;margin-right:8px">calcolaprecetti.it</a>
+  </div>
+</header>
+<nav class="tools" aria-label="Sezioni del sito">
+  <div class="wrap">
+    <a href="/"><span><span class="tl">Somme del </span><span class="tm">precetto</span></span></a>
+    <a href="/termini-precetto/"><span><span class="tm">Termini</span><span class="tl"> del precetto</span></span></a>
+    <a href="/interessi-moratori/"><span><span class="tl">Calcolo interessi </span><span class="tm">moratori</span></span></a>
+    <a href="/chi-sono/">Chi sono</a>
+  </div>
+</nav>
+
+<div class="wrap g-hero solo">
+  <div>
+    <nav class="crumbs" aria-label="Percorso"><a href="/">Home</a> <span>›</span> Tassi e verifiche</nav>
+    <h1 class="g-title">Tassi, fonti e <mark>verifiche</mark></h1>
+    <p class="g-lead">Le tabelle e i criteri usati dai calcoli del sito, con la fonte di ogni valore. Per controllare i risultati ci sono quattro casi svolti a mano, da aprire direttamente nel calcolo.</p>
+  </div>
+</div>
+
+<main class="wrap page">
+  <section class="answer" aria-label="Tassi in vigore">
+    <div class="answer-item">
+      <span class="answer-lab">Interesse legale <span id="nowLegalYear"></span></span>
+      <strong class="answer-val" id="nowLegal">—</strong>
+      <span class="answer-note" id="nowLegalSrc">Decreto del Ministro dell'economia (art. 1284 c.c.).</span>
+    </div>
+    <div class="answer-item">
+      <span class="answer-lab">Interessi moratori, <span id="nowMoraSem">ultimo semestre pubblicato</span></span>
+      <strong class="answer-val" id="nowMora">BCE + 8 punti</strong>
+      <span class="answer-note" id="nowMoraSrc">Tasso di riferimento della BCE più otto punti (D.Lgs. 231/2002).</span>
+    </div>
+  </section>
+  <nav class="jump" aria-label="In questa pagina">
+    <a href="#criteri">Criteri di calcolo</a>
+    <a href="#legali">Interessi legali</a>
+    <a href="#moratori">Interessi moratori</a>
+    <a href="#compenso">Compenso del precetto</a>
+    <a href="#verifica">Casi di verifica</a>
+    <a href="#registro">Registro</a>
+  </nav>
+
+  <article class="prose">
+    <section id="criteri" aria-labelledby="hCriteri">
+      <h2 id="hCriteri">Come calcola il sito</h2>
+      <ul class="crit">
+        <li><strong>Interessi</strong> su 365 giorni, per periodi: anno solare per i legali, semestre per i moratori. Ogni periodo è arrotondato al centesimo; il primo e l'ultimo giorno sono compresi. Gli interessi sono semplici: non si calcolano interessi sugli interessi.</li>
+        <li><strong>Acconti</strong> imputati ex art. 1194 c.c.: prima alle spese liquidate nel titolo, poi agli interessi maturati, infine al capitale; con più voci, prima alla più antica (art. 1193 c.c.). Dal giorno dopo l'acconto gli interessi maturano sul capitale residuo.</li>
+        <li><strong>Compenso del precetto</strong> secondo i parametri del D.M. 55/2014, con i valori del D.M. 147/2022, sullo scaglione del credito residuo: capitale, interessi e spese, al netto degli acconti. Rimborso forfettario sui compensi, C.P.A. su compensi e rimborso, I.V.A. sul totale.</li>
+        <li><strong>Termini del precetto</strong> calcolati escludendo il giorno della notifica; le scadenze che cadono di sabato o in un giorno festivo nazionale sono prorogate al primo giorno non festivo (art. 155 c.p.c.).</li>
+      </ul>
+    </section>
+
+    <section id="legali" aria-labelledby="hLegali">
+      <h2 id="hLegali">Interessi legali</h2>
+      <p>Il tasso è fissato ogni anno con decreto del Ministro dell'economia e delle finanze, pubblicato in Gazzetta Ufficiale entro il 15 dicembre dell'anno precedente (art. 1284, comma 1, c.c.).</p>
+      <div class="scroll"><table class="det rates" id="tabLegali"></table></div>
+      <p class="tab-note">Dalla domanda giudiziale, se le parti non hanno fissato la misura degli interessi, si applica il tasso delle transazioni commerciali (art. 1284, comma 4, c.c.): nel calcolo delle somme è la voce «Legali, poi maggiorati dalla domanda».</p>
+    </section>
+
+    <section id="moratori" aria-labelledby="hMoratori">
+      <h2 id="hMoratori">Interessi moratori</h2>
+      <p>Tasso di riferimento della BCE in vigore il primo giorno del semestre, comunicato dal Ministero dell'economia in Gazzetta Ufficiale, più otto punti per i contratti conclusi dal 1° gennaio 2013 e più sette per quelli conclusi prima, dall'8 agosto 2002 (D.Lgs. 231/2002). Per i prodotti agricoli e alimentari si aggiungono altri quattro punti: il calcolo con tutte le opzioni è nella pagina <a href="/interessi-moratori/">Calcolo interessi moratori</a>.</p>
+      <div class="scroll"><table class="det rates" id="tabMora"></table></div>
+    </section>
+
+    <section id="compenso" aria-labelledby="hCompenso">
+      <h2 id="hCompenso">Compenso del precetto</h2>
+      <p>Valori medi dei parametri forensi per l'atto di precetto (D.M. 55/2014, aggiornato dal D.M. 147/2022), per scaglione di valore del credito. Il minimo e il massimo sono il valore medio ridotto o aumentato del 50% (art. 4, comma 1).</p>
+      <div class="scroll"><table class="det rates" id="tabPrecetto"></table></div>
+      <p class="tab-note">Sul compenso si aggiungono <span class="js-accessori">rimborso forfettario, C.P.A. e, se dovuta, I.V.A.</span>.</p>
+    </section>
+
+    <section id="verifica" aria-labelledby="hVerifica">
+      <h2 id="hVerifica">Casi di verifica</h2>
+      <p>Conteggi svolti a mano con i tassi delle tabelle qui sopra. Aprili nel calcolo e confronta il risultato: se qualcosa non torna, scrivimi.</p>
+      <div id="casiBody" data-url-precetto="/" data-url-termini="/termini-precetto/"></div>
+    </section>
+
+    <section id="registro" aria-labelledby="hRegistro">
+      <h2 id="hRegistro">Registro degli aggiornamenti</h2>
+      <p>Ogni modifica ai tassi, alle tabelle o ai criteri di calcolo, con la data in cui è stata pubblicata sul sito.</p>
+      <div id="registroBody"></div>
+    </section>
+  </article>
+</main>
+
+<section class="wrap contact" id="suggerimenti" aria-labelledby="contactTitle">
+  <div class="contact-box">
+    <div class="contact-text">
+      <h2 id="contactTitle">Suggerimenti</h2>
+      <p>Hai trovato un errore o ti servirebbe una funzione in più? Scrivimi: ogni segnalazione aiuta a migliorare il sito.</p>
+      <p class="hint">Non inserire nei messaggi dati personali di clienti o di terzi.</p>
+    </div>
+    <div class="contact-actions">
+      <a class="btn btn-secondary" id="mailBtn" href="#suggerimenti">Scrivimi un suggerimento</a>
+      <span class="contact-mail" id="mailText"></span>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-about">
+        <a class="foot-brand" href="/"><img src="/logo.svg" alt="" width="24" height="24">calcolaprecetti.it</a>
+        <p>Calcoli gratuiti per il precetto. Nessun cookie: i dati che inserisci restano sul tuo dispositivo.</p>
+        <a class="foot-social" href="https://www.linkedin.com/company/calcolaprecetto-it/" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path d="M9.5 2.5h4v4M13.5 2.5 7.5 8.5M11.5 9.5v3a1 1 0 0 1-1 1h-7a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1h3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>LinkedIn</a>
+      </div>
+      <nav class="foot-col" aria-label="Calcoli">
+        <h2>Calcoli</h2>
+        <a href="/">Somme del precetto</a>
+        <a href="/termini-precetto/">Termini del precetto</a>
+        <a href="/interessi-moratori/">Calcolo interessi moratori</a>
+      </nav>
+      <nav class="foot-col" aria-label="Verifiche">
+        <h2>Verifiche</h2>
+        <a href="/tassi/">Tassi e fonti</a>
+        <a href="/tassi/#verifica">Casi di verifica</a>
+        <a href="/tassi/#registro">Registro aggiornamenti</a>
+      </nav>
+      <nav class="foot-col" aria-label="Informazioni">
+        <h2>Informazioni</h2>
+        <a href="/chi-sono/">Chi sono</a>
+        <a href="/privacy/">Privacy</a>
+        <a href="/note-legali/">Note legali</a>
+        <a href="#suggerimenti">Suggerimenti</a>
+      </nav>
+    </div>
+    <p class="foot-bottom">© 2026 calcolaprecetti.it · A cura di <a href="/chi-sono/"><span class="js-titolare"></span></a> · Tutti i diritti riservati · Tassi aggiornati a <span class="js-updated"></span> · Strumento di supporto: verifica sempre gli importi prima di inserirli in un atto.</p>
+  </div>
+</footer>
+
+<noscript><p style="padding:16px">Per usare i calcoli di questa pagina attiva JavaScript nel browser.</p></noscript>
+<script src="/assets/core.js" defer></script>
+<script src="/assets/info.js" defer></script>
+</body>
+</html>

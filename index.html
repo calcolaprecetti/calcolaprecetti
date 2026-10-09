@@ -1,12 +1,12 @@
 <!doctype html>
-<!-- calcolaprecetti.it - (c) 2026 il titolare indicato nelle Note legali (https://calcolaprecetti.it/#note-legali). Tutti i diritti riservati. Vietata la riproduzione, anche parziale, senza autorizzazione scritta. Licenza: file LICENSE. -->
+<!-- calcolaprecetti.it - (c) 2026 il titolare indicato nelle Note legali (https://calcolaprecetti.it/note-legali/). Tutti i diritti riservati. Vietata la riproduzione, anche parziale, senza autorizzazione scritta. Licenza: file LICENSE. -->
 <html lang="it">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>calcolaprecetti.it – Calcolo delle somme dell'atto di precetto</title>
 <link rel="canonical" href="https://calcolaprecetti.it/">
-<meta name="description" content="Calcolo gratuito delle somme da intimare con l'atto di precetto: capitale, interessi legali e moratori, acconti ex art. 1194 c.c., spese del titolo, compenso secondo il D.M. 55/2014 e termini del precetto. Tabella pronta per Word. Nessun cookie.">
+<meta name="description" content="Calcolo gratuito delle somme da intimare con l'atto di precetto: capitale, interessi legali e moratori, acconti ex art. 1194 c.c., spese del titolo e compenso secondo il D.M. 55/2014. Tabella pronta per Word. Nessun cookie.">
 <meta property="og:title" content="calcolaprecetti.it">
 <meta property="og:url" content="https://calcolaprecetti.it/">
 <meta property="og:image" content="https://calcolaprecetti.it/og-image.png">
@@ -34,17 +34,21 @@
     </div>
   </div>
 </header>
-<nav class="tools" aria-label="Calcoli disponibili">
+<nav class="tools" aria-label="Sezioni del sito">
   <div class="wrap">
-    <a href="/" aria-current="page">Somme del precetto</a>
-    <a href="/interessi-moratori/">Calcolo interessi moratori</a>
+    <a href="/" aria-current="page"><span><span class="tl">Somme del </span><span class="tm">precetto</span></span></a>
+    <a href="/termini-precetto/"><span><span class="tm">Termini</span><span class="tl"> del precetto</span></span></a>
+    <a href="/interessi-moratori/"><span><span class="tl">Calcolo interessi </span><span class="tm">moratori</span></span></a>
+    <a href="/chi-sono/">Chi sono</a>
   </div>
 </nav>
 
 
-<div class="wrap intro">
-  <h1>Calcolo delle somme del precetto</h1>
-  <p>Inserisci i dati del titolo: il prospetto si aggiorna mentre scrivi e lo porti in Word con un clic. <button type="button" class="linkbtn" id="btnExample">Prova con un esempio</button></p>
+<div class="wrap g-hero solo">
+  <div>
+    <h1 class="g-title">Calcolo delle <mark>somme del precetto</mark></h1>
+    <p class="g-lead">Inserisci i dati del titolo: il prospetto si aggiorna mentre scrivi e lo porti in Word con un clic. <button type="button" class="linkbtn" id="btnExample">Prova con un esempio</button></p>
+  </div>
 </div>
 
 <main class="wrap layout">
@@ -144,6 +148,7 @@
         <h2 id="resTitle">Prospetto delle somme</h2>
         <span class="res-date" id="resDate"></span>
       </div>
+      <p class="case-msg" id="caseMsg" hidden></p>
       <div class="warnings" id="warnings" aria-live="polite"></div>
       <p class="empty" id="empty">Inserisci l'importo del capitale per vedere il prospetto, oppure <button type="button" class="linkbtn" id="emptyExample">prova con un esempio</button>.</p>
       <div class="sheet" id="sheet" hidden>
@@ -163,47 +168,10 @@
         <div id="detailBody"></div>
       </details>
     </div>
+    <p class="after"><a href="/termini-precetto/">Precetto notificato? Calcola i termini di 10 e 90 giorni</a></p>
     <p class="sr-only" aria-live="polite" id="srTotal"></p>
   </section>
 </main>
-
-<section class="wrap termini-wrap" id="termini" aria-labelledby="tTitle">
-  <div class="panel termini">
-    <div class="termini-grid">
-      <div>
-        <h2 id="tTitle">Termini del precetto</h2>
-        <p class="hint" style="margin-top:0">Dopo la notifica: quando si può iniziare l'esecuzione e fino a quando il precetto resta efficace.</p>
-        <div class="pair">
-          <label class="field"><span class="label">Notificato il</span><input type="date" id="tNotifica"></label>
-          <label class="field"><span class="label">Termine per adempiere</span><span class="money days"><input type="text" inputmode="numeric" id="tGiorni"><span class="sign">giorni</span></span></label>
-        </div>
-        <span class="hint">Per la PEC conta la ricevuta di consegna; per la posta, la consegna o la compiuta giacenza.</span>
-        <label class="check" style="margin-top:12px"><input type="checkbox" id="tBis"><span>Ho presentato l'istanza di ricerca dei beni (art. 492-bis c.p.c.)</span></label>
-        <div id="tBisFields" hidden>
-          <div class="pair" style="margin-top:10px">
-            <label class="field"><span class="label">Istanza presentata il</span><input type="date" id="tBisFrom"></label>
-            <label class="field"><span class="label">Esito comunicato il</span><input type="date" id="tBisTo"></label>
-          </div>
-          <span class="hint">Esito: verbale delle ricerche, comunicazione di mancata esecuzione o rigetto. Se non è ancora arrivato, lascia vuoto.</span>
-        </div>
-      </div>
-      <div class="termini-out">
-        <div class="warnings" id="tWarnings"></div>
-        <p class="empty" id="tEmpty">Indica la data di notifica per vedere le scadenze.</p>
-        <dl class="tlist" id="tOut" hidden></dl>
-        <div class="cal" id="tActions" hidden>
-          <div class="actions">
-            <button type="button" class="btn btn-secondary" id="tIcs">Scarica per il calendario</button>
-            <a class="btn btn-secondary" id="tGcal" target="_blank" rel="noopener noreferrer">Google Calendar</a>
-            <a class="btn btn-secondary" id="tOutlook" target="_blank" rel="noopener noreferrer">Outlook.com</a>
-          </div>
-          <p class="hint">Il file contiene entrambe le date e un promemoria sette giorni prima: sul computer aprilo dalla cartella dei download, sul telefono toccalo, e il calendario chiede conferma. I due collegamenti aprono invece il sito del servizio con la scadenza dei 90 giorni già compilata, da salvare con un clic: la data e il titolo dell'appuntamento vengono inviati a Google o a Microsoft.</p>
-        </div>
-        <p class="hint" id="tNote" hidden>Termini calcolati escludendo il giorno della notifica; se la scadenza cade di sabato o in un giorno festivo è prorogata al primo giorno non festivo (art. 155 c.p.c.). Il termine di 90 giorni non è soggetto alla sospensione feriale. Non sono considerate le festività locali né la sospensione per opposizione al precetto (art. 481, comma 2, c.p.c.).</p>
-      </div>
-    </div>
-  </div>
-</section>
 
 <section class="wrap contact" id="suggerimenti" aria-labelledby="contactTitle">
   <div class="contact-box">
@@ -219,40 +187,35 @@
   </div>
 </section>
 
-<section class="wrap legal" id="info" hidden>
-  <details id="privacy" hidden><summary>Informativa privacy</summary><div class="body" id="privacyBody"></div></details>
-  <details id="note-legali" hidden><summary>Note legali</summary><div class="body" id="legalBody"></div></details>
-  <details id="verifica" hidden><summary>Casi di verifica</summary><div class="body" id="casesBody"></div></details>
-  <details id="registro" hidden><summary>Registro degli aggiornamenti</summary><div class="body" id="registroBody"></div></details>
-  <details id="tassi" hidden><summary>Tassi e parametri usati</summary><div class="body"><p>Interessi su 365 giorni, per periodi (anno solare per i legali, semestre per i moratori) arrotondati al centesimo; il primo e l'ultimo giorno sono compresi. Acconti imputati ex art. 1194 c.c. prima alle spese liquidate nel titolo, poi agli interessi maturati, infine al capitale; con più voci, prima alla più antica (art. 1193 c.c.). Dal giorno dopo l'acconto gli interessi maturano sul capitale residuo. Compenso del precetto secondo la tabella 6 del D.M. 55/2014 con i valori del D.M. 147/2022, sullo scaglione dato dal credito residuo (capitale, interessi e spese, al netto degli acconti); rimborso forfettario sui compensi, C.P.A. su compensi e rimborso, IVA sul totale. Accanto a ogni tasso è indicata la fonte. Per il solo <a href="/interessi-moratori/">calcolo degli interessi moratori</a>, anche per i contratti anteriori al 2013 o per i prodotti agricoli e alimentari, c'è una pagina dedicata.</p><div class="rates-grid" id="ratesGrid"></div></div></details>
-</section>
-
 <footer class="foot">
   <div class="wrap">
     <div class="foot-grid">
       <div class="foot-about">
         <a class="foot-brand" href="/"><img src="/logo.svg" alt="" width="24" height="24">calcolaprecetti.it</a>
-        <p>Strumenti gratuiti per il conteggio del precetto. Nessun cookie: i dati che inserisci restano sul tuo dispositivo.</p>
+        <p>Calcoli gratuiti per il precetto. Nessun cookie: i dati che inserisci restano sul tuo dispositivo.</p>
+        <a class="foot-social" href="https://www.linkedin.com/company/calcolaprecetto-it/" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path d="M9.5 2.5h4v4M13.5 2.5 7.5 8.5M11.5 9.5v3a1 1 0 0 1-1 1h-7a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1h3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>LinkedIn</a>
       </div>
       <nav class="foot-col" aria-label="Calcoli">
         <h2>Calcoli</h2>
         <a href="/">Somme del precetto</a>
+        <a href="/termini-precetto/">Termini del precetto</a>
         <a href="/interessi-moratori/">Calcolo interessi moratori</a>
       </nav>
       <nav class="foot-col" aria-label="Verifiche">
         <h2>Verifiche</h2>
-        <a href="#tassi" data-open="tassi">Tassi e fonti</a>
-        <a href="#verifica" data-open="verifica">Casi di verifica</a>
-        <a href="#registro" data-open="registro">Registro aggiornamenti</a>
+        <a href="/tassi/">Tassi e fonti</a>
+        <a href="/tassi/#verifica">Casi di verifica</a>
+        <a href="/tassi/#registro">Registro aggiornamenti</a>
       </nav>
       <nav class="foot-col" aria-label="Informazioni">
         <h2>Informazioni</h2>
-        <a href="#privacy" data-open="privacy">Privacy</a>
-        <a href="#note-legali" data-open="note-legali">Note legali</a>
+        <a href="/chi-sono/">Chi sono</a>
+        <a href="/privacy/">Privacy</a>
+        <a href="/note-legali/">Note legali</a>
         <a href="#suggerimenti">Suggerimenti</a>
       </nav>
     </div>
-    <p class="foot-bottom">© 2026 calcolaprecetti.it · A cura di <span class="js-titolare"></span> · Tutti i diritti riservati · Tassi aggiornati a <span class="js-updated"></span> · Strumento di supporto: verifica sempre gli importi prima di inserirli in un atto.</p>
+    <p class="foot-bottom">© 2026 calcolaprecetti.it · A cura di <a href="/chi-sono/"><span class="js-titolare"></span></a> · Tutti i diritti riservati · Tassi aggiornati a <span class="js-updated"></span> · Strumento di supporto: verifica sempre gli importi prima di inserirli in un atto.</p>
   </div>
 </footer>
 

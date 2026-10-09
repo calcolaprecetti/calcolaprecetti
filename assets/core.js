@@ -1,16 +1,16 @@
-/*! calcolaprecetti.it - (c) 2026 il titolare indicato nelle Note legali (https://calcolaprecetti.it/#note-legali). Tutti i diritti riservati. Vietata la riproduzione, anche parziale, senza autorizzazione scritta. Licenza: file LICENSE. */
+/*! calcolaprecetti.it - (c) 2026 il titolare indicato nelle Note legali (https://calcolaprecetti.it/note-legali/). Tutti i diritti riservati. Vietata la riproduzione, anche parziale, senza autorizzazione scritta. Licenza: file LICENSE. */
 /* =====================================================================
    DATI DEL SITO (informativa privacy, note legali, contatti)
    Per cambiare titolare o email basta modificare queste righe.
    ===================================================================== */
 var SITO = {
   nome: 'calcolaprecetti.it',
-  titolare: 'a.m.',
+  titolare: 'avv. Alessandro Moro',
   email: 'info@calcolaprecetti.it',
   hosting: 'GitHub Pages, servizio di GitHub, Inc.',
   trasferimento: "Il fornitore ha sede negli Stati Uniti: il trasferimento avviene sulla base delle garanzie previste dal Capo V del GDPR, come indicato nell'informativa privacy del fornitore.",
   fornitoreEmail: "OVH SAS, con server nell'Unione europea",
-  informativaAggiornata: '22.09.2026'
+  informativaAggiornata: '08.10.2026'
 };
 /* =====================================================================
    TABELLE DA AGGIORNARE
@@ -46,8 +46,9 @@ var SITO = {
    Regole: decimali con il punto (2.40, non 2,40); date AAAA-MM-GG;
    testi tra apostrofi (se il testo contiene un apostrofo, racchiuderlo
    tra virgolette doppie); virgola a fine riga come nelle righe presenti.
-   Verifica: «Prova con un esempio» deve dare € 2.256,33 e i «Casi di
-   verifica» in fondo alla pagina devono tornare.
+   Verifica: «Prova con un esempio» deve dare € 2.256,33 e i casi della
+   pagina «Tassi e verifiche» (calcolaprecetti.it/tassi/#verifica),
+   aperti con «Apri nel calcolo», devono tornare.
    ===================================================================== */
 var TABELLE = {
   aggiornamento: 'settembre 2026',
@@ -98,12 +99,54 @@ var TABELLE = {
   ],
   rimborsoForfettario: 15, cpa: 4, iva: 22,
   registro: [ // [data, cosa è cambiato] — le righe più recenti in alto
+    ['2026-10-08', "Nuova organizzazione del sito: i termini del precetto hanno una pagina propria; tabelle dei tassi, casi di verifica e registro sono riuniti nella pagina «Tassi e verifiche»; privacy e note legali hanno pagine proprie; nuova pagina «Chi sono»."],
     ['2026-10-06', "Pagina del calcolo interessi moratori ampliata: tassi dal 2002 con il regime dei contratti anteriori al 2013 (tasso BCE + 7 punti), maggiorazione per prodotti agricoli e alimentari, guida e domande frequenti."],
     ['2026-09-25', "Sito diviso in più pagine: motore di calcolo, tassi e stile ora in file condivisi nella cartella assets. Nuova pagina dedicata agli interessi moratori del D.Lgs. 231/2002."],
     ['2026-09-24', "Aggiunti gli acconti con imputazione ex art. 1194 c.c., la fonte di ogni tasso (decreti MEF e comunicati in G.U.), i casi di verifica e il calcolo dei termini del precetto."],
     ['2026-09-22', "Pubblicazione del sito. Interessi legali dal 1997 al 2026 (ultimo: 1,60% dal 01.01.2026); interessi moratori dal 2013 al 2° semestre 2026 (ultimo: tasso BCE 2,40%, mora 10,40% dal 01.07.2026); compenso del precetto secondo il D.M. 147/2022."]
   ]
 };
+
+/* =====================================================================
+   CASI DI VERIFICA (pagina «Tassi e verifiche»)
+   Conteggi svolti a mano. "pagina" dice quale calcolo li apre
+   (precetto: la home; termini: la pagina dei termini); "dati" sono i
+   valori che vengono caricati. Se cambia un tasso usato qui, il conto
+   scritto in "conto" e "risultato" va rifatto.
+   ===================================================================== */
+var CASI = [
+  { titolo: 'Interessi legali in un solo anno',
+    testo: 'Capitale € 10.000,00, interessi legali dal 01.01.2026 al 30.06.2026, senza spese né compenso di precetto.',
+    conto: ['181 giorni al tasso legale 2026 (1,60%):', '10.000,00 × 1,60% × 181 / 365 = 79,34'],
+    risultato: 'Interessi € 79,34; totale € 10.079,34.',
+    pagina: 'precetto',
+    dati: { end: '2026-06-30', items: [{ amount: '10.000,00', type: 'legal', from: '2026-01-01' }], feeMode: 'free', feeFree: '' } },
+  { titolo: 'Interessi moratori su più semestri',
+    testo: 'Capitale € 1.394,25, interessi moratori ex D.Lgs. 231/2002 dal 25.09.2025 al 21.09.2026, senza spese né compenso di precetto.',
+    conto: ['2° semestre 2025, 98 giorni: 1.394,25 × 10,15% × 98 / 365 = 38,00',
+            '1° semestre 2026, 181 giorni: 1.394,25 × 10,15% × 181 / 365 = 70,18',
+            '2° semestre 2026, 83 giorni: 1.394,25 × 10,40% × 83 / 365 = 32,97'],
+    risultato: 'Interessi € 141,15; totale € 1.535,40.',
+    pagina: 'precetto',
+    dati: { end: '2026-09-21', items: [{ amount: '1.394,25', type: 'mora', from: '2025-09-25' }], feeMode: 'free', feeFree: '' } },
+  { titolo: 'Acconto imputato ex art. 1194 c.c.',
+    testo: 'Capitale € 5.000,00 con interessi moratori dal 01.01.2026; spese liquidate nel titolo del 15.12.2025 € 400,00; acconto di € 1.000,00 il 01.04.2026; conteggio al 30.06.2026, senza compenso di precetto.',
+    conto: ['Interessi dal 01.01 al 01.04.2026, 91 giorni: 5.000,00 × 10,15% × 91 / 365 = 126,53',
+            'Acconto: 400,00 alle spese, 126,53 agli interessi, 473,47 al capitale; capitale residuo 4.526,53',
+            'Interessi dal 02.04 al 30.06.2026, 90 giorni: 4.526,53 × 10,15% × 90 / 365 = 113,29',
+            '5.000,00 + 126,53 + 113,29 + 400,00 − 1.000,00 = 4.639,82'],
+    risultato: 'Totale € 4.639,82.',
+    pagina: 'precetto',
+    dati: { end: '2026-06-30', items: [{ amount: '5.000,00', type: 'mora', from: '2026-01-01' }], spese: '400,00', feeMode: 'free', feeFree: '',
+            acconti: [{ date: '2026-04-01', amount: '1.000,00' }], titleDate: '2025-12-15' } },
+  { titolo: 'Termini del precetto',
+    testo: 'Precetto notificato il 01.10.2026 con il termine di 10 giorni; istanza ex art. 492-bis presentata il 20.10.2026, esito comunicato il 10.11.2026.',
+    conto: ['10 giorni: 11.10.2026, domenica, prorogato a lunedì 12.10.2026; esecuzione dal 13.10.2026',
+            '90 giorni: 30.12.2026, più 21 giorni di sospensione (dal 20.10 al 10.11.2026) = 20.01.2027'],
+    risultato: 'Efficacia fino a mercoledì 20.01.2027.',
+    pagina: 'termini',
+    dati: { notifica: '2026-10-01', giorni: '10', bis: true, bisFrom: '2026-10-20', bisTo: '2026-11-10' } }
+];
 
 var Core = (function () {
   var DAY = 86400000;
