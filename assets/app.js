@@ -301,7 +301,10 @@
   function sweep(el) { el.classList.remove('sweep'); void el.offsetWidth; el.classList.add('sweep'); }
   function animate(total) {
     var first = shownTotal === null;
-    if (first) sweep($('#sheet'));
+    if (first) {
+      sweep($('#sheet'));
+      if (window.Conta) Conta.evento('calcolo-somme', true); // statistiche: un calcolo per pagina aperta, senza i dati
+    }
     $('#mbTotal').classList.add('tot-hl');
     if (total !== shownTotal) {
       clearTimeout(sweepTimer);

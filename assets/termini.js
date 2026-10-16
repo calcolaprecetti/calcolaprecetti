@@ -33,6 +33,7 @@
     $('#tActions').hidden = !t;
     $('#tNote').hidden = !t;
     if (!t) { $('#tOut').innerHTML = ''; return; }
+    if (window.Conta) Conta.evento('calcolo-termini', true); // statistiche: un calcolo per pagina aperta, senza le date
     var out = [];
     out.push(['Scadenza del termine per adempiere (' + t.giorni + ' giorni, art. 480 c.p.c.)',
       dayFull(t.adempiere) + (t.adempiereProrogato !== t.adempiere ? '<span class="n">Cade ' + why(t.adempiere) + ': prorogato a ' + dayFull(t.adempiereProrogato) + ' (art. 155 c.p.c.).</span>' : '')]);

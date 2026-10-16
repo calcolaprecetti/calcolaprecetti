@@ -10,7 +10,12 @@ var SITO = {
   hosting: 'GitHub Pages, servizio di GitHub, Inc.',
   trasferimento: "Il fornitore ha sede negli Stati Uniti: il trasferimento avviene sulla base delle garanzie previste dal Capo V del GDPR, come indicato nell'informativa privacy del fornitore.",
   fornitoreEmail: "OVH SAS, con server nell'Unione europea",
-  informativaAggiornata: '08.10.2026'
+  informativaAggiornata: '16.10.2026',
+  piva: '04591770245',
+  // Statistiche delle visite senza cookie (in fondo a questo file e nella pagina «Privacy»):
+  // servizio 'plausible' oppure 'goatcounter' (con il codice scelto all'iscrizione, es. 'calcolaprecetti').
+  // servizio: '' le spegne. Cambiando servizio, l'informativa privacy si adegua da sola.
+  statistiche: { servizio: '', codice: '' }
 };
 /* =====================================================================
    TABELLE DA AGGIORNARE
@@ -529,3 +534,54 @@ var Core = (function () {
            moraSource: moraSource, legalSource: legalSource, termini: termini, weekday: weekday, holiday: holiday, easter: easter };
 })();
 
+/* =====================================================================
+   STATISTICHE DELLE VISITE, SENZA COOKIE (pagina «Privacy»)
+   Contano le pagine viste e alcune azioni: calcolo fatto, esempio, copia
+   per Word, file .docx, stampa, calendario, richiesta di valutazione del credito.
+   Non usano cookie né la memoria del browser e non mandano mai i dati
+   dei calcoli: solo l'indirizzo della pagina, il sito di provenienza e
+   il nome dell'azione. Contano solo sul sito pubblicato (non nelle copie
+   in locale né nelle anteprime) e si fermano se il browser chiede di
+   non essere tracciato (Do Not Track, Global Privacy Control).
+   Il servizio si sceglie in SITO.statistiche, in cima a questo file.
+   Per contare un'azione nuova basta l'attributo data-conta="nome" su un
+   pulsante o un collegamento.
+   ===================================================================== */
+var Conta = (function () {
+  'use strict';
+  var S = (typeof SITO !== 'undefined' && SITO.statistiche) || {}, fatti = {}, nav = window.navigator || {};
+  var attivo = (S.servizio === 'plausible' || (S.servizio === 'goatcounter' && /^[a-z0-9-]+$/.test(S.codice || ''))) &&
+    location.protocol === 'https:' && location.hostname === SITO.nome &&
+    nav.doNotTrack !== '1' && nav.doNotTrack !== 'yes' && window.doNotTrack !== '1' &&
+    nav.globalPrivacyControl !== true && !nav.webdriver;
+  function provenienza() { // solo il sito esterno da cui si arriva, senza parametri; vuoto per le pagine interne
+    var r = document.referrer || '';
+    if (!r || r.indexOf(location.protocol + '//' + location.host + '/') === 0) return '';
+    return r.split(/[?#]/)[0];
+  }
+  function invia(nome, evento) {
+    if (!attivo) return;
+    try {
+      if (S.servizio === 'goatcounter') {
+        var img = new Image();
+        img.src = 'https://' + S.codice + '.goatcounter.com/count?p=' + encodeURIComponent(nome) +
+          (evento ? '&e=true' : '&t=' + encodeURIComponent(document.title) + '&r=' + encodeURIComponent(provenienza())) +
+          '&rnd=' + Math.random().toString(36).slice(2);
+      } else if (window.fetch) {
+        fetch('https://plausible.io/api/event', { method: 'POST', keepalive: true, headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify({ name: evento ? nome : 'pageview', url: location.protocol + '//' + location.host + location.pathname,
+                                 domain: SITO.nome, referrer: evento ? null : (provenienza() || null) }) })['catch'](function () {});
+      }
+    } catch (e) { /* le statistiche non devono mai disturbare i calcoli */ }
+  }
+  function evento(nome, unaVolta) {
+    if (unaVolta) { if (fatti[nome]) return; fatti[nome] = true; }
+    invia(nome, true);
+  }
+  invia(location.pathname, false);
+  document.addEventListener('click', function (e) {
+    var el = e.target && e.target.closest ? e.target.closest('[data-conta]') : null;
+    if (el) evento(el.getAttribute('data-conta'));
+  });
+  return { evento: evento, attivo: attivo };
+})();

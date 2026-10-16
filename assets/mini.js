@@ -40,6 +40,7 @@
     var tot = C.r2(cap + r.total + forfait);
     out.hidden = false;
     $('#miniActions').hidden = false;
+    if (window.Conta) Conta.evento('calcolo-moratori', true); // statistiche: un calcolo per pagina aperta, senza i dati
     var srcs = [], seen = {};
     r.segments.forEach(function (s) { if (s.src && !seen[s.src]) { seen[s.src] = 1; srcs.push(s.src); } });
     $('#miniTable').innerHTML =

@@ -39,6 +39,7 @@
     <a href="/" aria-current="page"><span><span class="tl">Somme del </span><span class="tm">precetto</span></span></a>
     <a href="/termini-precetto/"><span><span class="tm">Termini</span><span class="tl"> del precetto</span></span></a>
     <a href="/interessi-moratori/"><span><span class="tl">Calcolo interessi </span><span class="tm">moratori</span></span></a>
+    <a href="/valutazione-credito/"><span><span class="tm">Valutazione</span><span class="tl"> del credito</span></span></a>
     <a href="/chi-sono/">Chi sono</a>
   </div>
 </nav>
@@ -47,7 +48,7 @@
 <div class="wrap g-hero solo">
   <div>
     <h1 class="g-title">Calcolo delle <mark>somme del precetto</mark></h1>
-    <p class="g-lead">Inserisci i dati del titolo: il prospetto si aggiorna mentre scrivi e lo porti in Word con un clic. <button type="button" class="linkbtn" id="btnExample">Prova con un esempio</button></p>
+    <p class="g-lead">Inserisci i dati del titolo: il prospetto si aggiorna mentre scrivi e lo porti in Word con un clic. <button type="button" class="linkbtn" id="btnExample" data-conta="esempio">Prova con un esempio</button></p>
   </div>
 </div>
 
@@ -150,15 +151,15 @@
       </div>
       <p class="case-msg" id="caseMsg" hidden></p>
       <div class="warnings" id="warnings" aria-live="polite"></div>
-      <p class="empty" id="empty">Inserisci l'importo del capitale per vedere il prospetto, oppure <button type="button" class="linkbtn" id="emptyExample">prova con un esempio</button>.</p>
+      <p class="empty" id="empty">Inserisci l'importo del capitale per vedere il prospetto, oppure <button type="button" class="linkbtn" id="emptyExample" data-conta="esempio">prova con un esempio</button>.</p>
       <div class="sheet" id="sheet" hidden>
         <table class="prospetto" id="table"><tbody></tbody></table>
         <p class="sources" id="sources" hidden></p>
       </div>
       <div class="actions" id="actions" hidden>
-        <button type="button" class="btn btn-primary" id="btnCopy">Copia tabella per Word</button>
-        <button type="button" class="btn btn-secondary" id="btnDocx">Scarica .docx</button>
-        <button type="button" class="linkbtn" id="btnPrint">Stampa</button>
+        <button type="button" class="btn btn-primary" id="btnCopy" data-conta="copia-word">Copia tabella per Word</button>
+        <button type="button" class="btn btn-secondary" id="btnDocx" data-conta="scarica-docx">Scarica .docx</button>
+        <button type="button" class="linkbtn" id="btnPrint" data-conta="stampa">Stampa</button>
       </div>
       <label class="check fonti" id="fontiCheck" hidden><input type="checkbox" id="optFonti"><span>Aggiungi sotto la tabella le fonti dei tassi (anche in Word)</span></label>
       <p class="paste-hint" id="pasteHint" hidden>In Word posiziona il cursore nel precetto e incolla con Ctrl+V (su Mac ⌘+V).</p>
@@ -210,12 +211,14 @@
       <nav class="foot-col" aria-label="Informazioni">
         <h2>Informazioni</h2>
         <a href="/chi-sono/">Chi sono</a>
+        <a href="/valutazione-credito/">Valutazione del credito</a>
+        <a href="/valutazione-credito/#condizioni">Condizioni del parere</a>
         <a href="/privacy/">Privacy</a>
         <a href="/note-legali/">Note legali</a>
         <a href="#suggerimenti">Suggerimenti</a>
       </nav>
     </div>
-    <p class="foot-bottom">© 2026 calcolaprecetti.it · A cura di <a href="/chi-sono/"><span class="js-titolare"></span></a> · Tutti i diritti riservati · Tassi aggiornati a <span class="js-updated"></span> · Strumento di supporto: verifica sempre gli importi prima di inserirli in un atto.</p>
+    <p class="foot-bottom">© 2026 calcolaprecetti.it · A cura di <a href="/chi-sono/"><span class="js-titolare"></span></a> · P.IVA 04591770245 · Tutti i diritti riservati · Tassi aggiornati a <span class="js-updated"></span> · Strumento di supporto: verifica sempre gli importi prima di inserirli in un atto.</p>
   </div>
 </footer>
 
