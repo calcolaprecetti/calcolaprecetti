@@ -2,6 +2,8 @@
 /* Pagine informative: tassi e verifiche, privacy, note legali. Tutto viene da core.js (TABELLE, SITO, CASI). */
 (function () {
   'use strict';
+  // il vecchio indirizzo delle condizioni (/valutazione-credito/#condizioni, anche nel modulo Tally) porta alla loro pagina
+  if (location.hash === '#condizioni' && /\/valutazione-credito\/?$/.test(location.pathname)) { location.replace('/condizioni-parere/'); return; }
   if (typeof Core === 'undefined') return;
   var C = Core;
   var $ = function (s, r) { return (r || document).querySelector(s); };
@@ -157,7 +159,7 @@
       '<p>Nei limiti consentiti dalla legge, il titolare non risponde di errori od omissioni derivanti dall\'uso dello strumento.</p>' +
       '<p>Titolare del sito: ' + v(SITO.titolare) + ', ' + v(SITO.email) + '.</p>' +
       '<h2>Diritti d\'autore</h2><p>Il codice del sito, i testi, la grafica e il logo sono opere protette dalla legge sul diritto d\'autore (L. 22 aprile 1941, n. 633), compresi i programmi per elaboratore. Tutti i diritti sono riservati al titolare: non è consentito copiarli, modificarli o riutilizzarli, in tutto o in parte, senza autorizzazione scritta. Resta libero l\'uso dello strumento per i propri calcoli. I tassi e i dati normativi riportati provengono da fonti pubbliche.</p>' +
-      (lb.getAttribute('data-valutazione') === '1' ? '<h2>Prestazioni professionali</h2><p>La <a href="/valutazione-credito/">valutazione del credito</a> è una prestazione professionale dell\'' + esc(SITO.titolare) + ', iscritto all\'Ordine degli Avvocati di Vicenza, P.IVA ' + v(SITO.piva) + ', studio a Bassano del Grappa (VI). Norme professionali: legge 31 dicembre 2012, n. 247 e codice deontologico forense, pubblicato sul sito del Consiglio Nazionale Forense. Le condizioni sono nella pagina della valutazione, alla voce <a href="/valutazione-credito/#condizioni">condizioni del parere</a>.</p>' : '') +
+      (lb.getAttribute('data-valutazione') === '1' ? '<h2>Prestazioni professionali</h2><p>La <a href="/valutazione-credito/">valutazione del credito</a> è una prestazione professionale dell\'' + esc(SITO.titolare) + ', iscritto all\'Ordine degli Avvocati di Vicenza, P.IVA ' + v(SITO.piva) + ', studio a Bassano del Grappa (VI). Norme professionali: legge 31 dicembre 2012, n. 247 e codice deontologico forense, pubblicato sul sito del Consiglio Nazionale Forense. Le condizioni sono nella pagina <a href="/condizioni-parere/">Condizioni del parere</a>.</p>' : '') +
       '<p>Caratteri tipografici: EB Garamond e Titillium Web, con licenza SIL Open Font License 1.1.</p>';
   }
 })();
