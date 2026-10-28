@@ -103,7 +103,9 @@ var TABELLE = {
     [5200, 142], [26000, 236], [52000, 331], [260000, 425], [520000, 567]
   ],
   rimborsoForfettario: 15, cpa: 4, iva: 22,
+  forfettario231: 40, // € di risarcimento forfettario delle spese di recupero (art. 6 D.Lgs. n. 231/2002)
   registro: [ // [data, cosa è cambiato] — le righe più recenti in alto
+    ['2026-10-28', "Nel calcolo delle somme del precetto si possono aggiungere i € 40,00 di risarcimento forfettario (art. 6 D.Lgs. n. 231/2002), se riconosciuti nel titolo."],
     ['2026-10-08', "Nuova organizzazione del sito: i termini del precetto hanno una pagina propria; tabelle dei tassi, casi di verifica e registro sono riuniti nella pagina «Tassi e verifiche»; privacy e note legali hanno pagine proprie; nuova pagina «Chi sono»."],
     ['2026-10-06', "Pagina del calcolo interessi moratori ampliata: tassi dal 2002 con il regime dei contratti anteriori al 2013 (tasso BCE + 7 punti), maggiorazione per prodotti agricoli e alimentari, guida e domande frequenti."],
     ['2026-09-25', "Sito diviso in più pagine: motore di calcolo, tassi e stile ora in file condivisi nella cartella assets. Nuova pagina dedicata agli interessi moratori del D.Lgs. 231/2002."],
@@ -344,7 +346,7 @@ var Core = (function () {
     future: "per i periodi successivi all'ultimo tasso pubblicato è stato usato l'ultimo disponibile."
   };
 
-  // st: { end, items:[{desc, amount, type, from, domanda, rate}], titolo, spese, compensi,
+  // st: { end, items:[{desc, amount, type, from, domanda, rate}], forfait, titolo, spese, compensi,
   //       feeMode:'medio'|'min'|'max'|'free', feeFree, rf, cpa, iva, extras:[{desc, amount}],
   //       acconti:[{date, amount}], titleDate }
   function compute(st) {
@@ -406,6 +408,10 @@ var Core = (function () {
     });
     pays.sort(function (p, q) { return p.day - q.day; });
     var T = toDay(st.titleDate), S = titTot, accTot = 0;
+    // € 40 dell'art. 6 D.Lgs. n. 231/2002, se riconosciuti nel titolo: sono spese di recupero, dovute dall'inizio del ritardo;
+    // negli acconti vengono imputati per primi, prima delle spese liquidate nel titolo (artt. 1193 e 1194 c.c.)
+    var forfait = st.forfait && list.length ? TABELLE.forfettario231 : 0, F = forfait;
+    var F0 = list.reduce(function (m, x) { return x.from !== null && (m === null || x.from < m) ? x.from : m; }, null);
     if (pays.length && titTot > 0 && T === null)
       res.warnings.push('Indica la data del titolo: per ora gli acconti sono imputati anche alle spese liquidate nel titolo, qualunque sia la loro data.');
     var ordered = list.slice().sort(function (p, q) {
@@ -415,7 +421,8 @@ var Core = (function () {
     pays.forEach(function (p) {
       list.forEach(function (x) { accrue(x, p.day); });
       var rest = p.amount, rec = { day: p.day, amount: p.amount, spese: 0, interessi: 0, capitale: 0, eccedenza: 0, residuo: 0 };
-      if (S > 0 && (T === null || T <= p.day)) { var vs = r2(Math.min(rest, S)); S = r2(S - vs); rest = r2(rest - vs); rec.spese = vs; }
+      if (F > 0 && (F0 === null || F0 <= p.day)) { var vf = r2(Math.min(rest, F)); F = r2(F - vf); rest = r2(rest - vf); rec.spese = vf; }
+      if (S > 0 && (T === null || T <= p.day)) { var vs = r2(Math.min(rest, S)); S = r2(S - vs); rest = r2(rest - vs); rec.spese = r2(rec.spese + vs); }
       ordered.forEach(function (x) { var vi = r2(Math.min(rest, x.I)); x.I = r2(x.I - vi); rest = r2(rest - vi); rec.interessi = r2(rec.interessi + vi); });
       ordered.forEach(function (x) { var vc = r2(Math.min(rest, x.C)); x.C = r2(x.C - vc); rest = r2(rest - vc); rec.capitale = r2(rec.capitale + vc); });
       rec.eccedenza = rest;
@@ -443,6 +450,7 @@ var Core = (function () {
       intTot = r2(intTot + x.tot);
       x.segs.forEach(function (g) { if (g.src && !seenSrc[g.src]) { seenSrc[g.src] = 1; res.sources.push(g.src); } });
     });
+    if (forfait) res.rows.push({ label: 'Risarcimento forfettario ex art. 6 D.Lgs. n. 231/2002', amount: forfait });
     res.rows = res.rows.concat(titRows);
     res.payments.forEach(function (p) {
       var v = r2(p.amount - p.eccedenza);
@@ -455,7 +463,7 @@ var Core = (function () {
       if (v > 0) { extraRows.push({ label: (x.desc || '').trim() || 'Altre spese', amount: v }); extTot = r2(extTot + v); }
     });
 
-    res.valore = r2(Math.max(0, capTot + intTot + titTot + extTot - accTot));
+    res.valore = r2(Math.max(0, capTot + intTot + forfait + titTot + extTot - accTot));
     var sc = scaglione(res.valore);
     res.scaglione = sc;
     var fee = 0, estinto = !res.empty && pays.length && res.valore <= 0;

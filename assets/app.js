@@ -17,7 +17,7 @@
   function defaults() {
     return { end: todayIso(), items: [newItem()], titolo: 'di', spese: '', compensi: '',
              feeMode: 'medio', feeFree: '', rf: true, cpa: true, iva: false, extras: [],
-             acconti: [], titleDate: '', fonti: true };
+             acconti: [], titleDate: '', fonti: true, forfait: false };
   }
   var state = defaults();
   var last = null, caseShown = false, shownTotal = null, sweepTimer = null;
@@ -194,7 +194,7 @@
 
   /* ---------- campi fissi ---------- */
   var TEXTS = [['endDate', 'end'], ['spese', 'spese'], ['compensi', 'compensi'], ['feeFree', 'feeFree'], ['titleDate', 'titleDate']];
-  var CHECKS = [['optIva', 'iva'], ['optRf', 'rf'], ['optCpa', 'cpa'], ['optFonti', 'fonti']];
+  var CHECKS = [['optIva', 'iva'], ['optRf', 'rf'], ['optCpa', 'cpa'], ['optFonti', 'fonti'], ['optForfait', 'forfait']];
 
   function syncStatic() {
     TEXTS.forEach(function (f) { $('#' + f[0]).value = state[f[1]]; });
@@ -291,7 +291,7 @@
             '</td><td class="r">' + C.eur(p.interessi) + '</td><td class="r">' + C.eur(p.capitale) + '</td></tr>' +
             '<tr class="src"><td colspan="5">Capitale residuo dopo l\'acconto: ' + C.eur(p.residuo) + (p.eccedenza > 0 ? '; eccedenza non imputata: ' + C.eur(p.eccedenza) : '') + '</td></tr>';
         }).join('') + '</tbody></table></div>' +
-        '<p class="det-note">Prima alle spese liquidate nel titolo, poi agli interessi maturati fino al giorno dell\'acconto, infine al capitale; con più voci, prima alla più antica. Dal giorno successivo gli interessi maturano sul capitale residuo.</p>';
+        '<p class="det-note">Prima alle spese' + (state.forfait ? ' (i € 40 dell\'art. 6, poi quelle liquidate nel titolo)' : ' liquidate nel titolo') + ', poi agli interessi maturati fino al giorno dell\'acconto, infine al capitale; con più voci, prima alla più antica. Dal giorno successivo gli interessi maturano sul capitale residuo.</p>';
     }
     $('#detailBody').innerHTML = html;
   }
