@@ -116,7 +116,12 @@
       goatcounter: { nome: 'GoatCounter',
         chi: 'Il servizio è GoatCounter, gestito da Martin Tournoij (Irlanda) con server di Hetzner Online GmbH in Germania e Finlandia: i dati restano nell\'Unione europea.',
         ip: 'L\'indirizzo IP e il tipo di browser, che ogni sito riceve, servono solo a riconoscere le visite ripetute: restano in memoria al massimo otto ore e non vengono salvati.',
-        aggregati: 'pagine e azioni, siti di provenienza, browser e sistema operativo, paese e lingua' }
+        aggregati: 'pagine e azioni, siti di provenienza, browser e sistema operativo, paese e lingua' },
+      umami: { nome: 'Umami',
+        invio: 'l\'indirizzo e il titolo della pagina, il sito da cui arrivi, il nome dell\'azione, la lingua del browser e la risoluzione dello schermo',
+        chi: 'Il servizio è Umami Cloud, di Umami Software, Inc., società con sede negli Stati Uniti, che tratta i dati per conto del titolare come responsabile del trattamento (art. 28 GDPR). Umami si avvale anche di fornitori statunitensi: i dati possono quindi essere trasferiti fuori dall\'Unione europea, con le clausole contrattuali standard approvate dalla Commissione europea (art. 46 GDPR), previste dall\'accordo sul trattamento dei dati di Umami.',
+        ip: 'Umami dichiara di non raccogliere dati personali: l\'indirizzo IP e il tipo di browser, che ogni sito riceve, servono solo a distinguere le visite in forma anonima e a ricavare in modo approssimativo paese e città.',
+        aggregati: 'pagine e azioni, siti di provenienza, browser, sistema operativo e tipo di dispositivo, lingua, paese, regione e città' }
     };
     var sv = servizi[st] || null;
     var altri = [sv ? 'il servizio di statistica delle visite' : '', nl ? 'Brevo, per la newsletter' : '',
@@ -128,7 +133,7 @@
           : '<p>Il sito non usa cookie né altri strumenti di tracciamento e non carica contenuti da siti di terzi. I dati inseriti nei calcoli sono elaborati solo nel tuo browser: non vengono inviati al titolare né a terzi e non vengono conservati, quindi si cancellano chiudendo o ricaricando la pagina.</p>') +
       '<p>Come per qualsiasi sito, il servizio di hosting (' + esc(SITO.hosting) + ') registra nei propri log tecnici alcuni dati di navigazione, come indirizzo IP, data e ora della richiesta, pagina visitata e tipo di browser, per la sicurezza e il funzionamento del servizio. Il titolare non usa questi dati per identificare i visitatori né per profilazione.</p>' +
       (sv ? '<h2 id="statistiche">Statistiche delle visite, senza cookie</h2>' +
-        '<p>Per sapere quante persone usano il sito e quali funzioni servono di più, il sito conta le pagine viste e alcune azioni, come «calcolo eseguito», «copia per Word» o «iscrizione alla newsletter». Per ogni pagina il browser invia al servizio di statistica l\'indirizzo della pagina, il sito da cui arrivi e il nome dell\'azione. I dati inseriti nei calcoli non vengono mai inviati e sul tuo dispositivo non viene salvato nulla.</p>' +
+        '<p>Per sapere quante persone usano il sito e quali funzioni servono di più, il sito conta le pagine viste e alcune azioni, come «calcolo eseguito», «copia per Word» o «iscrizione alla newsletter». Per ogni pagina il browser invia al servizio di statistica ' + (sv.invio || 'l\'indirizzo della pagina, il sito da cui arrivi e il nome dell\'azione') + '. I dati inseriti nei calcoli non vengono mai inviati e sul tuo dispositivo non viene salvato nulla.</p>' +
         '<p>' + sv.chi + ' ' + sv.ip + ' Restano solo statistiche aggregate: ' + sv.aggregati + '.</p>' +
         '<p>Se il browser chiede di non essere tracciato (impostazioni «Do Not Track» o «Global Privacy Control»), il conteggio non parte. La base giuridica è il legittimo interesse del titolare a conoscere, in forma aggregata, l\'uso del sito per migliorarlo (art. 6, par. 1, lett. f, GDPR). Sono statistiche aggregate su questo solo sito, senza conservare l\'indirizzo IP e senza incroci con altri dati: per questo lo strumento rientra tra quelli che il Garante per la protezione dei dati personali equipara ai cookie tecnici (Linee guida del 10 giugno 2021) e non serve il consenso.</p>' : '') +
       (nl ? '<h2 id="newsletter">Newsletter</h2>' +

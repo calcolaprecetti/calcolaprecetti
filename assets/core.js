@@ -10,12 +10,13 @@ var SITO = {
   hosting: 'GitHub Pages, servizio di GitHub, Inc.',
   trasferimento: "Il fornitore ha sede negli Stati Uniti: il trasferimento avviene sulla base delle garanzie previste dal Capo V del GDPR, come indicato nell'informativa privacy del fornitore.",
   fornitoreEmail: "OVH SAS, con server nell'Unione europea",
-  informativaAggiornata: '16.10.2026',
+  informativaAggiornata: '29.10.2026',
   piva: '04591770245',
   // Statistiche delle visite senza cookie (in fondo a questo file e nella pagina «Privacy»):
-  // servizio 'plausible' oppure 'goatcounter' (con il codice scelto all'iscrizione, es. 'calcolaprecetti').
+  // servizio 'umami' (codice: l'ID del sito, data-website-id nel codice dato da Umami), 'plausible'
+  // oppure 'goatcounter' (codice: quello scelto all'iscrizione, es. 'calcolaprecetti').
   // servizio: '' le spegne. Cambiando servizio, l'informativa privacy si adegua da sola.
-  statistiche: { servizio: '', codice: '' }
+  statistiche: { servizio: 'umami', codice: 'bb2d5a3e-273f-4655-af5b-b3fdc692f6df' }
 };
 /* =====================================================================
    TABELLE DA AGGIORNARE
@@ -548,7 +549,8 @@ var Core = (function () {
    per Word, file .docx, stampa, calendario, richiesta di valutazione del credito.
    Non usano cookie né la memoria del browser e non mandano mai i dati
    dei calcoli: solo l'indirizzo della pagina, il sito di provenienza e
-   il nome dell'azione. Contano solo sul sito pubblicato (non nelle copie
+   il nome dell'azione (con Umami anche titolo della pagina, lingua del
+   browser e risoluzione dello schermo, come fa il suo script). Contano solo sul sito pubblicato (non nelle copie
    in locale né nelle anteprime) e si fermano se il browser chiede di
    non essere tracciato (Do Not Track, Global Privacy Control).
    Il servizio si sceglie in SITO.statistiche, in cima a questo file.
@@ -558,7 +560,8 @@ var Core = (function () {
 var Conta = (function () {
   'use strict';
   var S = (typeof SITO !== 'undefined' && SITO.statistiche) || {}, fatti = {}, nav = window.navigator || {};
-  var attivo = (S.servizio === 'plausible' || (S.servizio === 'goatcounter' && /^[a-z0-9-]+$/.test(S.codice || ''))) &&
+  var attivo = (S.servizio === 'plausible' || (S.servizio === 'goatcounter' && /^[a-z0-9-]+$/.test(S.codice || '')) ||
+                (S.servizio === 'umami' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(S.codice || ''))) &&
     location.protocol === 'https:' && location.hostname === SITO.nome &&
     nav.doNotTrack !== '1' && nav.doNotTrack !== 'yes' && window.doNotTrack !== '1' &&
     nav.globalPrivacyControl !== true && !nav.webdriver;
@@ -575,6 +578,14 @@ var Conta = (function () {
         img.src = 'https://' + S.codice + '.goatcounter.com/count?p=' + encodeURIComponent(nome) +
           (evento ? '&e=true' : '&t=' + encodeURIComponent(document.title) + '&r=' + encodeURIComponent(provenienza())) +
           '&rnd=' + Math.random().toString(36).slice(2);
+      } else if (S.servizio === 'umami') { // Umami Cloud, stessi dati del suo script (pagina vista: senza «name»)
+        if (!window.fetch) return;
+        var sc = window.screen || {}, p = { website: S.codice, hostname: location.hostname, language: nav.language || '',
+          screen: (sc.width || 0) + 'x' + (sc.height || 0), title: document.title,
+          url: location.protocol + '//' + location.host + location.pathname, referrer: evento ? '' : provenienza() };
+        if (evento) p.name = nome;
+        fetch('https://gateway.umami.is/api/send', { method: 'POST', keepalive: true, credentials: 'omit',
+          headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ type: 'event', payload: p }) })['catch'](function () {});
       } else if (window.fetch) {
         fetch('https://plausible.io/api/event', { method: 'POST', keepalive: true, headers: { 'Content-Type': 'text/plain' },
           body: JSON.stringify({ name: evento ? nome : 'pageview', url: location.protocol + '//' + location.host + location.pathname,
