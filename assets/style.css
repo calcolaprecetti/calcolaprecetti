@@ -310,7 +310,7 @@ details.detail>summary{cursor:pointer;font-weight:600;color:var(--ink)}
 .det.rates td.s{white-space:normal;min-width:200px}
 
 /* ===== nuova struttura: pagina dei termini, tassi e verifiche, privacy, note legali ===== */
-main.page{padding-top:20px}
+.page{padding-top:20px}
 
 /* stesso stile delle guide in tutte le pagine: apertura, titoli delle sezioni, testo, riquadri */
 @media(min-width:940px){.g-hero.solo{grid-template-columns:minmax(0,1fr);padding-top:36px}}
@@ -450,6 +450,10 @@ img.chi-photo{animation:chi-photo .5s ease-out both}
 .svc-fac img{display:block;width:100%;height:auto;border:1px solid var(--line-strong);border-radius:4px;box-shadow:7px 7px 0 var(--ink-soft);background:#fff}
 .svc-fac figcaption{margin-top:12px;font-size:.88rem;line-height:1.45;color:var(--muted)}
 @media(max-width:600px){.svc-fac img{box-shadow:5px 5px 0 var(--ink-soft)}}
+/* accessibilità: collegamento «Salta al contenuto», visibile solo con la tastiera; area principale raggiunta senza contorno */
+.skip{position:absolute;left:12px;top:-80px;z-index:100;padding:10px 16px;background:#fff;color:var(--ink);font-weight:600;border:2px solid var(--ink);border-radius:6px;text-decoration:none}
+.skip:focus{top:12px}
+main:focus{outline:none}
 
 /* ===== guide =====
    Impianto: un atto ripassato con l'evidenziatore. Titoli in Garamond, testo in Titillium,

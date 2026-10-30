@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>calcolaprecetti.it – Calcolo delle somme dell'atto di precetto</title>
 <link rel="canonical" href="https://calcolaprecetti.it/">
-<meta name="description" content="Calcolo gratuito delle somme da intimare con l'atto di precetto: capitale, interessi legali e moratori, acconti ex art. 1194 c.c., spese del titolo e compenso secondo il D.M. 55/2014. Tabella pronta per Word. Nessun cookie.">
+<meta name="description" content="Calcolo gratuito delle somme del precetto: capitale, interessi legali e moratori, acconti, spese del titolo e compenso (D.M. 55/2014). Tabella per Word.">
 <meta property="og:title" content="calcolaprecetti.it">
 <meta property="og:url" content="https://calcolaprecetti.it/">
 <meta property="og:image" content="https://calcolaprecetti.it/og-image.png">
@@ -23,9 +23,10 @@
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="/icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<link rel="stylesheet" href="/assets/style.css?v=363ce29397">
+<link rel="stylesheet" href="/assets/style.css?v=703e607d94">
 </head>
 <body class="home">
+<a class="skip" href="#main">Salta al contenuto</a>
 <header class="top">
   <div class="wrap">
     <a class="brand" href="/"><img src="/logo.svg" alt="" width="28" height="28" style="vertical-align:-7px;margin-right:8px">calcolaprecetti.it</a>
@@ -45,6 +46,7 @@
 </nav>
 
 
+<main id="main" tabindex="-1">
 <div class="wrap g-hero solo">
   <div>
     <h1 class="g-title">Calcolo delle <mark>somme del precetto</mark></h1>
@@ -52,7 +54,7 @@
   </div>
 </div>
 
-<main class="wrap layout">
+<div class="wrap layout">
   <form class="form" id="form" autocomplete="off" onsubmit="return false">
 
     <section class="section">
@@ -177,6 +179,7 @@
     <p class="after"><a href="/termini-precetto/">Precetto notificato? Calcola i termini di 10 e 90 giorni</a></p>
     <p class="sr-only" aria-live="polite" id="srTotal"></p>
   </section>
+</div>
 </main>
 
 <section class="wrap contact" id="suggerimenti" aria-labelledby="contactTitle">
@@ -223,12 +226,12 @@
         <a href="#suggerimenti">Suggerimenti</a>
       </nav>
     </div>
-    <p class="foot-bottom">© 2026 calcolaprecetti.it · A cura di <a href="/chi-sono/"><span class="js-titolare"></span></a> · P.IVA 04591770245 · Tutti i diritti riservati · Tassi aggiornati a <span class="js-updated"></span> · Strumento di supporto: verifica sempre gli importi prima di inserirli in un atto.</p>
+    <p class="foot-bottom">© 2026 calcolaprecetti.it · A cura di <a href="/chi-sono/"><span class="js-titolare">avv. Alessandro Moro</span></a> · P.IVA 04591770245 · Tutti i diritti riservati · Tassi aggiornati a <span class="js-updated">settembre 2026</span> · Strumento di supporto: verifica sempre gli importi prima di inserirli in un atto.</p>
   </div>
 </footer>
 
 
-<div class="mobilebar" id="mobilebar">
+<div class="mobilebar" id="mobilebar" role="region" aria-label="Totale del prospetto">
   <span>Totale <strong id="mbTotal">€&nbsp;0,00</strong></span>
   <a href="#prospetto" class="btn btn-primary">Vedi il prospetto</a>
 </div>
@@ -237,6 +240,6 @@
 <noscript><p style="padding:16px">Per usare il calcolo attiva JavaScript nel browser.</p></noscript>
 <script src="/assets/core.js?v=1c8de5bf5d" defer></script>
 <script src="/assets/docx.js?v=632ccb4970" defer></script>
-<script src="/assets/app.js?v=0da43cd279" defer></script>
+<script src="/assets/app.js?v=f3f6523e14" defer></script>
 </body>
 </html>

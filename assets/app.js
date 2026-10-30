@@ -275,7 +275,7 @@
 
     var many = res.details.length > 1;
     var html = res.details.map(function (d) {
-      return '<div class="scroll"><table class="det">' + (many ? '<caption>' + esc(d.title) + '</caption>' : '') +
+      return '<div class="scroll" tabindex="0" role="region" aria-label="' + esc('Dettaglio degli interessi' + (many ? ': ' + d.title : '')) + '"><table class="det">' + (many ? '<caption>' + esc(d.title) + '</caption>' : '') +
         '<thead><tr><th>Periodo</th><th class="r">Giorni</th><th class="r">Tasso</th><th class="r">Interessi</th></tr></thead><tbody>' +
         d.segments.map(function (s) {
           return '<tr class="segrow"><td>dal ' + C.fmtDate(s.s) + ' al ' + C.fmtDate(s.e) + '</td><td class="r">' + s.days + '</td><td class="r">' +
@@ -284,7 +284,7 @@
         }).join('') + '</tbody><tfoot><tr><td colspan="3">Totale</td><td class="r">' + C.eur(d.total) + '</td></tr></tfoot></table></div>';
     }).join('');
     if (res.payments.length) {
-      html += '<div class="scroll"><table class="det"><caption>Imputazione degli acconti (art. 1194 c.c.)</caption>' +
+      html += '<div class="scroll" tabindex="0" role="region" aria-label="Imputazione degli acconti"><table class="det"><caption>Imputazione degli acconti (art. 1194 c.c.)</caption>' +
         '<thead><tr><th>Acconto</th><th class="r">Importo</th><th class="r">Spese</th><th class="r">Interessi</th><th class="r">Capitale</th></tr></thead><tbody>' +
         res.payments.map(function (p) {
           return '<tr class="segrow"><td>' + C.fmtDate(p.day) + '</td><td class="r">' + C.eur(p.amount) + '</td><td class="r">' + C.eur(p.spese) +
