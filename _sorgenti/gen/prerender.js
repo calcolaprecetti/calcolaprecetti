@@ -10,7 +10,8 @@ const SITE = path.resolve(__dirname, '..', '..'); // radice del repository, cio√
 const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml',
   '.png': 'image/png', '.jpg': 'image/jpeg', '.webp': 'image/webp', '.woff2': 'font/woff2', '.ico': 'image/x-icon', '.xml': 'application/xml' };
 // elementi riempiti dagli script; l'indirizzo email del riquadro dei contatti resta fuori di proposito
-const IDS = ['privacyBody', 'legalBody', 'tabLegali', 'tabMora', 'tabPrecetto', 'casiBody', 'registroBody', 'ratesTable',
+// items: la prima voce di capitale della home, cos√¨ la pagina non si sposta quando lo script la crea
+const IDS = ['items', 'privacyBody', 'legalBody', 'tabLegali', 'tabMora', 'tabPrecetto', 'casiBody', 'registroBody', 'ratesTable',
   'nowLegal', 'nowLegalSrc', 'nowLegalYear', 'nowMora', 'nowMoraSem', 'nowMoraSrc', 'nowRate', 'nowSem', 'nowSrc', 'nowAgri'];
 const CLASSES = ['js-updated', 'js-titolare', 'js-accessori'];
 

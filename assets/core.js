@@ -21,9 +21,11 @@ var SITO = {
 /* =====================================================================
    TABELLE DA AGGIORNARE
    ---------------------------------------------------------------------
-   Su GitHub: apri la cartella «assets», poi il file «core.js», matita,
-   modifica, poi «Commit changes». Basta questo file: vale per tutte le
-   pagine del sito. Le modifiche si vedono online entro dieci minuti.
+   Questo file viene generato: le modifiche vanno fatte nel sorgente
+   _sorgenti/v5/assets/core.js, poi si rigenera il sito con
+   python3 _sorgenti/genera.py (istruzioni in _sorgenti/LEGGIMI.md).
+   Una modifica fatta solo in assets/core.js andrebbe persa alla
+   generazione successiva. Le tabelle valgono per tutte le pagine.
 
    1) Interessi moratori - ogni gennaio e ogni luglio (comunicato MEF in G.U.)
       Aggiungere in "bce" una riga con il primo giorno del semestre, il
@@ -44,10 +46,11 @@ var SITO = {
    4) Registro - aggiungere IN CIMA a "registro" una riga con la data e
       cosa è cambiato; aggiornare "aggiornamento" (mese a fondo pagina).
 
-   5) Ogni gennaio - nella pagina interessi-moratori/index.html cambiare
-      l'anno (es. 2026 -> 2027) nel titolo, nella descrizione e
-      nell'intestazione, e aggiornare il paragrafo «Tasso degli interessi
-      moratori» con i tassi dell'anno nuovo.
+   5) Ogni gennaio - pagina degli interessi moratori: cambiare l'anno
+      (es. 2026 -> 2027) nel titolo, nella descrizione e nell'intestazione
+      (_sorgenti/gen/patch_site.py) e aggiornare il paragrafo «Tasso degli
+      interessi moratori» con i tassi dell'anno nuovo
+      (_sorgenti/v5/interessi-moratori/index.html).
 
    Regole: decimali con il punto (2.40, non 2,40); date AAAA-MM-GG;
    testi tra apostrofi (se il testo contiene un apostrofo, racchiuderlo
