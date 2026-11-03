@@ -127,6 +127,20 @@ h = swap(h, '<meta name="description" content="Calcolo gratuito delle somme da i
          'acconti ex art. 1194 c.c., spese del titolo e compenso secondo il D.M. 55/2014. Tabella pronta per Word. Nessun cookie.">',
          '<meta name="description" content="Calcolo gratuito delle somme del precetto: capitale, interessi legali e moratori, acconti, '
          'spese del titolo e compenso (D.M. 55/2014). Tabella per Word.">', 'descrizione più corta')
+# dati strutturati della home: il sito (nome mostrato da Google) e il calcolatore, con l'autore
+import json  # noqa: E402
+from build_pages import NOME  # noqa: E402  nome del titolare, lo stesso della pagina «Chi sono»
+HOME_LD = {"@context": "https://schema.org", "@graph": [
+    {"@type": "WebSite", "name": "calcolaprecetti.it", "url": "https://calcolaprecetti.it/", "inLanguage": "it-IT"},
+    {"@type": "WebApplication", "name": "Calcolo delle somme del precetto", "url": "https://calcolaprecetti.it/",
+     "description": "Calcolo delle somme da intimare con l'atto di precetto: capitale, interessi legali e moratori, acconti, "
+                    "spese del titolo e compenso secondo il D.M. 55/2014, con il prospetto pronto per Word.",
+     "applicationCategory": "BusinessApplication", "operatingSystem": "Tutti", "inLanguage": "it-IT", "isAccessibleForFree": True,
+     "browserRequirements": "Richiede JavaScript", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"},
+     "author": {"@type": "Person", "name": NOME, "jobTitle": "Avvocato", "url": "https://calcolaprecetti.it/chi-sono/"}}]}
+h = swap(h, '<link rel="stylesheet" href="/assets/style.css">\n',
+         '<link rel="stylesheet" href="/assets/style.css">\n<script type="application/ld+json">%s</script>\n'
+         % json.dumps(HOME_LD, ensure_ascii=False), 'dati strutturati della home')
 wr('index.html', h)
 
 # ---------------------------------------------------------------- interessi moratori

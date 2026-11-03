@@ -55,7 +55,7 @@ def page(title, desc, path, og, ld, current, body, scripts, noscript=None):
 
 # =========================================================================== termini del precetto
 T_PATH = '/termini-precetto/'
-T_TITLE = 'Termini del precetto: 10 e 90 giorni (artt. 480-481 c.p.c.)'
+T_TITLE = 'Calcolo della scadenza del precetto: 10 e 90 giorni (artt. 480-481 c.p.c.)'
 T_DESC = ('Calcolo gratuito dei termini del precetto: 10 giorni per adempiere, inizio dell\'esecuzione e 90 giorni di efficacia, '
           'con festivi e ricerca dei beni.')
 SEND_T = '''    <aside class="send" aria-labelledby="sendTitle">

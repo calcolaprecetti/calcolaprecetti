@@ -24,6 +24,7 @@
 <link rel="icon" href="/icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="stylesheet" href="/assets/style.css?v=703e607d94">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebSite", "name": "calcolaprecetti.it", "url": "https://calcolaprecetti.it/", "inLanguage": "it-IT"}, {"@type": "WebApplication", "name": "Calcolo delle somme del precetto", "url": "https://calcolaprecetti.it/", "description": "Calcolo delle somme da intimare con l'atto di precetto: capitale, interessi legali e moratori, acconti, spese del titolo e compenso secondo il D.M. 55/2014, con il prospetto pronto per Word.", "applicationCategory": "BusinessApplication", "operatingSystem": "Tutti", "inLanguage": "it-IT", "isAccessibleForFree": true, "browserRequirements": "Richiede JavaScript", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"}, "author": {"@type": "Person", "name": "Alessandro Moro", "jobTitle": "Avvocato", "url": "https://calcolaprecetti.it/chi-sono/"}}]}</script>
 </head>
 <body class="home">
 <a class="skip" href="#main">Salta al contenuto</a>
@@ -68,7 +69,7 @@
 
     <section class="section">
       <h2>Capitale e interessi</h2>
-      <div class="items" id="items"></div>
+      <div class="items" id="items"><div class="item" data-type="legal"><div class="item-head"><span class="item-title">Voce 1</span><button type="button" class="linkbtn" data-act="remove">Rimuovi</button></div><label class="field desc-field" hidden=""><span class="label">Descrizione <span class="opt">(facoltativa)</span></span><input type="text" data-k="desc" placeholder="Es. fattura n. 12 del 25.08.2025"></label><label class="field"><span class="label">Capitale</span><span class="money"><span class="sign">€</span><input type="text" inputmode="decimal" data-k="amount" data-money="1" placeholder="0,00"></span><span class="hint desc-toggle"><button type="button" class="linkbtn" data-act="desc">Aggiungi una descrizione</button>, per esempio il numero della fattura</span></label><fieldset class="field"><legend>Interessi</legend><div class="choices"><label class="choice on"><input type="radio" name="type-1" value="legal"><span><span class="t">Legali</span><span class="h">art. 1284, comma 1, c.c.</span></span></label><label class="choice"><input type="radio" name="type-1" value="mora"><span><span class="t">Moratori commerciali</span><span class="h">D.Lgs. 231/2002: tasso BCE + 8 punti</span></span></label><label class="choice"><input type="radio" name="type-1" value="legal1284"><span><span class="t">Legali, poi maggiorati dalla domanda</span><span class="h">art. 1284, comma 4, c.c.</span></span></label><label class="choice"><input type="radio" name="type-1" value="fixed"><span><span class="t">Tasso convenzionale</span><span class="h">indicato nel titolo o nel contratto</span></span></label><label class="choice"><input type="radio" name="type-1" value="none"><span><span class="t">Nessun interesse</span></span></label></div></fieldset><div class="when-rate"><label class="field"><span class="label">Decorrenza degli interessi</span><input type="date" data-k="from"><span class="hint">Primo giorno in cui maturano gli interessi.</span></label><details class="from-helper when-mora" style="margin:-6px 0 16px"><summary>Calcola la decorrenza dalla fattura</summary><div class="pair"><label class="field"><span class="label">Fattura ricevuta il</span><input type="date" data-k="invDate"></label><label class="field"><span class="label">Termine (giorni)</span><input type="text" inputmode="numeric" data-k="invTerm"></label></div><span class="hint">Gli interessi decorrono dal giorno dopo la scadenza. Senza un termine pattuito, la scadenza è a 30 giorni dal ricevimento della fattura (art. 4 D.Lgs. 231/2002).</span></details><label class="field when-1284"><span class="label">Data della domanda giudiziale</span><input type="date" data-k="domanda"><span class="hint">Da questa data si applica il tasso dell'art. 1284, comma 4, c.c.</span></label><label class="field when-fixed"><span class="label">Tasso annuo</span><span class="money pct"><input type="text" inputmode="decimal" data-k="rate" placeholder="0,00"><span class="sign">%</span></span></label></div></div></div>
       <button type="button" class="addbtn" id="addItem">+ Aggiungi un'altra voce di capitale</button>
       <label class="check" style="margin-top:16px">
         <input type="checkbox" id="optForfait">
@@ -238,7 +239,7 @@
 <div class="toast" id="toast" hidden role="status"><span id="toastText"></span><button type="button" id="toastUndo">Annulla</button></div>
 
 <noscript><p style="padding:16px">Per usare il calcolo attiva JavaScript nel browser.</p></noscript>
-<script src="/assets/core.js?v=1c8de5bf5d" defer></script>
+<script src="/assets/core.js?v=1164f46df5" defer></script>
 <script src="/assets/docx.js?v=632ccb4970" defer></script>
 <script src="/assets/app.js?v=f3f6523e14" defer></script>
 </body>
