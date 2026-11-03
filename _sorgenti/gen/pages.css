@@ -1,0 +1,146 @@
+
+/* ===== nuova struttura: pagina dei termini, tassi e verifiche, privacy, note legali ===== */
+.page{padding-top:20px}
+
+/* stesso stile delle guide in tutte le pagine: apertura, titoli delle sezioni, testo, riquadri */
+@media(min-width:940px){.g-hero.solo{grid-template-columns:minmax(0,1fr);padding-top:36px}}
+.g-hero.solo{padding-bottom:4px}
+.g-hero.solo .g-lead{max-width:62ch}
+.g-hero.solo .g-lead .linkbtn{font-size:inherit}
+.prose p{font-size:1.06rem;line-height:1.65}
+.prose h2{font-family:var(--serif);font-weight:500;font-size:clamp(1.55rem,3.2vw,1.9rem);line-height:1.15;letter-spacing:-.005em;margin:46px 0 10px;text-wrap:balance;font-variant-numeric:lining-nums}
+.prose h3{font-size:1.12rem;font-weight:600;line-height:1.3;margin:22px 0 6px}
+.answer{gap:18px;margin-bottom:24px}
+.answer-item{background:#fff;border:1px solid var(--line-strong);border-radius:4px;box-shadow:7px 7px 0 var(--ink-soft);padding:14px 20px 14px}
+.answer-lab{font-size:.88rem}
+.answer-val{font-family:var(--serif);font-weight:500;font-size:2.3rem;line-height:1.1;letter-spacing:-.005em;font-variant-numeric:lining-nums}
+.answer-val.formula{font-family:var(--serif);font-size:1.45rem;font-weight:500;padding:6px 0 2px}
+@media(max-width:600px){.answer-item{box-shadow:5px 5px 0 var(--ink-soft)}}
+.after{margin:14px 2px 0;font-size:.95rem;font-weight:600}
+.after a{text-underline-offset:2px}
+.after a::after{content:" →"}
+.case-msg{background:var(--ink-soft);border-left:3px solid var(--ink);padding:8px 12px;border-radius:6px;font-size:.9rem;line-height:1.4;margin:0 0 12px;font-weight:600;color:var(--ink-dark)}
+.page .termini{margin:0 0 28px;padding:22px 24px}
+@media(max-width:600px){.page .termini{padding:16px}}
+.page .termini h2{font-size:1.15rem;margin:0 0 6px}
+
+/* rimando alle guide da mandare al cliente */
+.send{background:#fff;border:1px solid var(--line-strong);border-radius:4px;padding:16px 20px 12px;box-shadow:7px 7px 0 var(--ink-soft);margin:32px 0 12px}
+.send-l{font-size:.76rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--ink);margin:0 0 4px!important;line-height:1.4}
+.prose .send h2{font-size:1.45rem;margin:0 0 6px}
+.send ul{list-style:none;margin:10px 0 0;padding:0}
+.send li{padding:9px 0;border-top:1px solid var(--line);line-height:1.45}
+.send li a{font-weight:600}
+.send li span{display:block;color:var(--muted);font-size:.92rem}
+@media(max-width:600px){.send{padding:14px 16px 10px;box-shadow:5px 5px 0 var(--ink-soft)}}
+
+/* pagina «Tassi e verifiche» */
+.jump{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 6px}
+.jump a{display:inline-flex;align-items:center;min-height:36px;padding:0 14px;border:1px solid var(--line-strong);border-radius:999px;background:#fff;color:var(--ink);font-weight:600;font-size:.92rem;text-decoration:none}
+.jump a:hover{border-color:var(--ink);background:var(--ink-soft)}
+.prose section{scroll-margin-top:12px}
+.prose section>h2{scroll-margin-top:12px}
+.prose ul.crit{margin:0 0 10px;padding-left:1.15em}
+.prose ul.crit li{margin:6px 0;line-height:1.55}
+.prose ul.crit li::marker{color:var(--ink)}
+.prose .det.rates{margin-top:4px}
+#tabLegali tbody tr:first-child td,#tabMora tbody tr:first-child td{background:var(--ink-soft)}
+.tab-note{font-size:.86rem;color:var(--muted);margin:8px 0 0!important;line-height:1.45}
+.prose .case{border-top:1px solid var(--line)}
+.prose .case:first-of-type{border-top:0}
+.prose .case .linkbtn{display:inline-block;margin-top:2px}
+
+/* privacy e note legali */
+.legal-page h2{font-size:clamp(1.35rem,2.6vw,1.6rem);margin:34px 0 8px}
+.legal-page>h2:first-child{margin-top:8px}
+.legal-page .hint{margin-top:18px}
+
+/* piè di pagina: LinkedIn */
+.foot-social{display:inline-flex;align-items:center;gap:6px;margin-top:12px;color:var(--muted);font-weight:600;text-decoration:none}
+.foot-social:hover{color:var(--ink);text-decoration:underline;text-underline-offset:2px}
+.foot-social svg{flex:none}
+
+/* pagina «Chi sono» (variante con un sito solo) */
+.ph{background:var(--mark);border-radius:3px;padding:0 .18em;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.foot-bottom a{color:inherit;text-underline-offset:2px}
+.chi{display:grid;grid-template-columns:minmax(0,1fr);gap:24px 56px;align-items:start;padding-bottom:12px}
+@media(min-width:900px){.chi{grid-template-columns:minmax(0,1fr) 360px}}
+.chi .prose{margin:0}
+.chi-card{background:#fff;border:1px solid var(--line-strong);border-radius:4px;box-shadow:7px 7px 0 var(--ink-soft);padding:16px 20px 8px}
+.chi-card h2{font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink);margin:0 0 4px}
+.chi-card dl{margin:0}
+.chi-card dl div{display:grid;grid-template-columns:76px minmax(0,1fr);gap:10px;padding:9px 0;border-top:1px solid var(--line)}
+.chi-card dl div:first-child{border-top:0}
+.chi-card dt{font-size:.74rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding-top:.25em}
+.chi-card dd{margin:0;overflow-wrap:anywhere}
+.chi-head{display:flex;align-items:center;gap:14px 22px}
+.chi-head .g-title{margin-bottom:8px}
+.chi-photo{flex:none;width:112px;height:112px;border-radius:50%;object-fit:cover;background:var(--panel);border:1px dashed var(--line-strong);display:flex;align-items:center;justify-content:center;color:var(--muted);font-weight:600;font-size:.9rem}
+img.chi-photo{border:0;box-shadow:0 0 0 4px #fff,0 0 0 5px var(--line)}
+@media(max-width:600px){.chi-photo{width:84px;height:84px}}
+
+/* calcolo delle somme: due animazioni minime (il prospetto entra, l'evidenziatore ripassa il totale) */
+.tot-hl{background-image:linear-gradient(101deg,rgba(255,216,77,0) 0,var(--hl) 2%,rgba(255,216,77,.82) 32%,var(--hl) 97%,rgba(255,216,77,0) 100%);background-repeat:no-repeat;background-size:100% .72em;background-position:0 74%;padding:0 .2em;margin:0 -.2em;border-radius:.5em .2em .45em .25em/.3em .5em .25em .5em}
+.tot-hl.sweep{animation:cp-sweep .6s cubic-bezier(.25,.8,.35,1)}
+@keyframes cp-sweep{from{background-size:0 .72em}to{background-size:100% .72em}}
+.sheet.sweep{animation:cp-in .35s ease-out}
+@keyframes cp-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.tot-hl.sweep,.sheet.sweep{animation:none}}
+@media print{.tot-hl{background:none!important;padding:0;margin:0}}
+
+/* «Chi sono»: la foto e i contatti entrano piano (l'evidenziatore del titolo è quello di tutte le pagine) */
+img.chi-photo{animation:chi-photo .5s ease-out both}
+@keyframes chi-photo{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}
+.chi-card{animation:chi-up .5s .35s ease-out both}
+@keyframes chi-up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){img.chi-photo,.chi-card{animation:none}}
+.chi-head .g-title mark{white-space:nowrap}
+@media(max-width:600px){.chi-head .g-title{font-size:clamp(1.85rem,8vw,2.2rem)}}
+
+/* newsletter: rimando sotto i tassi in vigore, secondo rimando sotto il prospetto, pagina «Newsletter» */
+.notify{margin:-6px 0 24px;padding:10px 16px;background:#fff;border:1px dashed var(--line-strong);border-radius:4px;font-size:.95rem;line-height:1.45}
+.notify a{font-weight:600;text-underline-offset:2px}
+.notify a::after{content:" →"}
+.after+.after{margin-top:6px}
+.nl-card{background:#fff;border:1px solid var(--line-strong);border-radius:4px;box-shadow:7px 7px 0 var(--ink-soft);padding:16px 20px 14px;animation:chi-up .5s .2s ease-out both}
+.nl-card h2{font-family:var(--serif);font-weight:500;font-size:1.7rem;line-height:1.15;margin:0 0 6px}
+.nl-card p{margin:0 0 14px;line-height:1.5}
+.nl-card .btn{width:100%;gap:8px;white-space:normal;text-align:center}
+.nl-card .hint{margin:10px 0 0;font-size:.86rem}
+.nl-card .ph-note{margin:8px 0 0;font-size:.86rem}
+@media(min-width:900px){.nl .nl-card{order:2;position:sticky;top:16px}}
+.nl .prose>h2:first-child{margin-top:6px}
+@media(max-width:600px){.nl-card{box-shadow:5px 5px 0 var(--ink-soft)}}
+@media(prefers-reduced-motion:reduce){.nl-card{animation:none}}
+@media(max-width:359px){.chi-head{flex-wrap:wrap}}
+
+/* valutazione del credito: riquadro con prezzo e pulsante, passaggi numerati, condizioni dell'incarico */
+.svc-card{background:#fff;border:1px solid var(--line-strong);border-radius:4px;box-shadow:7px 7px 0 var(--ink-soft);padding:16px 20px 14px;animation:chi-up .5s .2s ease-out both}
+.svc-card .send-l{margin:0 0 2px}
+.svc-price{font-family:var(--serif);font-weight:500;font-size:2.6rem;line-height:1.05;margin:0;font-variant-numeric:lining-nums}
+.svc-note{margin:4px 0 12px;font-size:.92rem;line-height:1.45;color:var(--muted)}
+.svc-list{list-style:none;margin:0 0 16px;padding:0}
+.svc-list li{position:relative;padding:7px 0 7px 22px;border-top:1px solid var(--line);font-size:.95rem;line-height:1.4}
+.svc-list li::before{content:"";position:absolute;left:2px;top:13px;width:10px;height:6px;border-left:2px solid var(--ink);border-bottom:2px solid var(--ink);transform:rotate(-45deg)}
+.svc-card .btn{width:100%;gap:8px;white-space:normal;text-align:center}
+.svc-card .hint{margin:10px 0 0;font-size:.86rem}
+.svc-card .ph-note{margin:8px 0 0;font-size:.86rem}
+@media(min-width:900px){.svc .svc-card{order:2;position:sticky;top:16px}}
+.svc .prose>h2:first-child{margin-top:6px}
+@media(max-width:600px){.svc-card{box-shadow:5px 5px 0 var(--ink-soft)}}
+@media(prefers-reduced-motion:reduce){.svc-card{animation:none}}
+.prose ol.steps{counter-reset:passo;list-style:none;margin:0 0 10px;padding:0}
+.prose ol.steps li{counter-increment:passo;position:relative;padding:3px 0 12px 46px;line-height:1.55;min-height:34px}
+.prose ol.steps li::before{content:counter(passo);position:absolute;left:0;top:0;width:32px;height:32px;border-radius:50%;background:var(--mark);color:var(--ink-dark);font-weight:700;display:flex;align-items:center;justify-content:center;font-variant-numeric:lining-nums}
+.prose ol.terms{margin:0 0 10px;padding-left:1.3em;font-size:.96rem}
+.prose ol.terms li{margin:8px 0;line-height:1.55}
+.prose ol.terms li::marker{color:var(--ink);font-weight:700}
+/* valutazione del credito: facsimile della prima pagina del parere (immagine fatta da gen/build_facsimile.js) */
+.svc-fac{margin:24px 0 6px;max-width:480px}
+.svc-fac img{display:block;width:100%;height:auto;border:1px solid var(--line-strong);border-radius:4px;box-shadow:7px 7px 0 var(--ink-soft);background:#fff}
+.svc-fac figcaption{margin-top:12px;font-size:.88rem;line-height:1.45;color:var(--muted)}
+@media(max-width:600px){.svc-fac img{box-shadow:5px 5px 0 var(--ink-soft)}}
+/* accessibilità: collegamento «Salta al contenuto», visibile solo con la tastiera; area principale raggiunta senza contorno */
+.skip{position:absolute;left:12px;top:-80px;z-index:100;padding:10px 16px;background:#fff;color:var(--ink);font-weight:600;border:2px solid var(--ink);border-radius:6px;text-decoration:none}
+.skip:focus{top:12px}
+main:focus{outline:none}
