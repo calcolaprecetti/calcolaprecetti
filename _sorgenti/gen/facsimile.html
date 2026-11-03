@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>Facsimile del parere</title>
+<!-- Prima pagina di un parere di esempio, con i contenuti del caso sfocati.
+     build_facsimile.js la trasforma nell'immagine assets/facsimile-parere.webp. Dati inventati. -->
+<style>
+@font-face{font-family:"EB Garamond";src:url("../../fonts/EBGaramond.woff2") format("woff2");font-weight:400 800}
+@font-face{font-family:"Titillium Web";src:url("../../fonts/TitilliumWeb-Regular.woff2") format("woff2");font-weight:400}
+@font-face{font-family:"Titillium Web";src:url("../../fonts/TitilliumWeb-SemiBold.woff2") format("woff2");font-weight:600}
+@font-face{font-family:"Titillium Web";src:url("../../fonts/TitilliumWeb-Bold.woff2") format("woff2");font-weight:700}
+:root{--ink:#1E3F8C;--text:#1F2530;--muted:#5A6472;--line:#E1E5EB;--line-strong:#C3CAD5;--panel:#F4F6F9}
+html,body{margin:0;background:#fff}
+body{padding:20px}
+.sheet{position:relative;width:640px;height:905px;box-sizing:border-box;padding:44px 54px 52px;background:#fff;color:var(--text);
+  font-family:"EB Garamond",Garamond,serif;font-size:13.5px;line-height:1.5;overflow:hidden;font-variant-numeric:lining-nums}
+.sans{font-family:"Titillium Web",sans-serif}
+.lh{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;padding-bottom:11px;border-bottom:1.5px solid var(--ink)}
+.lh .name{font-size:22px;font-weight:600;color:var(--ink);line-height:1.15}
+.lh .sub{font-size:10.5px;color:var(--muted);letter-spacing:.02em;line-height:1.5;margin-top:3px}
+.lh .right{text-align:right;margin:0}
+.meta{display:flex;justify-content:space-between;margin:12px 0 26px;font-size:12.5px;color:var(--muted)}
+h1{font-size:19px;font-weight:600;letter-spacing:.13em;text-transform:uppercase;text-align:center;margin:0 0 3px}
+.h1-sub{text-align:center;font-style:italic;font-size:13.5px;color:var(--muted);margin:0 0 20px}
+.sum{background:var(--panel);border-left:3px solid var(--ink);padding:11px 16px 10px;margin:0 0 18px}
+.sum h2{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);margin:0 0 6px}
+.sum dl{margin:0;display:grid;grid-template-columns:148px minmax(0,1fr);row-gap:4px;column-gap:12px;align-items:baseline}
+.sum dt{font-size:11px;font-weight:600;color:var(--muted)}
+.sum dd{margin:0;font-size:14px}
+.dots{display:inline-flex;gap:4px;margin-right:8px;transform:translateY(-1px)}
+.dots i{width:9px;height:9px;border-radius:50%;background:var(--ink)}
+.dots i.o{background:var(--line-strong)}
+h3{font-size:15.5px;font-weight:600;color:var(--ink);margin:15px 0 3px}
+p{margin:0 0 6px;text-align:justify}
+table{width:100%;border-collapse:collapse;font-size:13.5px;margin:2px 0 4px}
+td{padding:3px 0;border-bottom:1px solid var(--line)}
+td.n{text-align:right;white-space:nowrap;width:120px}
+tr.tot td{font-weight:600;border-bottom:0;border-top:1.5px solid var(--text)}
+/* le parti che cambiano da caso a caso */
+.x{filter:blur(3.4px)}
+span.x{display:inline-block}
+.wm{position:absolute;left:50%;top:56%;transform:translate(-50%,-50%) rotate(-30deg);font-family:"Titillium Web",sans-serif;font-size:92px;font-weight:700;
+  letter-spacing:.16em;color:var(--ink);opacity:.07;white-space:nowrap}
+.foot{position:absolute;left:54px;right:54px;bottom:20px;display:flex;justify-content:space-between;font-size:9.5px;color:var(--muted);
+  border-top:1px solid var(--line);padding-top:6px;background:#fff}
+</style>
+</head>
+<body>
+<div class="sheet" id="sheet">
+  <div class="lh">
+    <div>
+      <div class="name">avv. Alessandro Moro</div>
+      <div class="sub sans">Ordine degli Avvocati di Vicenza · Bassano del Grappa (VI)</div>
+    </div>
+    <p class="right sub sans">calcolaprecetti.it<br>info@calcolaprecetti.it</p>
+  </div>
+  <div class="meta"><span>Richiesta n. <span class="x">2026-0147</span></span><span>Bassano del Grappa, <span class="x">21 ottobre 2026</span></span></div>
+
+  <h1>Parere sul recupero del credito</h1>
+  <p class="h1-sub">reso sui fatti descritti nel questionario del <span class="x">20 ottobre 2026</span></p>
+
+  <div class="sum">
+    <h2 class="sans">In sintesi</h2>
+    <dl>
+      <dt class="sans">Il credito regge?</dt><dd><span class="x">Sì: prova scritta, non prescritto</span></dd>
+      <dt class="sans">Quanto vale oggi</dt><dd><span class="x">€ 4.873,20</span></dd>
+      <dt class="sans">Strada consigliata</dt><dd><span class="x">diffida, poi decreto ingiuntivo</span></dd>
+      <dt class="sans">Costi e tempi</dt><dd><span class="x">circa € 750, da 3 a 5 mesi</span></dd>
+      <dt class="sans">Probabilità di incasso</dt><dd><span class="dots"><i></i><i></i><i></i><i class="o"></i><i class="o"></i></span><span class="x">buone</span></dd>
+    </dl>
+  </div>
+
+  <h3>1. Il credito regge?</h3>
+  <p class="x">Dal questionario risulta che il credito nasce da una fornitura di merce documentata da un ordine scritto e dalla fattura, consegnata e mai contestata per iscritto. La prescrizione è di dieci anni e non è maturata: il credito è provato per iscritto, certo, liquido ed esigibile.</p>
+
+  <h3>2. Quanto vale oggi?</h3>
+  <table>
+    <tr><td>Capitale</td><td class="n"><span class="x">€ 4.250,00</span></td></tr>
+    <tr><td>Interessi moratori (d.lgs. 231/2002)</td><td class="n"><span class="x">€ 583,20</span></td></tr>
+    <tr><td>Risarcimento forfettario delle spese di recupero</td><td class="n"><span class="x">€ 40,00</span></td></tr>
+    <tr class="tot"><td>Totale</td><td class="n"><span class="x">€ 4.873,20</span></td></tr>
+  </table>
+
+  <h3>3. Quale strada conviene?</h3>
+  <p class="x">Il debitore è un'impresa ancora attiva e non ha contestato il credito. Conviene una diffida con un termine di quindici giorni e, se resta senza risposta, il ricorso per decreto ingiuntivo provvisoriamente esecutivo, che permette di procedere subito al pignoramento presso terzi.</p>
+
+  <h3>4. Quanto costa e quanto ci vuole?</h3>
+  <p class="x">La diffida richiede pochi giorni. Il decreto ingiuntivo arriva di solito entro due mesi dal deposito del ricorso; contributo unificato, marca e notifiche costano circa centoquaranta euro, oltre al compenso. Il pignoramento richiede poi altri due o tre mesi.</p>
+
+
+  <div class="wm" aria-hidden="true">FACSIMILE</div>
+  <div class="foot sans"><span>avv. Alessandro Moro · Parere sul recupero del credito</span><span>pagina 1 di 3</span></div>
+</div>
+</body>
+</html>

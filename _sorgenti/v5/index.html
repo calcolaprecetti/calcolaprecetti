@@ -1,0 +1,271 @@
+<!doctype html>
+<!-- calcolaprecetti.it - (c) 2026 il titolare indicato nelle Note legali (https://calcolaprecetti.it/#note-legali). Tutti i diritti riservati. Vietata la riproduzione, anche parziale, senza autorizzazione scritta. Licenza: file LICENSE. -->
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>calcolaprecetti.it – Calcolo delle somme dell'atto di precetto</title>
+<link rel="canonical" href="https://calcolaprecetti.it/">
+<meta name="description" content="Calcolo gratuito delle somme da intimare con l'atto di precetto: capitale, interessi legali e moratori, acconti ex art. 1194 c.c., spese del titolo, compenso secondo il D.M. 55/2014 e termini del precetto. Tabella pronta per Word. Nessun cookie.">
+<meta property="og:title" content="calcolaprecetti.it">
+<meta property="og:url" content="https://calcolaprecetti.it/">
+<meta property="og:image" content="https://calcolaprecetti.it/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="calcolaprecetti.it – Il conteggio del precetto, pronto per Word">
+<meta property="og:site_name" content="calcolaprecetti.it">
+<meta property="og:locale" content="it_IT">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="og:description" content="Calcolo delle somme del precetto, con la tabella pronta da incollare in Word.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#1E3F8C">
+<link rel="icon" href="/favicon-192.png" sizes="192x192" type="image/png">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body class="home">
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="/"><img src="/logo.svg" alt="" width="28" height="28" style="vertical-align:-7px;margin-right:8px">calcolaprecetti.it</a>
+    <div class="top-actions">
+      <button type="button" class="tbtn" id="btnNew">Nuovo calcolo</button>
+    </div>
+  </div>
+</header>
+<nav class="tools" aria-label="Calcoli disponibili">
+  <div class="wrap">
+    <a href="/" aria-current="page">Somme del precetto</a>
+    <a href="/interessi-moratori/">Calcolo interessi moratori</a>
+  </div>
+</nav>
+
+
+<div class="wrap intro">
+  <h1>Calcolo delle somme del precetto</h1>
+  <p>Inserisci i dati del titolo: il prospetto si aggiorna mentre scrivi e lo porti in Word con un clic. <button type="button" class="linkbtn" id="btnExample">Prova con un esempio</button></p>
+</div>
+
+<main class="wrap layout">
+  <form class="form" id="form" autocomplete="off" onsubmit="return false">
+
+    <section class="section">
+      <h2>Data del conteggio</h2>
+      <label class="field">
+        <span class="label">Interessi calcolati fino al</span>
+        <input type="date" id="endDate">
+        <span class="hint">Di solito la data dell'atto. Il giorno indicato è compreso.</span>
+      </label>
+    </section>
+
+    <section class="section">
+      <h2>Capitale e interessi</h2>
+      <div class="items" id="items"></div>
+      <button type="button" class="addbtn" id="addItem">+ Aggiungi un'altra voce di capitale</button>
+    </section>
+
+    <section class="section">
+      <h2>Spese liquidate nel titolo</h2>
+      <fieldset class="field">
+        <legend>Titolo esecutivo</legend>
+        <div class="chips" id="titoloChips">
+          <label class="chip"><input type="radio" name="titolo" value="di">Decreto ingiuntivo</label>
+          <label class="chip"><input type="radio" name="titolo" value="sent">Sentenza</label>
+          <label class="chip"><input type="radio" name="titolo" value="ord">Ordinanza</label>
+          <label class="chip"><input type="radio" name="titolo" value="altro">Altro</label>
+        </div>
+      </fieldset>
+      <div class="pair field">
+        <label class="field">
+          <span class="label">Spese esenti</span>
+          <span class="money"><span class="sign">€</span><input type="text" inputmode="decimal" id="spese" placeholder="0,00"></span>
+        </label>
+        <label class="field">
+          <span class="label">Compensi</span>
+          <span class="money"><span class="sign">€</span><input type="text" inputmode="decimal" id="compensi" placeholder="0,00"></span>
+        </label>
+      </div>
+      <span class="hint">Nelle spese esenti rientrano contributo unificato, marca da bollo e notifiche.</span>
+      <label class="check" style="margin-top:14px">
+        <input type="checkbox" id="optIva">
+        <span><span class="t">Aggiungi l'IVA (22%) sui compensi</span>
+        <span class="hint" style="margin-top:2px">Solo se il creditore non la detrae e l'avvocato non è in regime forfettario. Vale anche per il compenso del precetto.</span></span>
+      </label>
+    </section>
+
+    <section class="section" id="accontiSection">
+      <h2>Acconti ricevuti</h2>
+      <div id="acconti"></div>
+      <label class="field" id="titleDateField" hidden>
+        <span class="label">Data del titolo</span>
+        <input type="date" id="titleDate">
+        <span class="hint">Le spese liquidate nel titolo si pagano solo con gli acconti successivi a questa data.</span>
+      </label>
+      <button type="button" class="addbtn" id="addAcconto" style="margin-top:0">+ Aggiungi un acconto</button>
+      <span class="hint">Imputati ex art. 1194 c.c.: prima alle spese liquidate nel titolo, poi agli interessi maturati, infine al capitale.</span>
+    </section>
+
+    <details class="more" id="more">
+      <summary><span class="t">Opzioni avanzate</span><span class="s" id="moreSummary"></span></summary>
+      <div class="more-body">
+        <div class="sub">
+          <h3>Compenso del precetto</h3>
+          <div class="seg" id="feeSeg">
+            <label class="on"><input type="radio" name="feeMode" value="medio" checked><span class="t">Medio</span><span class="v" data-v="medio"></span></label>
+            <label><input type="radio" name="feeMode" value="min"><span class="t">Minimo</span><span class="v" data-v="min"></span></label>
+            <label><input type="radio" name="feeMode" value="max"><span class="t">Massimo</span><span class="v" data-v="max"></span></label>
+            <label><input type="radio" name="feeMode" value="free"><span class="t">Libero</span><span class="v">importo</span></label>
+          </div>
+          <label class="field" id="feeFreeField" hidden style="margin-top:12px">
+            <span class="label">Compenso del precetto</span>
+            <span class="money"><span class="sign">€</span><input type="text" inputmode="decimal" id="feeFree" placeholder="0,00"></span>
+          </label>
+          <span class="hint" id="feeInfo"></span>
+        </div>
+        <div class="sub">
+          <h3>Accessori sui compensi</h3>
+          <label class="check"><input type="checkbox" id="optRf" checked><span>Rimborso forfettario 15%</span></label>
+          <label class="check"><input type="checkbox" id="optCpa" checked><span>C.P.A. 4%</span></label>
+        </div>
+        <div class="sub">
+          <h3>Altre spese</h3>
+          <div id="extras"></div>
+          <button type="button" class="addbtn" id="addExtra" style="margin-top:0">+ Aggiungi una spesa</button>
+          <span class="hint">Importi senza accessori, per esempio l'imposta di registro del titolo.</span>
+        </div>
+      </div>
+    </details>
+  </form>
+
+  <section class="results" id="prospetto" aria-labelledby="resTitle">
+    <div class="panel">
+      <div class="res-head">
+        <h2 id="resTitle">Prospetto delle somme</h2>
+        <span class="res-date" id="resDate"></span>
+      </div>
+      <div class="warnings" id="warnings" aria-live="polite"></div>
+      <p class="empty" id="empty">Inserisci l'importo del capitale per vedere il prospetto, oppure <button type="button" class="linkbtn" id="emptyExample">prova con un esempio</button>.</p>
+      <div class="sheet" id="sheet" hidden>
+        <table class="prospetto" id="table"><tbody></tbody></table>
+        <p class="sources" id="sources" hidden></p>
+      </div>
+      <div class="actions" id="actions" hidden>
+        <button type="button" class="btn btn-primary" id="btnCopy">Copia tabella per Word</button>
+        <button type="button" class="btn btn-secondary" id="btnDocx">Scarica .docx</button>
+        <button type="button" class="linkbtn" id="btnPrint">Stampa</button>
+      </div>
+      <label class="check fonti" id="fontiCheck" hidden><input type="checkbox" id="optFonti"><span>Aggiungi sotto la tabella le fonti dei tassi (anche in Word)</span></label>
+      <p class="paste-hint" id="pasteHint" hidden>In Word posiziona il cursore nel precetto e incolla con Ctrl+V (su Mac ⌘+V).</p>
+      <p class="status" id="status" role="status"></p>
+      <details class="detail" id="detail" hidden>
+        <summary>Dettaglio degli interessi e fonti dei tassi</summary>
+        <div id="detailBody"></div>
+      </details>
+    </div>
+    <p class="sr-only" aria-live="polite" id="srTotal"></p>
+  </section>
+</main>
+
+<section class="wrap termini-wrap" id="termini" aria-labelledby="tTitle">
+  <div class="panel termini">
+    <div class="termini-grid">
+      <div>
+        <h2 id="tTitle">Termini del precetto</h2>
+        <p class="hint" style="margin-top:0">Dopo la notifica: quando si può iniziare l'esecuzione e fino a quando il precetto resta efficace.</p>
+        <div class="pair">
+          <label class="field"><span class="label">Notificato il</span><input type="date" id="tNotifica"></label>
+          <label class="field"><span class="label">Termine per adempiere</span><span class="money days"><input type="text" inputmode="numeric" id="tGiorni"><span class="sign">giorni</span></span></label>
+        </div>
+        <span class="hint">Per la PEC conta la ricevuta di consegna; per la posta, la consegna o la compiuta giacenza.</span>
+        <label class="check" style="margin-top:12px"><input type="checkbox" id="tBis"><span>Ho presentato l'istanza di ricerca dei beni (art. 492-bis c.p.c.)</span></label>
+        <div id="tBisFields" hidden>
+          <div class="pair" style="margin-top:10px">
+            <label class="field"><span class="label">Istanza presentata il</span><input type="date" id="tBisFrom"></label>
+            <label class="field"><span class="label">Esito comunicato il</span><input type="date" id="tBisTo"></label>
+          </div>
+          <span class="hint">Esito: verbale delle ricerche, comunicazione di mancata esecuzione o rigetto. Se non è ancora arrivato, lascia vuoto.</span>
+        </div>
+      </div>
+      <div class="termini-out">
+        <div class="warnings" id="tWarnings"></div>
+        <p class="empty" id="tEmpty">Indica la data di notifica per vedere le scadenze.</p>
+        <dl class="tlist" id="tOut" hidden></dl>
+        <div class="cal" id="tActions" hidden>
+          <div class="actions">
+            <button type="button" class="btn btn-secondary" id="tIcs">Scarica per il calendario</button>
+            <a class="btn btn-secondary" id="tGcal" target="_blank" rel="noopener noreferrer">Google Calendar</a>
+            <a class="btn btn-secondary" id="tOutlook" target="_blank" rel="noopener noreferrer">Outlook.com</a>
+          </div>
+          <p class="hint">Il file contiene entrambe le date e un promemoria sette giorni prima: sul computer aprilo dalla cartella dei download, sul telefono toccalo, e il calendario chiede conferma. I due collegamenti aprono invece il sito del servizio con la scadenza dei 90 giorni già compilata, da salvare con un clic: la data e il titolo dell'appuntamento vengono inviati a Google o a Microsoft.</p>
+        </div>
+        <p class="hint" id="tNote" hidden>Termini calcolati escludendo il giorno della notifica; se la scadenza cade di sabato o in un giorno festivo è prorogata al primo giorno non festivo (art. 155 c.p.c.). Il termine di 90 giorni non è soggetto alla sospensione feriale. Non sono considerate le festività locali né la sospensione per opposizione al precetto (art. 481, comma 2, c.p.c.).</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="wrap contact" id="suggerimenti" aria-labelledby="contactTitle">
+  <div class="contact-box">
+    <div class="contact-text">
+      <h2 id="contactTitle">Suggerimenti</h2>
+      <p>Hai trovato un errore o ti servirebbe una funzione in più? Scrivimi: ogni segnalazione aiuta a migliorare il calcolo.</p>
+      <p class="hint">Non inserire nei messaggi dati personali di clienti o di terzi.</p>
+    </div>
+    <div class="contact-actions">
+      <a class="btn btn-secondary" id="mailBtn" href="#suggerimenti">Scrivimi un suggerimento</a>
+      <span class="contact-mail" id="mailText"></span>
+    </div>
+  </div>
+</section>
+
+<section class="wrap legal" id="info" hidden>
+  <details id="privacy" hidden><summary>Informativa privacy</summary><div class="body" id="privacyBody"></div></details>
+  <details id="note-legali" hidden><summary>Note legali</summary><div class="body" id="legalBody"></div></details>
+  <details id="verifica" hidden><summary>Casi di verifica</summary><div class="body" id="casesBody"></div></details>
+  <details id="registro" hidden><summary>Registro degli aggiornamenti</summary><div class="body" id="registroBody"></div></details>
+  <details id="tassi" hidden><summary>Tassi e parametri usati</summary><div class="body"><p>Interessi su 365 giorni, per periodi (anno solare per i legali, semestre per i moratori) arrotondati al centesimo; il primo e l'ultimo giorno sono compresi. Acconti imputati ex art. 1194 c.c. prima alle spese liquidate nel titolo, poi agli interessi maturati, infine al capitale; con più voci, prima alla più antica (art. 1193 c.c.). Dal giorno dopo l'acconto gli interessi maturano sul capitale residuo. Compenso del precetto secondo la tabella 6 del D.M. 55/2014 con i valori del D.M. 147/2022, sullo scaglione dato dal credito residuo (capitale, interessi e spese, al netto degli acconti); rimborso forfettario sui compensi, C.P.A. su compensi e rimborso, IVA sul totale. Accanto a ogni tasso è indicata la fonte. Per il solo <a href="/interessi-moratori/">calcolo degli interessi moratori</a>, anche per i contratti anteriori al 2013 o per i prodotti agricoli e alimentari, c'è una pagina dedicata.</p><div class="rates-grid" id="ratesGrid"></div></div></details>
+</section>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-about">
+        <a class="foot-brand" href="/"><img src="/logo.svg" alt="" width="24" height="24">calcolaprecetti.it</a>
+        <p>Strumenti gratuiti per il conteggio del precetto. Nessun cookie: i dati che inserisci restano sul tuo dispositivo.</p>
+      </div>
+      <nav class="foot-col" aria-label="Calcoli">
+        <h2>Calcoli</h2>
+        <a href="/">Somme del precetto</a>
+        <a href="/interessi-moratori/">Calcolo interessi moratori</a>
+      </nav>
+      <nav class="foot-col" aria-label="Verifiche">
+        <h2>Verifiche</h2>
+        <a href="#tassi" data-open="tassi">Tassi e fonti</a>
+        <a href="#verifica" data-open="verifica">Casi di verifica</a>
+        <a href="#registro" data-open="registro">Registro aggiornamenti</a>
+      </nav>
+      <nav class="foot-col" aria-label="Informazioni">
+        <h2>Informazioni</h2>
+        <a href="#privacy" data-open="privacy">Privacy</a>
+        <a href="#note-legali" data-open="note-legali">Note legali</a>
+        <a href="#suggerimenti">Suggerimenti</a>
+      </nav>
+    </div>
+    <p class="foot-bottom">© 2026 calcolaprecetti.it · A cura di <span class="js-titolare"></span> · Tutti i diritti riservati · Tassi aggiornati a <span class="js-updated"></span> · Strumento di supporto: verifica sempre gli importi prima di inserirli in un atto.</p>
+  </div>
+</footer>
+
+
+<div class="mobilebar" id="mobilebar">
+  <span>Totale <strong id="mbTotal">€&nbsp;0,00</strong></span>
+  <a href="#prospetto" class="btn btn-primary">Vedi il prospetto</a>
+</div>
+<div class="toast" id="toast" hidden role="status"><span id="toastText"></span><button type="button" id="toastUndo">Annulla</button></div>
+
+<noscript><p style="padding:16px">Per usare il calcolo attiva JavaScript nel browser.</p></noscript>
+<script src="/assets/core.js" defer></script>
+<script src="/assets/docx.js" defer></script>
+<script src="/assets/app.js" defer></script>
+</body>
+</html>
