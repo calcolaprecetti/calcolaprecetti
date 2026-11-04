@@ -36,6 +36,8 @@ PAGES = {  # indirizzo del sito -> (file sorgente, file dell'anteprima)
     '/newsletter/': ('newsletter/index.html', 'newsletter.html'),
     '/valutazione-credito/': ('valutazione-credito/index.html', 'valutazione-credito.html'),
     '/condizioni-parere/': ('condizioni-parere/index.html', 'condizioni-parere.html'),
+    '/valutazione-credito/grazie/': ('valutazione-credito/grazie/index.html', 'valutazione-grazie.html'),
+    '/recupero-crediti/': ('recupero-crediti/index.html', 'recupero-crediti.html'),
     '/404.html': ('404.html', '404.html'),
 }
 KNOWN = set(PAGES)  # tutte le pagine previste, anche quelle spente
@@ -79,6 +81,7 @@ for url, (src, dst) in PAGES.items():
     h = re.sub(r'src="/assets/([a-z0-9-]+\.(jpe?g|png|webp))"', lambda m: 'src="%s"' % b64('assets/' + m.group(1),
                'image/' + ('jpeg' if m.group(2).startswith('jp') else m.group(2))), h)
     h = re.sub(r'<link rel="(?:icon|apple-touch-icon)"[^>]*>\n', '', h)
+    h = re.sub(r'<link rel="preload" href="/fonts/[^"]+" as="font"[^>]*>\n', '', h)  # i caratteri sono già dentro lo stile
     h = h.replace('<meta name="viewport" content="width=device-width, initial-scale=1">',
                   '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">')
 

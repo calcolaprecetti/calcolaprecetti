@@ -23,11 +23,19 @@
 <link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="icon" href="/icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<link rel="stylesheet" href="/assets/style.css?v=703e607d94">
-<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebApplication", "name": "Termini del precetto", "url": "https://calcolaprecetti.it/termini-precetto/", "description": "Calcolo dei termini del precetto: 10 giorni per adempiere, inizio dell'esecuzione e 90 giorni di efficacia, con la proroga dei festivi e la sospensione per la ricerca dei beni.", "applicationCategory": "BusinessApplication", "operatingSystem": "Tutti", "inLanguage": "it-IT", "isAccessibleForFree": true, "browserRequirements": "Richiede JavaScript", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://calcolaprecetti.it/"}, {"@type": "ListItem", "position": 2, "name": "Termini del precetto", "item": "https://calcolaprecetti.it/termini-precetto/"}]}]}</script>
+<link rel="preload" href="/fonts/EBGaramond.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/TitilliumWeb-Regular.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/style.css?v=434c746f2f">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebApplication", "name": "Termini del precetto", "url": "https://calcolaprecetti.it/termini-precetto/", "isPartOf": {"@id": "https://calcolaprecetti.it/#sito"}, "author": {"@id": "https://calcolaprecetti.it/chi-sono/#avvocato"}, "dateModified": "2026-11-04", "description": "Calcolo dei termini del precetto: 10 giorni per adempiere, inizio dell'esecuzione e 90 giorni di efficacia, con la proroga dei festivi e la sospensione per la ricerca dei beni.", "applicationCategory": "BusinessApplication", "operatingSystem": "Tutti", "inLanguage": "it-IT", "isAccessibleForFree": true, "browserRequirements": "Richiede JavaScript", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://calcolaprecetti.it/"}, {"@type": "ListItem", "position": 2, "name": "Termini del precetto", "item": "https://calcolaprecetti.it/termini-precetto/"}]}, {"@type": "WebSite", "@id": "https://calcolaprecetti.it/#sito", "name": "calcolaprecetti.it", "url": "https://calcolaprecetti.it/", "inLanguage": "it-IT", "publisher": {"@id": "https://calcolaprecetti.it/chi-sono/#avvocato"}}, {"@type": "Person", "@id": "https://calcolaprecetti.it/chi-sono/#avvocato", "name": "Alessandro Moro", "jobTitle": "Avvocato", "url": "https://calcolaprecetti.it/chi-sono/"}]}</script>
 </head>
 <body>
 <a class="skip" href="#main">Salta al contenuto</a>
+<nav class="aud" aria-label="Parti del sito">
+  <div class="wrap">
+    <a href="/" aria-current="true" data-conta="vai-avvocati"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><rect x="3" y="1.5" width="10" height="13" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M5.5 4.5h5M5.5 8h1M9.5 8h1M5.5 11h1M9.5 11h1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><span>Per gli avvocati</span></a>
+    <a href="/recupero-crediti/" data-conta="vai-creditori"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.3" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M10.3 5.5a2.9 2.9 0 1 0 0 5M4.9 7.2h4.2M4.9 8.8h4.2" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg><span>Per i creditori</span></a>
+  </div>
+</nav>
 <header class="top">
   <div class="wrap">
     <a class="brand" href="/"><img src="/logo.svg" alt="" width="28" height="28" style="vertical-align:-7px;margin-right:8px">calcolaprecetti.it</a>
@@ -38,8 +46,7 @@
     <a href="/"><span><span class="tl">Somme del </span><span class="tm">precetto</span></span></a>
     <a href="/termini-precetto/" aria-current="page"><span><span class="tm">Termini</span><span class="tl"> del precetto</span></span></a>
     <a href="/interessi-moratori/"><span><span class="tl">Calcolo interessi </span><span class="tm">moratori</span></span></a>
-    <a href="/valutazione-credito/"><span><span class="tm">Valutazione</span><span class="tl"> del credito</span></span></a>
-    <a href="/chi-sono/">Chi sono</a>
+    <a href="/tassi/"><span><span class="tm">Tassi</span><span class="tl"> e fonti</span></span></a>
   </div>
 </nav>
 
@@ -122,6 +129,7 @@
     <h2>Le somme da intimare</h2>
     <p>Prima della notifica, il <a href="/">calcolo delle somme del precetto</a> prepara il prospetto: capitale, interessi, spese liquidate nel titolo, acconti e compenso per l'atto, con la tabella pronta da incollare in Word.</p>
   </article>
+<aside class="autore" aria-label="Chi cura la pagina"><img src="/assets/foto.jpg" alt="" width="56" height="56" loading="lazy" decoding="async"><p>A cura dell'<a href="/chi-sono/">avv. Alessandro Moro</a>, iscritto all'Ordine degli Avvocati di Vicenza.<span class="agg">Pagina aggiornata il <time datetime="2026-11-04">04.11.2026</time>.</span></p></aside>
 </div>
 </main>
 
@@ -153,6 +161,12 @@
         <a href="/termini-precetto/">Termini del precetto</a>
         <a href="/interessi-moratori/">Calcolo interessi moratori</a>
       </nav>
+      <nav class="foot-col" aria-label="Servizi">
+        <h2>Servizi</h2>
+        <a href="/recupero-crediti/">Recupero crediti</a>
+        <a href="/valutazione-credito/">Valutazione del credito</a>
+        <a href="/condizioni-parere/">Condizioni del parere</a>
+      </nav>
       <nav class="foot-col" aria-label="Verifiche">
         <h2>Verifiche</h2>
         <a href="/tassi/">Tassi e fonti</a>
@@ -162,8 +176,6 @@
       <nav class="foot-col" aria-label="Informazioni">
         <h2>Informazioni</h2>
         <a href="/chi-sono/">Chi sono</a>
-        <a href="/valutazione-credito/">Valutazione del credito</a>
-        <a href="/condizioni-parere/">Condizioni del parere</a>
         <a href="/privacy/">Privacy</a>
         <a href="/note-legali/">Note legali</a>
         <a href="#suggerimenti">Suggerimenti</a>

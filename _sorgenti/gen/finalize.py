@@ -4,6 +4,7 @@
 
 1. Accessibilità: collegamento «Salta al contenuto», titolo della pagina dentro <main>, tabelle che scorrono
    raggiungibili da tastiera (tabindex, role=region, nome), barra del totale su telefono come regione con nome.
+   Precaricamento dei due caratteri principali, che il browser chiede così insieme allo stile e non dopo.
 2. Copia statica dei contenuti scritti da JavaScript (prerender.js), per i crawler che non lo eseguono.
 3. Sitemap con la data di ultima modifica di ogni pagina: cambia solo quando cambia il contenuto (gen/lastmod.json).
 4. robots.txt: motori di ricerca e assistenti AI che cercano e citano le fonti ammessi; crawler che raccolgono
@@ -47,6 +48,13 @@ SCROLL = {  # tabelle che scorrono di lato: nome letto dai lettori di schermo
     'miniTable': 'Dettaglio del calcolo degli interessi moratori',
     'ratesTable': 'Tabella dei tassi moratori dal 2002',
 }
+# caratteri usati da tutte le pagine fin dal primo schermo: testo (Titillium) e titoli (EB Garamond).
+# Gli altri pesi arrivano subito dopo; il latino esteso (file -ext) solo se la pagina ne ha bisogno.
+CARATTERI = ['/fonts/EBGaramond.woff2', '/fonts/TitilliumWeb-Regular.woff2']
+for c in CARATTERI:
+    assert os.path.exists(os.path.join(SITE, c.lstrip('/'))), 'carattere da precaricare inesistente: ' + c
+    assert 'url("%s")' % c in rd(os.path.join(SITE, 'assets', 'style.css')), 'carattere da precaricare non dichiarato nello stile: ' + c
+PRECARICA = ''.join('<link rel="preload" href="%s" as="font" type="font/woff2" crossorigin>\n' % c for c in CARATTERI)
 print('accessibilità')
 for f in html_files():
     rel = os.path.relpath(f, SITE)
@@ -71,8 +79,11 @@ for f in html_files():
     s = re.sub(r'<div class="scroll"><table class="[^"]*" id="([A-Za-z]+)"', scroll, s)
     assert '<div class="scroll">' not in s, rel + ': resta una tabella scorrevole senza nome'
     s = s.replace('<div class="mobilebar" id="mobilebar">', '<div class="mobilebar" id="mobilebar" role="region" aria-label="Totale del prospetto">')
+    if 'rel="preload"' not in s:
+        s, n = re.subn(r'(<link rel="stylesheet" href="/assets/style\.css(?:\?v=[0-9a-f]+)?">)', PRECARICA + r'\1', s, count=1)
+        assert n == 1, rel + ': foglio di stile non trovato'
     wr(f, s)
-print('  salta al contenuto, titolo in <main>, tabelle scorrevoli e barra del totale')
+print('  salta al contenuto, titolo in <main>, tabelle scorrevoli, barra del totale, precaricamento dei caratteri')
 
 # ---------------------------------------------------------------- 2. copia statica dei contenuti scritti da JavaScript
 print('copia statica (prerender.js)')
@@ -95,7 +106,15 @@ for u in urls:
     h = hashlib.sha256(re.sub(r'\?v=[0-9a-f]+', '', s).encode('utf-8')).hexdigest()[:16]  # senza i numeri di versione
     if stato.get(u, {}).get('impronta') != h:
         stato[u] = {'impronta': h, 'data': oggi}
+    # la data dell'ultima modifica nella pagina (riquadro dell'autore e dati strutturati): l'impronta la esclude
+    d = stato[u]['data']
+    f = os.path.join(SITE, u.strip('/'), 'index.html') if u != '/' else os.path.join(SITE, 'index.html')
+    s2 = s.replace('__AGGIORNATA_IT__', '%s.%s.%s' % (d[8:10], d[5:7], d[:4])).replace('__AGGIORNATA__', d)
+    if s2 != s:
+        wr(f, s2)
     righe.append('  <url><loc>%s%s</loc><lastmod>%s</lastmod></url>\n' % (BASE, u, stato[u]['data']))
+for f in html_files():
+    assert '__AGGIORNATA' not in rd(f), os.path.relpath(f, SITE) + ': data di aggiornamento non scritta (pagina fuori dalla sitemap?)'
 wr(STATE, json.dumps(stato, indent=1, ensure_ascii=False) + '\n')
 wr(os.path.join(SITE, 'sitemap.xml'), '<?xml version="1.0" encoding="UTF-8"?>\n'
    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + ''.join(righe) + '</urlset>\n')

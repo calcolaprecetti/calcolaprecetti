@@ -30,15 +30,34 @@ G3 = '/guide/precetto-notificato/'
 
 # --------------------------------------------------------------------------- parti comuni
 GUIDE = False  # sezione «Guide»: spenta finché le guide non sono controllate (True per rimetterla: schede, piè di pagina, rimandi)
-TABS = [
+TABS = [  # parte «Per gli avvocati»: gli strumenti
     ('/', '<span><span class="tl">Somme del </span><span class="tm">precetto</span></span>', 'home'),
     ('/termini-precetto/', '<span><span class="tm">Termini</span><span class="tl"> del precetto</span></span>', 'termini'),
     ('/interessi-moratori/', '<span><span class="tl">Calcolo interessi </span><span class="tm">moratori</span></span>', 'mora'),
+    ('/tassi/', '<span><span class="tm">Tassi</span><span class="tl"> e fonti</span></span>', 'tassi'),
 ] + ([('/guide/', 'Guide', 'guide')] if GUIDE else [])
+TABS_CREDITORI = [  # parte «Per i creditori»: lo studio (valutazione e «Chi sono» si aggiungono più sotto)
+    ('/recupero-crediti/', '<span><span class="tm">Recupero</span><span class="tl"> crediti</span></span>', 'recupero'),
+]
+CREDITORI = {'recupero', 'valutazione', 'chi', 'newsletter'}  # pagine della parte «Per i creditori»
+AUD_A = ('<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><rect x="3" y="1.5" width="10" height="13" '
+         'rx="1.5" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M5.5 4.5h5M5.5 8h1M9.5 8h1M5.5 11h1M9.5 11h1" '
+         'stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>')  # calcolatrice
+AUD_C = ('<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.3" fill="none" '
+         'stroke="currentColor" stroke-width="1.4"/><path d="M10.3 5.5a2.9 2.9 0 1 0 0 5M4.9 7.2h4.2M4.9 8.8h4.2" fill="none" '
+         'stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>')  # moneta con l'euro
 
 
 def nav(current, actions=''):
-    """Intestazione e barra delle sezioni. current: home, termini, mora, guide (indice), guida (una guida), altro."""
+    """Barra «Per gli avvocati | Per i creditori», intestazione e schede della parte in cui sta la pagina.
+    current: home, termini, mora, tassi, guide (indice), guida (una guida) per gli avvocati; recupero, valutazione, chi
+    per i creditori; altro (privacy, note legali, 404): nessuna delle due, con le schede degli strumenti."""
+    lato = 'c' if current in CREDITORI else ('' if current == 'altro' else 'a')
+
+    def parte(key, href, icon, label, conta):
+        cur = ' aria-current="true"' if lato == key else ''
+        return '    <a href="%s"%s data-conta="%s">%s<span>%s</span></a>' % (href, cur, conta, icon, label)
+
     def a(href, label, key):
         cur = ''
         if current == key:
@@ -47,6 +66,12 @@ def nav(current, actions=''):
             cur = ' aria-current="true"'
         return '    <a href="%s"%s>%s</a>' % (href, cur, label)
     return '\n'.join([
+        '<nav class="aud" aria-label="Parti del sito">',
+        '  <div class="wrap">',
+        parte('a', '/', AUD_A, 'Per gli avvocati', 'vai-avvocati'),
+        parte('c', '/recupero-crediti/', AUD_C, 'Per i creditori', 'vai-creditori'),
+        '  </div>',
+        '</nav>',
         '<header class="top">',
         '  <div class="wrap">',
         '    <a class="brand" href="/"><img src="/logo.svg" alt="" width="28" height="28" '
@@ -56,7 +81,7 @@ def nav(current, actions=''):
         '</header>',
         '<nav class="tools" aria-label="Sezioni del sito">',
         '  <div class="wrap">',
-    ] + [a(h, l, k) for h, l, k in TABS] + [
+    ] + [a(h, l, k) for h, l, k in (TABS_CREDITORI if lato == 'c' else TABS)] + [
         '  </div>',
         '</nav>',
     ])
@@ -86,7 +111,7 @@ CONTACT = contact(CONTACT_GUIDE)
 
 CHI_SONO = True  # variante «sito unico»: pagina «Chi sono» con i contatti dentro calcolaprecetti.it (False per toglierla)
 if CHI_SONO:
-    TABS.append(('/chi-sono/', 'Chi sono', 'chi'))
+    TABS_CREDITORI.append(('/chi-sono/', 'Chi sono', 'chi'))
 BY = '<a href="/chi-sono/"><span class="js-titolare"></span></a>' if CHI_SONO else '<span class="js-titolare"></span>'
 LINKEDIN = 'https://www.linkedin.com/company/calcolaprecetto-it/'
 ICON_OUT = ('<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path d="M9.5 2.5h4v4M13.5 2.5 7.5 8.5'
@@ -100,7 +125,7 @@ NEWSLETTER = False  # spenta: l'idea è stata accantonata (True per rimetterla)
 # Vuoto: al posto del collegamento compare un segnaposto, va bene solo per l'anteprima.
 NEWSLETTER_URL = ''
 if NEWSLETTER:  # scheda nella barra in alto, prima di «Chi sono»
-    TABS.insert(len(TABS) - (1 if CHI_SONO else 0), ('/newsletter/', 'Newsletter', 'newsletter'))
+    TABS_CREDITORI.insert(len(TABS_CREDITORI) - (1 if CHI_SONO else 0), ('/newsletter/', 'Newsletter', 'newsletter'))
 
 # Valutazione del credito: parere scritto a pagamento, prestazione professionale dell'avvocato.
 VALUTAZIONE = True
@@ -111,8 +136,8 @@ VALUTAZIONE_REGIME = 'forfettario'  # 'forfettario' (niente IVA; bollo da 2 € 
 VALUTAZIONE_CONSEGNA = 'un giorno lavorativo'  # termine di consegna del parere, dal pagamento
 PIVA = '04591770245'  # partita IVA del titolare: va in home page quando il sito offre prestazioni a pagamento
 if VALUTAZIONE:
-    TABS.insert(len(TABS) - (1 if CHI_SONO else 0),
-                ('/valutazione-credito/', '<span><span class="tm">Valutazione</span><span class="tl"> del credito</span></span>', 'valutazione'))
+    TABS_CREDITORI.insert(len(TABS_CREDITORI) - (1 if CHI_SONO else 0),
+                          ('/valutazione-credito/', '<span><span class="tm">Valutazione</span><span class="tl"> del credito</span></span>', 'valutazione'))
 
 FOOTER = '''<footer class="foot">
   <div class="wrap">
@@ -128,6 +153,11 @@ FOOTER = '''<footer class="foot">
         <a href="/termini-precetto/">Termini del precetto</a>
         <a href="/interessi-moratori/">Calcolo interessi moratori</a>
       </nav>
+      <nav class="foot-col" aria-label="Servizi">
+        <h2>Servizi</h2>
+        <a href="/recupero-crediti/">Recupero crediti</a>
+''' + ('        <a href="/valutazione-credito/">Valutazione del credito</a>\n        <a href="/condizioni-parere/">Condizioni del parere</a>\n'
+       if VALUTAZIONE else '') + '''      </nav>
 ''' + ('''      <nav class="foot-col" aria-label="Guide">
         <h2>Guide</h2>
         <a href="/guide/#atto">Approfondimenti per l'atto</a>
@@ -141,7 +171,7 @@ FOOTER = '''<footer class="foot">
       </nav>
       <nav class="foot-col" aria-label="Informazioni">
         <h2>Informazioni</h2>
-''' + ('        <a href="/chi-sono/">Chi sono</a>\n' if CHI_SONO else '') + ('        <a href="/valutazione-credito/">Valutazione del credito</a>\n        <a href="/condizioni-parere/">Condizioni del parere</a>\n' if VALUTAZIONE else '') + ('        <a href="/newsletter/">Newsletter</a>\n' if NEWSLETTER else '') + '''        <a href="/privacy/">Privacy</a>
+''' + ('        <a href="/chi-sono/">Chi sono</a>\n' if CHI_SONO else '') + ('        <a href="/newsletter/">Newsletter</a>\n' if NEWSLETTER else '') + '''        <a href="/privacy/">Privacy</a>
         <a href="/note-legali/">Note legali</a>
         <a href="#suggerimenti">Suggerimenti</a>
       </nav>

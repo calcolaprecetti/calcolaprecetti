@@ -443,6 +443,21 @@
     $('#mailBtn').href = 'mailto:' + SITO.email + '?subject=' + encodeURIComponent('Suggerimento per ' + SITO.nome);
     $('#mailText').textContent = SITO.email;
   }
+  // tabella del compenso del precetto sotto il calcolo: stessi dati e stessa forma della pagina dei tassi (info.js)
+  function renderCompenso() {
+    var tp = $('#tabPrecetto');
+    if (tp) {
+      tp.innerHTML = '<thead><tr><th>Valore del credito</th><th class="r">Minimo</th><th class="r">Medio</th><th class="r">Massimo</th></tr></thead><tbody>' +
+        TABELLE.precetto.map(function (t, i) {
+          var from = i === 0 ? 0.01 : TABELLE.precetto[i - 1][0] + 0.01;
+          return '<tr><td>da ' + C.eur(from) + ' a ' + C.eur(t[0]) + '</td><td class="r">' + C.eur(t[1] / 2) + '</td><td class="r"><strong>' +
+            C.eur(t[1]) + '</strong></td><td class="r">' + C.eur(t[1] * 1.5) + '</td></tr>';
+        }).join('') + '</tbody>';
+    }
+    $$('.js-accessori').forEach(function (e) {
+      e.textContent = 'rimborso forfettario ' + TABELLE.rimborsoForfettario + '%, C.P.A. ' + TABELLE.cpa + '% e, se dovuta, I.V.A. ' + TABELLE.iva + '%';
+    });
+  }
 
   /* ---------- casi di verifica: la pagina «Tassi e verifiche» apre /#caso-1, /#caso-2... (dati in core.js, CASI) ---------- */
   function caseFromHash() {
@@ -477,6 +492,7 @@
   $('#btnPrint').addEventListener('click', function () { try { window.print(); } catch (e) { /* non disponibile */ } });
   renderFoot();
   renderContact();
+  renderCompenso();
   refresh();
   caseFromHash();
   window.addEventListener('hashchange', function () { // stessa pagina: indirizzo cambiato a mano o caso aperto di nuovo

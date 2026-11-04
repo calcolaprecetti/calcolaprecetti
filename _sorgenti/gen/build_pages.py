@@ -17,6 +17,12 @@ from build_guides import (BASE, CHI_SONO, CONTACT_SITO, FOOTER, G3, GUIDE, ICON_
 
 CONTACT = contact(CONTACT_SITO)
 
+# Dati strutturati collegati: il sito e il titolare hanno un identificativo stabile (@id), richiamato da ogni pagina.
+# La persona è descritta per intero nella pagina «Chi sono»; le altre pagine la richiamano.
+SITO_ID = BASE + '/#sito'
+PERSONA_ID = BASE + '/chi-sono/#avvocato'
+AGG = '__AGGIORNATA__'  # data di ultima modifica della pagina: la scrive finalize.py, la stessa della sitemap
+
 
 def crumbs_ld(name, path):
     return {"@type": "BreadcrumbList", "itemListElement": [
@@ -37,8 +43,12 @@ def intro(crumb, h1, text):
     ])
 
 
-def page(title, desc, path, og, ld, current, body, scripts, noscript=None):
+def page(title, desc, path, og, ld, current, body, scripts, noscript=None, autore_box=False):
     kw = {} if noscript is None else {'noscript': noscript}
+    if autore_box:  # in fondo al contenuto principale
+        i = body.rindex('</main>')
+        body = body[:i] + autore() + body[i:]
+    ld = con_nodi(ld)
     return '\n'.join([
         head(title, desc, path, og, ld, og_type='website'),
         '<body>',
@@ -51,6 +61,27 @@ def page(title, desc, path, og, ld, current, body, scripts, noscript=None):
         FOOTER,
         tail(*scripts, **kw),
     ])
+
+
+def con_nodi(ld):
+    """Aggiunge al grafo il sito e, se la pagina non la descrive già per intero, la persona."""
+    if '@graph' not in ld:
+        return ld
+    import json
+    testo = json.dumps(ld)
+    extra = [{"@type": "WebSite", "@id": SITO_ID, "name": "calcolaprecetti.it", "url": BASE + "/", "inLanguage": "it-IT",
+              "publisher": {"@id": PERSONA_ID}}]
+    if '"@id": "%s", "name"' % PERSONA_ID not in testo:
+        extra.append({"@type": "Person", "@id": PERSONA_ID, "name": NOME, "jobTitle": "Avvocato", "url": BASE + '/chi-sono/'})
+    return dict(ld, **{'@graph': ld['@graph'] + extra})
+
+
+def autore():
+    """Riquadro con chi cura la pagina e la data dell'ultima modifica (la scrive finalize.py)."""
+    foto = ('<img src="%s" alt="" width="56" height="56" loading="lazy" decoding="async">' % PHOTO) if PHOTO else ''
+    return ('<aside class="autore" aria-label="Chi cura la pagina">%s<p>A cura dell\'<a href="/chi-sono/">avv. %s</a>, '
+            'iscritto all\'Ordine degli Avvocati di %s.<span class="agg">Pagina aggiornata il '
+            '<time datetime="__AGGIORNATA__">__AGGIORNATA_IT__</time>.</span></p></aside>\n' % (foto, NOME, FORO))
 
 
 # =========================================================================== termini del precetto
@@ -144,7 +175,8 @@ T_BODY = '''
 </main>
 '''
 T_LD = {"@context": "https://schema.org", "@graph": [
-    {"@type": "WebApplication", "name": "Termini del precetto", "url": BASE + T_PATH,
+    {"@type": "WebApplication", "name": "Termini del precetto", "url": BASE + T_PATH, "isPartOf": {"@id": SITO_ID},
+     "author": {"@id": PERSONA_ID}, "dateModified": AGG,
      "description": "Calcolo dei termini del precetto: 10 giorni per adempiere, inizio dell'esecuzione e 90 giorni di efficacia, "
                     "con la proroga dei festivi e la sospensione per la ricerca dei beni.",
      "applicationCategory": "BusinessApplication", "operatingSystem": "Tutti", "inLanguage": "it-IT", "isAccessibleForFree": True,
@@ -232,7 +264,7 @@ X_BODY = '''
 '''
 X_LD = {"@context": "https://schema.org", "@graph": [
     {"@type": "WebPage", "name": "Tassi, fonti e verifiche", "url": BASE + X_PATH, "description": X_DESC, "inLanguage": "it-IT",
-     "isPartOf": {"@type": "WebSite", "name": "calcolaprecetti.it", "url": BASE + "/"}},
+     "isPartOf": {"@id": SITO_ID}, "author": {"@id": PERSONA_ID}, "dateModified": AGG},
     crumbs_ld('Tassi e verifiche', X_PATH)]}
 
 
@@ -272,8 +304,8 @@ C_PHOTO = ('<img class="chi-photo" src="%s" alt="Avv. %s" width="112" height="11
            '<div class="chi-photo" role="img" aria-label="Spazio per la foto"><span>Foto</span></div>')
 C_LINKEDIN = ('<a href="%s" target="_blank" rel="noopener noreferrer">Il mio profilo</a>' % LINKEDIN_PERSONALE
               if LINKEDIN_PERSONALE else ph('collegamento al profilo'))
-VAL_CHI = ('      <p>Se hai un credito da recuperare, puoi chiedermi un parere scritto: trovi come funziona nella pagina della '
-           '<a href="/valutazione-credito/">valutazione del credito</a>.</p>\n')
+VAL_CHI = ('      <p>Se hai un credito da recuperare, nella pagina <a href="/recupero-crediti/" data-conta="recupero-da-chi">Recupero crediti</a> '
+           'trovi come lavoro; se prima vuoi un parere scritto, c\'è la <a href="/valutazione-credito/">valutazione del credito</a>.</p>\n')
 NL_CHI = ('      <p>Ogni due settimane scrivo un consiglio pratico sul recupero crediti: lo ricevi con la '
           '<a href="/newsletter/">newsletter</a>.</p>\n')
 C_BODY = '\n'.join([
@@ -310,7 +342,7 @@ C_BODY = '\n'.join([
   </div>
 </main>
 '''
-_person = {"@type": "Person", "name": NOME, "jobTitle": "Avvocato",
+_person = {"@type": "Person", "@id": PERSONA_ID, "name": NOME, "jobTitle": "Avvocato", "url": BASE + '/chi-sono/',
            "memberOf": {"@type": "Organization", "name": "Ordine degli Avvocati di " + FORO}}
 if PHOTO:
     _person["image"] = BASE + PHOTO
@@ -319,7 +351,8 @@ if LINKEDIN_PERSONALE:
 _person["workLocation"] = {"@type": "Place", "address": {"@type": "PostalAddress", "addressLocality": "Bassano del Grappa",
                                                          "addressRegion": "VI", "addressCountry": "IT"}}
 C_LD = {"@context": "https://schema.org", "@graph": [
-    {"@type": "ProfilePage", "url": BASE + C_PATH, "inLanguage": "it-IT", "mainEntity": _person},
+    {"@type": "ProfilePage", "url": BASE + C_PATH, "inLanguage": "it-IT", "isPartOf": {"@id": SITO_ID}, "dateModified": AGG,
+     "mainEntity": _person},
     crumbs_ld('Chi sono', C_PATH)]}
 
 
@@ -428,7 +461,7 @@ V_BODY = intro('Valutazione del credito', 'Valutazione del <mark>credito</mark>'
       <ul class="svc-list">
         <li>Consegna entro """ + V_GG + """ dal pagamento</li>
         <li>Non servono nomi né dati del debitore: bastano i fatti</li>
-        <li>Se poi mi affidi il recupero, il costo del parere viene scalato dal compenso</li>
+        <li>Se poi mi <a href="/recupero-crediti/" data-conta="recupero-da-valutazione">affidi il recupero</a>, il costo del parere viene scalato dal compenso</li>
       </ul>
       """ + V_BTN + """
       <p class="hint">Il questionario si apre su Tally, il servizio che raccoglie le risposte. Si paga con carta, tramite Stripe.</p>
@@ -513,6 +546,91 @@ K_BODY = intro('<a href="/valutazione-credito/">Valutazione del credito</a> <spa
 """
 
 
+# =========================================================================== recupero crediti (servizio, parte «Per i creditori»)
+R_PATH = '/recupero-crediti/'
+R_TITLE = 'Recupero crediti con un avvocato: dalla diffida al pignoramento'
+R_DESC = ('Fatture non pagate, compensi, prestiti: recupero crediti per imprese, professionisti e privati, dalla diffida '
+          'al pignoramento, con preventivo scritto.')
+R_OG = 'Recupero crediti per imprese, professionisti e privati: diffida, decreto ingiuntivo, precetto e pignoramento.'
+R_BODY = intro('Recupero crediti', 'Recupero <mark>crediti</mark>',
+               "Assisto imprese, professionisti e privati che devono recuperare un credito: dalla lettera di diffida al "
+               "decreto ingiuntivo, fino al precetto e al pignoramento. Prima di iniziare ricevi un preventivo scritto.") + """
+
+<main class="wrap page">
+  <div class="chi svc">
+    <aside class="svc-card" id="affida" aria-labelledby="hAffida">
+      <p class="send-l" id="hAffida">Affidami il recupero</p>
+      <p class="svc-lead">Scrivimi chi sei, quanto ti devono e da quando, e chi è il debitore: il nome mi serve per verificare che non ci siano conflitti di interessi.</p>
+      <ul class="svc-list">
+        <li>Preventivo scritto prima di iniziare</li>
+        <li>Studio a """ + STUDIO_A + """</li>
+        <li>Anche a distanza: atti, depositi e notifiche sono telematici</li>
+      </ul>
+      <a class="btn btn-primary" href="mailto:info@calcolaprecetti.it?subject=Recupero%20crediti" data-conta="contatto-recupero">Scrivimi un'email</a>
+      <p class="svc-mail" aria-live="polite">Il pulsante apre il programma di posta. Se usi la posta nel browser, scrivi a <a href="mailto:info@calcolaprecetti.it?subject=Recupero%20crediti" data-conta="contatto-recupero">info@calcolaprecetti.it</a> <button type="button" class="linkbtn" data-copia="info@calcolaprecetti.it" data-conta="copia-email-recupero">Copia l'indirizzo</button></p>
+      <p class="hint">Nel primo messaggio non servono documenti: se servono, te li chiedo io.</p>
+      <p class="svc-alt">Vuoi prima sapere se conviene? Con la <a href="/valutazione-credito/" data-conta="valutazione-da-recupero">valutazione del credito</a> ricevi un parere scritto a prezzo fisso, senza dirmi chi è il debitore.</p>
+    </aside>
+    <article class="prose">
+      <h2>Per chi</h2>
+      <ul class="crit">
+        <li><strong>Imprese e professionisti</strong> con fatture non pagate da altre imprese o da enti pubblici: oltre al capitale spettano gli interessi moratori (tasso BCE più 8 punti) e 40 € di risarcimento forfettario (D.Lgs. 231/2002). Puoi calcolarli con lo strumento degli <a href="/interessi-moratori/">interessi moratori</a>.</li>
+        <li><strong>Professionisti</strong> con compensi non pagati da clienti privati.</li>
+        <li><strong>Privati</strong>: prestiti, canoni di locazione, somme riconosciute da una sentenza o da un accordo.</li>
+      </ul>
+
+      <h2>Come si recupera un credito</h2>
+      <p class="tl-nota">Le fasi, una dopo l'altra, con i tempi di ciascuna. Sono indicativi: dipendono dal debitore, dal tribunale e da cosa si riesce a pignorare. Se il debitore paga dopo la diffida, ci si ferma lì.</p>
+      <ol class="tl">
+        <li><span class="tl-t">Valutazione</span><span class="tl-q">Pochi giorni dai documenti</span>
+          <span class="tl-d">Guardo i documenti: prova scritta del credito, scadenze, prescrizione, eventuali contestazioni. E cosa si sa del debitore, perché un credito vale quanto la possibilità di incassarlo.</span></li>
+        <li><span class="tl-t">Diffida</span><span class="tl-q">Termine per pagare: di solito 10–15 giorni</span>
+          <span class="tl-d">Una lettera dell'avvocato con un termine per pagare: mette in mora il debitore e interrompe la prescrizione.</span></li>
+        <li><span class="tl-t">Decreto ingiuntivo</span><span class="tl-q">Da qualche settimana a qualche mese, secondo il tribunale; poi 40 giorni per l'opposizione</span>
+          <span class="tl-d">Se il debitore non paga e c'è una prova scritta del credito, il giudice ordina il pagamento senza udienza. In alcuni casi il decreto è esecutivo subito.</span></li>
+        <li><span class="tl-t">Precetto</span><span class="tl-q">10 giorni per pagare; il pignoramento va iniziato entro 90 giorni</span>
+          <span class="tl-d">Con il titolo esecutivo (sentenza, decreto ingiuntivo esecutivo, assegno o cambiale) si intima al debitore di pagare (artt. 480 e 481 c.p.c.). Le somme e le scadenze le calcolo con gli <a href="/">strumenti di questo sito</a>.</span></li>
+        <li><span class="tl-t">Pignoramento</span><span class="tl-q">Da alcuni mesi, per conti e stipendi, a qualche anno, per gli immobili</span>
+          <span class="tl-d">Pignoramento del conto corrente, dello stipendio o di altri crediti verso terzi, di beni mobili o immobili. I beni si possono cercare anche nelle banche dati pubbliche (art. 492-bis c.p.c.).</span></li>
+        <li class="tl-fine"><span class="tl-t">Incasso</span><span class="tl-q">Alla fine della procedura; lo stipendio a rate mensili</span>
+          <span class="tl-d">Nel pignoramento presso terzi paga direttamente chi doveva le somme al debitore, come la banca o il datore di lavoro; se si vendono beni, si incassa il ricavato della vendita.</span></li>
+      </ol>
+      <p>Se il debitore è insolvente e si apre una procedura come la liquidazione giudiziale, il credito si fa valere con la domanda di ammissione al passivo.</p>
+
+      <h2>Costi</h2>
+      <ul class="crit">
+        <li>Prima di iniziare ricevi un preventivo scritto, con compenso, spese e contributi indicati separatamente.</li>
+        <li>Le spese liquidate nel decreto ingiuntivo e quelle del precetto sono a carico del debitore: se paga, le recuperi; se non paga, restano a carico tuo.</li>
+        <li>Se prima hai chiesto la <a href="/valutazione-credito/">valutazione del credito</a>, il costo del parere viene scalato dal compenso.</li>
+        <li>L'incasso non si può garantire: dipende da chi è il debitore e da cosa possiede. Prima di iniziare ti dico cosa è realistico aspettarsi.</li>
+      </ul>
+
+      <h2>Dove</h2>
+      <p>Lo studio è a """ + STUDIO_A + """ e sono iscritto all'Ordine degli Avvocati di """ + FORO + """. Seguo pratiche anche fuori provincia: atti, depositi e notifiche sono telematici e ci si può sentire a distanza.</p>
+    </article>
+  </div>
+</main>
+"""
+
+
+# =========================================================================== valutazione: pagina dopo il questionario (Tally vi reindirizza)
+# Non indicizzata: serve a contare in Umami le richieste completate (pagina vista /valutazione-credito/grazie/).
+Y_PATH = '/valutazione-credito/grazie/'
+Y_DESC = 'Richiesta di valutazione del credito ricevuta: cosa succede adesso.'
+Y_BODY = intro('<a href="/valutazione-credito/">Valutazione del credito</a> <span>›</span> Richiesta ricevuta',
+               'Richiesta <mark>ricevuta</mark>', 'Grazie: ho ricevuto la richiesta e il pagamento.') + """
+
+<main class="wrap page">
+  <article class="prose">
+    <p>Entro """ + V_GG + """ dal pagamento ti mando un'email con il parere e la valutazione del tuo credito, in PDF firmato, insieme alla fattura.</p>
+    <p>Per qualsiasi domanda scrivimi a <a href="mailto:info@calcolaprecetti.it">info@calcolaprecetti.it</a>. Anche nei messaggi, non indicare nomi o dati del debitore.</p>
+    <p>avv. """ + NOME + """</p>
+    <p class="after"><a href="/recupero-crediti/" data-conta="recupero-da-grazie">Come lavoro se poi mi affidi il recupero</a></p>
+  </article>
+</main>
+"""
+
+
 # =========================================================================== pagina «non trovata» (404.html)
 # GitHub Pages la mostra per ogni indirizzo che non esiste: tutti i collegamenti sono assoluti.
 E_DESC = "L'indirizzo che hai aperto non esiste o è cambiato: ecco le pagine di calcolaprecetti.it."
@@ -526,6 +644,7 @@ E_BODY = intro('Pagina non trovata', 'Pagina <mark>non trovata</mark>',
       <li><a href="/termini-precetto/">Termini del precetto: 10 e 90 giorni</a></li>
       <li><a href="/interessi-moratori/">Calcolo degli interessi moratori</a></li>
       <li><a href="/tassi/">Tassi e verifiche</a></li>
+      <li><a href="/recupero-crediti/">Recupero crediti</a></li>
 ''' + ('      <li><a href="/valutazione-credito/">Valutazione del credito</a></li>\n' if VALUTAZIONE else '') + ('      <li><a href="/chi-sono/">Chi sono</a></li>\n' if CHI_SONO else '') + '''    </ul>
   </article>
 </main>
@@ -534,7 +653,7 @@ E_BODY = intro('Pagina non trovata', 'Pagina <mark>non trovata</mark>',
 
 def simple_ld(name, path, desc):
     return {"@context": "https://schema.org", "@graph": [
-        {"@type": "WebPage", "name": name, "url": BASE + path, "description": desc, "inLanguage": "it-IT"},
+        {"@type": "WebPage", "name": name, "url": BASE + path, "description": desc, "inLanguage": "it-IT", "isPartOf": {"@id": SITO_ID}},
         crumbs_ld(name, path)]}
 
 
@@ -544,9 +663,9 @@ if __name__ == '__main__':
     L_DESC = "Note legali di calcolaprecetti.it: titolare del sito, limiti dello strumento di calcolo e diritti d'autore."
     pages = [
         (T_PATH, page(T_TITLE, T_DESC, T_PATH, 'I 10 e i 90 giorni del precetto, con la proroga dei festivi e la sospensione per la ricerca dei beni.',
-                      T_LD, 'termini', T_BODY, ['termini.js'])),
+                      T_LD, 'termini', T_BODY, ['termini.js'], autore_box=True)),
         (X_PATH, page(X_TITLE, X_DESC, X_PATH, 'Interessi legali e moratori, compenso del precetto: le tabelle del sito con le fonti e i casi di verifica.',
-                      X_LD, 'altro', X_BODY, ['info.js'])),
+                      X_LD, 'tassi', X_BODY, ['info.js'], autore_box=True)),
         (P_PATH, page('Informativa privacy – calcolaprecetti.it', P_DESC, P_PATH, P_DESC, simple_ld('Informativa privacy', P_PATH, P_DESC),
                       'altro', P_BODY, ['info.js'], noscript='')),
         (L_PATH, page('Note legali – calcolaprecetti.it', L_DESC, L_PATH, L_DESC, simple_ld('Note legali', L_PATH, L_DESC),
@@ -556,10 +675,34 @@ if __name__ == '__main__':
         pages.append((C_PATH, page('Chi sono – calcolaprecetti.it', C_DESC, C_PATH, C_DESC, C_LD,
                                    'chi', C_BODY, ['info.js'], noscript='')))  # info.js: piè di pagina e contatti
     if VALUTAZIONE:
-        pages.append((V_PATH, page(V_TITLE, V_DESC, V_PATH, V_OG, simple_ld('Valutazione del credito', V_PATH, V_DESC),
-                                   'valutazione', V_BODY, ['info.js'], noscript='')))
+        V_SERVIZIO = {"@type": "Service", "@id": BASE + V_PATH + '#servizio', "name": "Valutazione del credito",
+                      "serviceType": "Parere scritto di un avvocato sul recupero di un credito", "description": V_DESC,
+                      "url": BASE + V_PATH, "provider": {"@id": PERSONA_ID}, "areaServed": {"@type": "Country", "name": "Italia"}}
+        if VALUTAZIONE_PREZZO:
+            V_SERVIZIO["offers"] = {"@type": "Offer", "price": V_TOTALE.replace(',', '.'), "priceCurrency": "EUR", "url": BASE + V_PATH}
+        V_LD = {"@context": "https://schema.org", "@graph": [
+            {"@type": "WebPage", "name": "Valutazione del credito", "url": BASE + V_PATH, "description": V_DESC, "inLanguage": "it-IT",
+             "isPartOf": {"@id": SITO_ID}, "dateModified": AGG, "mainEntity": {"@id": BASE + V_PATH + '#servizio'}},
+            V_SERVIZIO, crumbs_ld('Valutazione del credito', V_PATH)]}
+        pages.append((V_PATH, page(V_TITLE, V_DESC, V_PATH, V_OG, V_LD,
+                                   'valutazione', V_BODY, ['info.js'], noscript='', autore_box=True)))
         pages.append((K_PATH, page('Condizioni del parere – calcolaprecetti.it', K_DESC, K_PATH, K_DESC,
                                    simple_ld('Condizioni del parere', K_PATH, K_DESC), 'valutazione', K_BODY, ['info.js'], noscript='')))
+    R_LD = {"@context": "https://schema.org", "@graph": [
+        {"@type": "WebPage", "name": "Recupero crediti", "url": BASE + R_PATH, "description": R_DESC, "inLanguage": "it-IT",
+         "isPartOf": {"@id": SITO_ID}, "dateModified": AGG, "mainEntity": {"@id": BASE + R_PATH + '#servizio'}},
+        {"@type": "Service", "@id": BASE + R_PATH + '#servizio', "name": "Recupero crediti",
+         "serviceType": "Assistenza legale per il recupero crediti", "description": R_DESC, "url": BASE + R_PATH,
+         "provider": {"@id": PERSONA_ID}, "areaServed": {"@type": "Country", "name": "Italia"}},
+        crumbs_ld('Recupero crediti', R_PATH)]}
+    pages.append((R_PATH, page(R_TITLE, R_DESC, R_PATH, R_OG, R_LD,
+                               'recupero', R_BODY, ['info.js'], noscript='', autore_box=True)))
+    if VALUTAZIONE:  # pagina dopo il questionario: fuori dalla sitemap e non indicizzata
+        y = page('Richiesta ricevuta – calcolaprecetti.it', Y_DESC, Y_PATH, Y_DESC, simple_ld('Richiesta ricevuta', Y_PATH, Y_DESC),
+                 'valutazione', Y_BODY, ['info.js'], noscript='')
+        canon_y = '<link rel="canonical" href="%s%s">\n' % (BASE, Y_PATH)
+        assert y.count(canon_y) == 1
+        pages.append((Y_PATH, y.replace(canon_y, '<meta name="robots" content="noindex">\n')))
     import shutil
     for flag, folder in ((NEWSLETTER, 'newsletter'), (VALUTAZIONE, 'valutazione-credito'), (VALUTAZIONE, 'condizioni-parere')):
         if not flag:  # funzione spenta: nel sito non resta la sua pagina
