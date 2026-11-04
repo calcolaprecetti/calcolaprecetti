@@ -21,7 +21,7 @@ import re
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from build_guides import nav, FOOTER, CHI_SONO, GUIDE, NEWSLETTER, VALUTAZIONE  # noqa: E402  stesse barre e stesso piè di pagina delle pagine generate
+from build_guides import nav, FOOTER, CHI_SONO, GUIDE, NEWSLETTER, VALUTAZIONE, faq_html, plain  # noqa: E402  stesse barre e stesso piè di pagina delle pagine generate
 
 # percorsi relativi: questo file sta in _sorgenti/gen; il sito pubblicato è la radice del repository
 GEN = os.path.dirname(os.path.abspath(__file__))
@@ -71,17 +71,74 @@ css = swap(css,
            '@media(min-width:720px){.foot-grid{grid-template-columns:minmax(0,1.6fr) repeat(3,minmax(0,1fr));gap:32px}}',
            '@media(min-width:720px){.foot-grid{grid-template-columns:repeat(%d,minmax(0,1fr));gap:28px 24px}.foot-about p{max-width:60ch}}\n'
            '@media(min-width:1000px){.foot-grid{grid-template-columns:minmax(0,1.5fr) repeat(%d,minmax(0,1fr));gap:32px}.foot-about{grid-column:auto}.foot-about p{max-width:38ch}}'
-           % ((4, 4) if GUIDE else (3, 3)),
+           % ((5, 5) if GUIDE else (4, 4)),
            'piè di pagina a cinque colonne')
-css = swap(css, '@media print{.termini-wrap,.check.fonti{display:none!important}}', '@media print{.termini-wrap,.check.fonti,.after,.home .g-hero{display:none!important}}', 'stampa del prospetto')
+css = swap(css, '@media print{.termini-wrap,.check.fonti{display:none!important}}', '@media print{.termini-wrap,.check.fonti,.after,.home .g-hero,.aud,.home-info{display:none!important}}', 'stampa del prospetto')
+SOLO_GUIDE = '/* ===== solo guide:'  # in guide.css, inizio della parte che serve solo alle pagine delle guide
 for f in ('pages.css', 'guide.css'):
-    css = css.rstrip('\n') + '\n' + io.open(os.path.join(GEN, f), encoding='utf-8').read().rstrip('\n') + '\n'
-    print('  aggiunto ' + f)
+    parte = io.open(os.path.join(GEN, f), encoding='utf-8').read()
+    if f == 'guide.css' and not GUIDE:  # guide spente: solo la parte comune (evidenziatore, barra delle schede, apertura delle pagine)
+        assert parte.count(SOLO_GUIDE) == 1, 'guide.css: inizio della parte delle guide non trovato'
+        parte = parte[:parte.index(SOLO_GUIDE)]
+    css = css.rstrip('\n') + '\n' + parte.rstrip('\n') + '\n'
+    print('  aggiunto ' + f + ('' if GUIDE or f != 'guide.css' else ', parte comune'))
 wr('assets/style.css', css)
 
 # ---------------------------------------------------------------- home
+# spiegazione, compenso del precetto e domande frequenti sotto il calcolo (le ricerche su compenso e spese del precetto)
+HOME_FAQ = [
+    ('Come si calcola il precetto su una sentenza?',
+     'Si inseriscono il capitale e gli interessi come li indica la sentenza, con la decorrenza del dispositivo, e le spese '
+     'di lite liquidate; il calcolo aggiunge gli accessori sui compensi e il compenso del precetto. Gli acconti già ricevuti '
+     'si scalano nell\'ordine dell\'art. 1194 c.c.'),
+    ('E su un decreto ingiuntivo?',
+     'Allo stesso modo: si inseriscono capitale, interessi e spese come li liquida il decreto, e il calcolo aggiunge il '
+     'compenso del precetto sullo scaglione del credito.'),
+    ("Quanto è il compenso per l'atto di precetto?",
+     'Dipende dal valore del credito per cui si procede: la <a href="#compenso">tabella del compenso</a> riporta, per ogni scaglione, il minimo, il '
+     'medio e il massimo secondo i parametri del D.M. 55/2014, con i valori del D.M. 147/2022. Al compenso si aggiungono '
+     'rimborso forfettario, C.P.A. e, se dovuta, I.V.A.'),
+    ('Quali spese si possono chiedere nel precetto?',
+     'Le spese liquidate nel titolo, il compenso del precetto con i suoi accessori e le spese vive documentate, come la '
+     'notifica. I € 40 di risarcimento forfettario dell\'art. 6 del D.Lgs. 231/2002 si chiedono solo se il titolo li riconosce.'),
+    ('Come si imputano gli acconti?',
+     'Nell\'ordine dell\'art. 1194 c.c.: prima alle spese liquidate nel titolo, poi agli interessi maturati fino al pagamento, '
+     'infine al capitale. Il calcolo lo fa da solo e, dopo ogni acconto, calcola gli interessi sul capitale che resta.'),
+    ('Entro quando va eseguito il precetto?',
+     'Il debitore ha almeno 10 giorni dalla notifica per pagare (art. 480 c.p.c.); se l\'esecuzione non inizia entro 90 giorni '
+     'dalla notifica, il precetto perde efficacia (art. 481 c.p.c.). Le date esatte, con festivi e sospensioni, le calcoli '
+     'nella pagina dei <a href="/termini-precetto/">termini del precetto</a>.'),
+]
+from build_pages import autore as _autore  # noqa: E402
+AUTORE_HOME = _autore()
+HOME_INFO = """<section class="home-info" aria-label="Come si calcola e domande frequenti">
+  <div class="prose">
+    <h2 id="come-si-calcola">Come si calcolano le somme del precetto</h2>
+    <p>Il prospetto mette in fila le somme che il precetto intima di pagare, nell'ordine dell'atto:</p>
+    <ol class="terms">
+      <li><strong>capitale</strong> riconosciuto dal titolo, anche in più voci;</li>
+      <li><strong>interessi</strong> dalla decorrenza alla data del conteggio: legali (art. 1284, comma 1, c.c.), moratori commerciali (D.Lgs. 231/2002), legali maggiorati dalla domanda giudiziale (art. 1284, comma 4, c.c.) o al tasso convenzionale;</li>
+      <li><strong>spese liquidate nel titolo</strong>, con rimborso forfettario, C.P.A. e, se dovuta, I.V.A. sui compensi;</li>
+      <li><strong>acconti</strong> già ricevuti, imputati prima alle spese, poi agli interessi e infine al capitale (art. 1194 c.c.);</li>
+      <li><strong>compenso del precetto</strong> con i suoi accessori, e le altre spese, come la notifica.</li>
+    </ol>
+    <p>Per ogni periodo il dettaglio indica il tasso applicato e la sua fonte; le tabelle complete sono nella pagina <a href="/tassi/">Tassi e fonti</a>.</p>
+
+    <h2 id="compenso">Compenso e spese del precetto</h2>
+    <p>Il compenso dell'atto di precetto segue i parametri del D.M. 55/2014, con i valori del D.M. 147/2022, e si calcola sullo scaglione del credito per cui si procede: capitale, interessi e spese, al netto degli acconti. Il calcolo usa il valore medio; in «Opzioni avanzate» puoi scegliere il minimo, il massimo o un importo libero.</p>
+    <div class="scroll"><table class="det rates" id="tabPrecetto"></table></div>
+    <p>Al compenso si aggiungono <span class="js-accessori"></span>. L'I.V.A. si chiede solo se il creditore non la detrae e l'avvocato non è in regime forfettario. Le spese vive documentate, come la notifica o l'imposta di registro del titolo, si aggiungono tra le «Altre spese».</p>
+  </div>
+  <div class="prose">
+""" + faq_html(HOME_FAQ) + """
+  </div>
+""" + AUTORE_HOME + """</section>"""
 print('index.html')
 h = url(rd('index.html'), 'intestazione')
+h = swap(h, "<title>calcolaprecetti.it – Calcolo delle somme dell'atto di precetto</title>",
+         "<title>Calcolo dell'atto di precetto: somme, interessi, compenso e spese</title>", 'titolo con compenso e spese')
+h = swap(h, '<main class="wrap layout">', '<main class="wrap calcolo">\n<div class="layout">', 'calcolo e spiegazione nella stessa area')
+h = swap(h, '  </section>\n</main>', '  </section>\n</div>\n' + HOME_INFO + '\n</main>', 'spiegazione, compenso e domande frequenti')
 h = swap(h,
          "spese del titolo, compenso secondo il D.M. 55/2014 e termini del precetto. Tabella pronta per Word.",
          "spese del titolo e compenso secondo il D.M. 55/2014. Tabella pronta per Word.",
@@ -108,6 +165,7 @@ h = swap(h, '      <div class="warnings" id="warnings" aria-live="polite"></div>
 h = swap(h, '    </div>\n    <p class="sr-only" aria-live="polite" id="srTotal"></p>\n',
          '    </div>\n'
          '    <p class="after"><a href="/termini-precetto/">Precetto notificato? Calcola i termini di 10 e 90 giorni</a></p>\n' +
+         '    <p class="after"><a href="/recupero-crediti/" data-conta="recupero-da-home">Devi recuperare un credito? Assistenza per il recupero crediti</a></p>\n' +
          ('    <p class="after"><a href="/newsletter/">Un consiglio sul recupero crediti ogni due settimane: iscriviti alla newsletter</a></p>\n' if NEWSLETTER else '') +
          '    <p class="sr-only" aria-live="polite" id="srTotal"></p>\n', 'rimando alla pagina dei termini')
 h = block(h, '<section class="wrap termini-wrap" id="termini"', '<section class="wrap contact"', '', 'via il riquadro dei termini')
@@ -125,22 +183,24 @@ h = swap(h, "      <button type=\"button\" class=\"addbtn\" id=\"addItem\">+ Agg
          'casella dei 40 euro (art. 6)')
 h = swap(h, '<meta name="description" content="Calcolo gratuito delle somme da intimare con l\'atto di precetto: capitale, interessi legali e moratori, '
          'acconti ex art. 1194 c.c., spese del titolo e compenso secondo il D.M. 55/2014. Tabella pronta per Word. Nessun cookie.">',
-         '<meta name="description" content="Calcolo gratuito delle somme del precetto: capitale, interessi legali e moratori, acconti, '
-         'spese del titolo e compenso (D.M. 55/2014). Tabella per Word.">', 'descrizione più corta')
+         '<meta name="description" content="Calcolo gratuito delle somme del precetto: capitale, interessi, acconti, spese '
+         'e compenso (D.M. 55/2014), con la tabella dei compensi. Prospetto per Word.">', 'descrizione con il compenso')
 # dati strutturati della home: il sito (nome mostrato da Google) e il calcolatore, con l'autore
 import json  # noqa: E402
-from build_pages import NOME  # noqa: E402  nome del titolare, lo stesso della pagina «Chi sono»
+from build_pages import NOME, SITO_ID, PERSONA_ID, AGG, con_nodi, autore  # noqa: E402  stessi dati della pagina «Chi sono»
 HOME_LD = {"@context": "https://schema.org", "@graph": [
-    {"@type": "WebSite", "name": "calcolaprecetti.it", "url": "https://calcolaprecetti.it/", "inLanguage": "it-IT"},
     {"@type": "WebApplication", "name": "Calcolo delle somme del precetto", "url": "https://calcolaprecetti.it/",
+     "isPartOf": {"@id": SITO_ID}, "dateModified": AGG,
      "description": "Calcolo delle somme da intimare con l'atto di precetto: capitale, interessi legali e moratori, acconti, "
                     "spese del titolo e compenso secondo il D.M. 55/2014, con il prospetto pronto per Word.",
      "applicationCategory": "BusinessApplication", "operatingSystem": "Tutti", "inLanguage": "it-IT", "isAccessibleForFree": True,
      "browserRequirements": "Richiede JavaScript", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "EUR"},
-     "author": {"@type": "Person", "name": NOME, "jobTitle": "Avvocato", "url": "https://calcolaprecetti.it/chi-sono/"}}]}
+     "author": {"@id": PERSONA_ID}},
+    {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": plain(a)}}
+                                         for q, a in HOME_FAQ]}]}
 h = swap(h, '<link rel="stylesheet" href="/assets/style.css">\n',
          '<link rel="stylesheet" href="/assets/style.css">\n<script type="application/ld+json">%s</script>\n'
-         % json.dumps(HOME_LD, ensure_ascii=False), 'dati strutturati della home')
+         % json.dumps(con_nodi(HOME_LD), ensure_ascii=False), 'dati strutturati della home')
 wr('index.html', h)
 
 # ---------------------------------------------------------------- interessi moratori
@@ -179,9 +239,18 @@ if VALUTAZIONE:
     h = swap(h, 'i 10 e i 90 giorni li calcoli nella pagina dei <a href="/termini-precetto/">termini del precetto</a>.</p>',
              'i 10 e i 90 giorni li calcoli nella pagina dei <a href="/termini-precetto/">termini del precetto</a>.</p>\n\n'
              '    <h2>Il credito non è ancora stato pagato?</h2>\n'
-             '    <p>Se vuoi sapere se e come conviene recuperarlo, puoi chiedere una <a href="/valutazione-credito/">valutazione del credito</a>: '
-             'un parere scritto e firmato da un avvocato, con costi e tempi stimati, a prezzo fisso.</p>',
+             '    <p>Se vuoi sapere se e come conviene recuperarlo, puoi chiedere una <a href="/valutazione-credito/" data-conta="valutazione-da-interessi">valutazione del credito</a>: '
+             'un parere scritto e firmato da un avvocato, con costi e tempi stimati, a prezzo fisso. Per affidare il recupero, dalla diffida al '
+             'pignoramento, vedi <a href="/recupero-crediti/" data-conta="recupero-da-interessi">Recupero crediti</a>.</p>',
              'rimando alla valutazione del credito')
+# dati strutturati collegati: l'applicazione fa parte del sito, ha un autore e una data; riquadro dell'autore
+_m = re.search(r'<script type="application/ld\+json">(.*?)</script>', h, re.S)
+_ld = json.loads(_m.group(1))
+_app = [g for g in _ld['@graph'] if g['@type'] == 'WebApplication']
+assert len(_app) == 1
+_app[0].update({'isPartOf': {'@id': SITO_ID}, 'author': {'@id': PERSONA_ID}, 'dateModified': AGG})
+h = h[:_m.start(1)] + json.dumps(con_nodi(_ld), ensure_ascii=False) + h[_m.end(1):]
+h = swap(h, '  </article>\n</main>', '  </article>\n' + autore() + '</main>', 'riquadro dell\'autore')
 h = swap(h, '<button type="button" class="btn btn-primary" id="miniCopy">', '<button type="button" class="btn btn-primary" id="miniCopy" data-conta="copia-moratori">', 'copia contata')
 if NEWSLETTER:
     h = swap(h, 'La tabella completa dal 2002 è più sotto.</p>',
@@ -205,11 +274,11 @@ wr('interessi-moratori/index.html', h)
 print('sitemap.xml')
 wr('sitemap.xml', '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + ''.join(
     '  <url><loc>https://calcolaprecetti.it%s</loc></url>\n' % p for p in (
-        '/', '/termini-precetto/', '/interessi-moratori/', '/tassi/')
+        '/', '/termini-precetto/', '/interessi-moratori/', '/tassi/', '/recupero-crediti/')
     + (('/guide/', '/guide/fattura-non-pagata/', '/guide/decreto-ingiuntivo-tempi-costi/', '/guide/precetto-notificato/') if GUIDE else ())
     + (('/chi-sono/',) if CHI_SONO else ()) + (('/valutazione-credito/',) if VALUTAZIONE else ())
     + (('/newsletter/',) if NEWSLETTER else ())) + '</urlset>\n')
-print('  %d indirizzi' % (4 + (4 if GUIDE else 0) + (1 if CHI_SONO else 0) + (1 if NEWSLETTER else 0) + (1 if VALUTAZIONE else 0)))
+print('  %d indirizzi' % (5 + (4 if GUIDE else 0) + (1 if CHI_SONO else 0) + (1 if NEWSLETTER else 0) + (1 if VALUTAZIONE else 0)))
 for f in ('LICENSE', 'assets/docx.js'):
     print(f)
     wr(f, url(rd(f), 'intestazione'))
@@ -235,9 +304,9 @@ js = swap(js, "  informativaAggiornata: '22.09.2026'",
           "  statistiche: { servizio: 'umami', codice: 'bb2d5a3e-273f-4655-af5b-b3fdc692f6df' }", 'data dell\'informativa e statistiche')
 if GUIDE:
     js = swap(js,
-              "      moratori» con i tassi dell'anno nuovo.\n\n   Regole:",
-              "      moratori» con i tassi dell'anno nuovo.\n\n"
-              "   7) Guide (cartella «guide») - i tassi scritti nel testo e i calcoli\n"
+              "      (_sorgenti/v5/interessi-moratori/index.html).\n\n   Regole:",
+              "      (_sorgenti/v5/interessi-moratori/index.html).\n\n"
+              "   6) Guide (cartella «guide») - i tassi scritti nel testo e i calcoli\n"
               "      rapidi leggono queste tabelle e si aggiornano da soli. Vanno invece\n"
               "      corretti a mano, nel file della singola guida, quando cambia la\n"
               "      legge: nella guida al decreto ingiuntivo la tabella dei costi\n"
@@ -464,6 +533,21 @@ js = block(js, '  /* ---------- testi legali e tabelle ---------- */', '  /* ---
     $('#mailBtn').href = 'mailto:' + SITO.email + '?subject=' + encodeURIComponent('Suggerimento per ' + SITO.nome);
     $('#mailText').textContent = SITO.email;
   }
+  // tabella del compenso del precetto sotto il calcolo: stessi dati e stessa forma della pagina dei tassi (info.js)
+  function renderCompenso() {
+    var tp = $('#tabPrecetto');
+    if (tp) {
+      tp.innerHTML = '<thead><tr><th>Valore del credito</th><th class="r">Minimo</th><th class="r">Medio</th><th class="r">Massimo</th></tr></thead><tbody>' +
+        TABELLE.precetto.map(function (t, i) {
+          var from = i === 0 ? 0.01 : TABELLE.precetto[i - 1][0] + 0.01;
+          return '<tr><td>da ' + C.eur(from) + ' a ' + C.eur(t[0]) + '</td><td class="r">' + C.eur(t[1] / 2) + '</td><td class="r"><strong>' +
+            C.eur(t[1]) + '</strong></td><td class="r">' + C.eur(t[1] * 1.5) + '</td></tr>';
+        }).join('') + '</tbody>';
+    }
+    $$('.js-accessori').forEach(function (e) {
+      e.textContent = 'rimborso forfettario ' + TABELLE.rimborsoForfettario + '%, C.P.A. ' + TABELLE.cpa + '% e, se dovuta, I.V.A. ' + TABELLE.iva + '%';
+    });
+  }
 
   /* ---------- casi di verifica: la pagina «Tassi e verifiche» apre /#caso-1, /#caso-2... (dati in core.js, CASI) ---------- */
   function caseFromHash() {
@@ -486,7 +570,7 @@ js = block(js, '  /* ---------- testi legali e tabelle ---------- */', '  /* ---
 ''', 'via testi legali, tabelle e casi (ora nelle loro pagine)')
 js = swap(js, "  $('#tIcs').addEventListener('click', doIcs);\n", '', 'via il pulsante del calendario')
 js = block(js, "  $$('[data-open]').forEach(function (a) {", "\n\n  if ('IntersectionObserver' in window) {",
-           "  renderFoot();\n  renderContact();\n  refresh();\n  caseFromHash();\n"
+           "  renderFoot();\n  renderContact();\n  renderCompenso();\n  refresh();\n  caseFromHash();\n"
            "  window.addEventListener('hashchange', function () { // stessa pagina: indirizzo cambiato a mano o caso aperto di nuovo\n"
            "    if (MOVED[location.hash.slice(1)]) location.replace(MOVED[location.hash.slice(1)]);\n"
            "    else caseFromHash();\n"

@@ -23,6 +23,21 @@
   var ml = $('#mailBtn'), mt = $('#mailText');
   if (ml) ml.href = 'mailto:' + SITO.email + '?subject=' + encodeURIComponent('Suggerimento per ' + SITO.nome);
   if (mt) mt.textContent = SITO.email;
+  // pulsanti che copiano un testo, per esempio l'indirizzo email per chi usa la posta nel browser
+  $$('[data-copia]').forEach(function (b) {
+    var etichetta = b.textContent;
+    b.addEventListener('click', function () {
+      function esito(ok) {
+        b.textContent = ok ? 'Copiato' : 'Copia non riuscita';
+        setTimeout(function () { b.textContent = etichetta; }, 2000);
+      }
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(b.getAttribute('data-copia')).then(function () { esito(true); }, function () { esito(false); });
+      } else {
+        esito(false);
+      }
+    });
+  });
 
   /* ---------- tassi in vigore ---------- */
   var leg = C.rowAt(C.LEG, today), mora = C.moraNow(today);

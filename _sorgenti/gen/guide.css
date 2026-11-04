@@ -22,6 +22,11 @@
 @media(min-width:940px){.g-hero{grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:56px;align-items:end;padding-top:40px}}
 .g-title{font-family:var(--serif);font-weight:500;font-size:clamp(2.2rem,5.6vw,3.5rem);line-height:1.05;letter-spacing:-.012em;margin:0 0 16px;text-wrap:balance;font-variant-numeric:lining-nums}
 .g-lead{font-size:clamp(1.1rem,2.2vw,1.28rem);line-height:1.45;margin:0;max-width:44ch;color:var(--text)}
+@media print{.g-hero{display:block}}
+
+/* ===== solo guide: da qui in giù lo stile serve solo alle pagine delle guide; patch_site.py lo aggiunge quando GUIDE è acceso ===== */
+
+/* righe sotto il titolo e riquadro «in breve» */
 .g-meta{display:flex;flex-wrap:wrap;gap:2px 16px;margin:18px 0 0;font-size:.88rem;color:var(--muted)}
 @media(min-width:600px){.g-meta{gap:4px 10px}.g-meta span+span::before{content:"·";margin-right:10px;color:var(--line-strong)}}
 .g-brief{background:#fff;border:1px solid var(--line-strong);border-radius:4px;padding:18px 22px 8px;box-shadow:7px 7px 0 var(--ink-soft)}
@@ -203,4 +208,4 @@
 .g-toolslist{list-style:none;margin:0;padding:0;border-top:1px solid var(--line-strong);max-width:68ch}
 .g-toolslist li{padding:12px 0;border-bottom:1px solid var(--line)}
 .g-toolslist a{font-weight:600}
-@media print{.g-toc,.g-tool,.g-move .actions,.g-share{display:none!important}.g-hero,.g-layout{display:block}.g-brief,.g-conto,.g-card{box-shadow:none}.g-move{background:none;color:var(--text);border:1px solid var(--text)}.g-main .g-move h2{color:var(--text)}}
+@media print{.g-toc,.g-tool,.g-move .actions,.g-share{display:none!important}.g-layout{display:block}.g-brief,.g-conto,.g-card{box-shadow:none}.g-move{background:none;color:var(--text);border:1px solid var(--text)}.g-main .g-move h2{color:var(--text)}}

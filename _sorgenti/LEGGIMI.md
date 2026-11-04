@@ -24,18 +24,21 @@ Servono Python 3, Node.js e Playwright con Chromium (per la copia statica delle 
 | Anno nella pagina interessi moratori (ogni gennaio): titolo, descrizione, intestazione | `gen/patch_site.py`, sezione «interessi moratori» |
 | Home: titolo e calcolatore | `v5/index.html` |
 | Home: descrizione e testi aggiunti alla pagina di partenza | `gen/patch_site.py`, sezione «home» |
-| Titoli, descrizioni e testi di termini, tassi, privacy, note legali, chi sono, valutazione, condizioni, pagina 404 | `gen/build_pages.py` |
-| Barra in alto, piè di pagina, sezioni accese o spente (`GUIDE`, `CHI_SONO`, `VALUTAZIONE`, `NEWSLETTER`), prezzo e modulo della valutazione | `gen/build_guides.py` |
+| Titoli, descrizioni e testi di termini, tassi, privacy, note legali, chi sono, recupero crediti, valutazione, condizioni, pagina di ringraziamento della valutazione, pagina 404 | `gen/build_pages.py` |
+| Home: spiegazione sotto il calcolo, compenso del precetto, domande frequenti | `gen/patch_site.py`, `HOME_FAQ` e `HOME_INFO` |
+| Barra «Per gli avvocati / Per i creditori» e schede di ciascuna parte (`TABS`, `TABS_CREDITORI`, `nav`), piè di pagina, sezioni accese o spente (`GUIDE`, `CHI_SONO`, `VALUTAZIONE`, `NEWSLETTER`), prezzo e modulo della valutazione | `gen/build_guides.py` |
 | Dati del titolare | `v5/assets/core.js` (`SITO`: nome, email), `gen/build_guides.py` (`PIVA`), `gen/build_pages.py` (`NOME`, `FORO`, `STUDIO_A`); data dell'informativa in `gen/patch_site.py` |
 | Calcolo delle somme del precetto | `v5/assets/app.js` |
 | Calcolo degli interessi moratori | `v5/assets/mini.js` |
-| Stile | `v5/assets/style.css`, più `gen/pages.css` e `gen/guide.css` |
+| Stile | `v5/assets/style.css`, più `gen/pages.css` e `gen/guide.css` (con le guide spente entra solo la parte comune, fino al commento «solo guide») |
+| Caratteri: file ridotti in `fonts/`, dichiarazioni `@font-face` in testa a `v5/assets/style.css`, caratteri di riserva | `gen/caratteri.py`, dagli originali in `fonts/` di questa cartella |
 
 ## File della radice che si modificano direttamente
 
 Non sono generati: `assets/termini.js` (calcolo dei termini), `assets/info.js` (tabelle, privacy, note legali,
-piè di pagina), le immagini (`assets/foto.jpg`, `og-image.png`, icone, `logo.svg`), i caratteri (`fonts/`),
-`CNAME` e i file di verifica di Google e Bing.
+piè di pagina), le immagini (`assets/foto.jpg`, `og-image.png`, icone, `logo.svg`), le licenze dei caratteri
+(`fonts/OFL-*.txt`), `CNAME` e i file di verifica di Google e Bing. I file dei caratteri in `fonts/` (`.woff2`) li scrive
+`gen/caratteri.py` (sotto).
 
 ## Contenuto della cartella
 
@@ -45,8 +48,8 @@ piè di pagina), le immagini (`assets/foto.jpg`, `og-image.png`, icone, `logo.sv
 - `gen/build_pages.py`: pagine termini, tassi, privacy, note legali, chi sono, valutazione, condizioni, 404.
 - `gen/patch_site.py`: home e interessi moratori a partire da `v5/`; script e stile; sitemap di base;
   numero di versione di stile e script; alla fine lancia `finalize.py`.
-- `gen/finalize.py`: accessibilità, copia statica per i crawler (`prerender.js`), sitemap con le date
-  (`lastmod.json`, si aggiorna da sola), `robots.txt`.
+- `gen/finalize.py`: accessibilità, precaricamento dei due caratteri principali, copia statica per i crawler
+  (`prerender.js`), sitemap con le date (`lastmod.json`, si aggiorna da sola), `robots.txt`.
 - `gen/prerender.js`: scrive nell'HTML i contenuti che le pagine producono con JavaScript.
 - `gen/pages.css`, `gen/guide.css`: parti del foglio di stile.
 - `gen/guide.js`: script delle guide, copiato in `assets/` solo quando le guide sono accese.
@@ -54,8 +57,25 @@ piè di pagina), le immagini (`assets/foto.jpg`, `og-image.png`, icone, `logo.sv
 - `gen/check.js`, `gen/check_site.js`, `gen/test_conta.js`: controlli, lanciati da `controlla.py`.
 - `gen/facsimile.html`, `gen/build_facsimile.js`: immagine del facsimile del parere (`assets/facsimile-parere.webp`).
   Si rigenera solo se cambia il facsimile: `node _sorgenti/gen/build_facsimile.js`.
+- `gen/caratteri.py`: riduce i caratteri originali (`fonts/` di questa cartella) alle lettere latine e alle funzioni
+  tipografiche usate, con un file a parte per il latino esteso che il browser scarica solo se serve; scrive le dichiarazioni
+  `@font-face` e i caratteri di riserva (Times New Roman, Arial, Noto Serif, Roboto ridimensionati per occupare lo stesso
+  spazio, così la pagina non si sposta mentre arrivano i caratteri). Si lancia solo se cambiano i caratteri o i pesi usati:
+  `python3 _sorgenti/gen/caratteri.py`, poi si genera il sito. Le misure dei caratteri di riserva valgono per questi caratteri.
+- `fonts/`: caratteri originali (EB Garamond variabile, Titillium Web) con le licenze SIL Open Font License 1.1.
 - `v5/`: pagine e script di partenza (home, interessi moratori, `app.js`, `core.js`, `mini.js`, `docx.js`,
   `style.css`, `LICENSE`). La generazione riparte ogni volta da qui.
+
+## Misura delle visite e delle richieste
+
+- Statistiche: Umami, senza cookie (`v5/assets/core.js`, `Conta`). Le azioni si contano con l'attributo `data-conta="nome"`
+  su pulsanti e collegamenti: calcoli, copie, rimandi dagli strumenti ai servizi (`recupero-da-home`, `recupero-da-interessi`,
+  `valutazione-da-interessi`, `valutazione-da-recupero`, ...), contatto (`contatto-recupero`), barra in alto (`vai-creditori`).
+- Richieste di valutazione completate: il modulo su Tally, a fine compilazione, porta a `/valutazione-credito/grazie/`
+  (pagina non indicizzata, fuori dalla sitemap); ogni visita a quella pagina in Umami è una richiesta pagata.
+- Ogni mese: Search Console › Rendimento (ultimi 28 giorni, esportazione CSV) e Umami nello stesso periodo. Confrontare i clic
+  da Google con le visite che arrivano da google.com (uno scarto che cresce indica un problema del contatore) e seguire il
+  percorso: pagine viste → rimandi ai servizi → `inizia-valutazione` → visite alla pagina di ringraziamento.
 
 ## Guide: bozze fuori dal repository
 
@@ -65,7 +85,8 @@ esempi delle guide con il motore di calcolo). Per pubblicarle:
 
 1. rivedere i testi;
 2. copiare `guide_testi.py` e `calc.js` in `_sorgenti/gen/` e togliere la riga di `guide_testi.py` da `_sorgenti/.gitignore`;
-3. mettere `GUIDE = True` in `gen/build_guides.py`;
+3. mettere `GUIDE = True` in `gen/build_guides.py` e adattare alle pagine delle guide il passaggio di `gen/finalize.py`
+   che porta il titolo dentro `<main>` (oggi riconosce solo le pagine con `g-hero solo` e un unico `<main class="wrap ...">`);
 4. generare, controllare e pubblicare come sopra.
 
 I sorgenti sono coperti dalla stessa licenza del repository (file `LICENSE`: tutti i diritti riservati).

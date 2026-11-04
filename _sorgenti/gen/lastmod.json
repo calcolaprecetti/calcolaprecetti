@@ -1,26 +1,30 @@
 {
  "/": {
-  "impronta": "ed4f68a50a4ed0ee",
-  "data": "2026-11-03"
+  "impronta": "4d1c906825b7b86b",
+  "data": "2026-11-04"
  },
  "/termini-precetto/": {
-  "impronta": "8a03cb273fdd52aa",
-  "data": "2026-11-03"
+  "impronta": "ea696edc8229f522",
+  "data": "2026-11-04"
  },
  "/interessi-moratori/": {
-  "impronta": "c29e9d2298fac1fb",
-  "data": "2026-10-30"
+  "impronta": "db39bb6565884258",
+  "data": "2026-11-04"
  },
  "/tassi/": {
-  "impronta": "f7febb1e5cc90586",
-  "data": "2026-10-30"
+  "impronta": "a8e0a850354374af",
+  "data": "2026-11-04"
  },
  "/chi-sono/": {
-  "impronta": "dfe4b30600f876c3",
-  "data": "2026-10-30"
+  "impronta": "40eeb4cb7c246ddd",
+  "data": "2026-11-04"
  },
  "/valutazione-credito/": {
-  "impronta": "02fba7e4dadf5939",
-  "data": "2026-10-30"
+  "impronta": "d977edb577a23d14",
+  "data": "2026-11-04"
+ },
+ "/recupero-crediti/": {
+  "impronta": "66f14056f3580b47",
+  "data": "2026-11-04"
  }
 }
