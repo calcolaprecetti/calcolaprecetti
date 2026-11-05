@@ -491,6 +491,10 @@ main:focus{outline:none}
 .home-info .autore{grid-column:1/-1;margin-top:34px}
 /* domande frequenti della home (nelle guide la stessa regola sta in guide.css, dopo quelle della colonna di lettura) */
 .g-faq h3{margin-top:22px}
+/* recupero crediti: foto accanto a «Affidami il recupero» */
+.svc-head{display:flex;align-items:center;gap:12px;margin:0 0 10px}
+.svc-head .send-l{margin:0!important}
+.svc-foto{flex:none;width:52px;height:52px;border-radius:4px;object-fit:cover}
 
 /* ===== guide =====
    Impianto: un atto ripassato con l'evidenziatore. Titoli in Garamond, testo in Titillium,
