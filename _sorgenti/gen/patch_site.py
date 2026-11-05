@@ -165,7 +165,7 @@ h = swap(h, '      <div class="warnings" id="warnings" aria-live="polite"></div>
 h = swap(h, '    </div>\n    <p class="sr-only" aria-live="polite" id="srTotal"></p>\n',
          '    </div>\n'
          '    <p class="after"><a href="/termini-precetto/">Precetto notificato? Calcola i termini di 10 e 90 giorni</a></p>\n' +
-         '    <p class="after"><a href="/recupero-crediti/" data-conta="recupero-da-home">Devi recuperare un credito? Assistenza per il recupero crediti</a></p>\n' +
+         '    <p class="after"><a href="/recupero-crediti/" data-conta="recupero-da-home">Devi recuperare un credito? Avvocato per il recupero crediti a Vicenza e Bassano del Grappa</a></p>\n' +
          ('    <p class="after"><a href="/newsletter/">Un consiglio sul recupero crediti ogni due settimane: iscriviti alla newsletter</a></p>\n' if NEWSLETTER else '') +
          '    <p class="sr-only" aria-live="polite" id="srTotal"></p>\n', 'rimando alla pagina dei termini')
 h = block(h, '<section class="wrap termini-wrap" id="termini"', '<section class="wrap contact"', '', 'via il riquadro dei termini')
@@ -241,7 +241,7 @@ if VALUTAZIONE:
              '    <h2>Il credito non è ancora stato pagato?</h2>\n'
              '    <p>Se vuoi sapere se e come conviene recuperarlo, puoi chiedere una <a href="/valutazione-credito/" data-conta="valutazione-da-interessi">valutazione del credito</a>: '
              'un parere scritto e firmato da un avvocato, con costi e tempi stimati, a prezzo fisso. Per affidare il recupero, dalla diffida al '
-             'pignoramento, vedi <a href="/recupero-crediti/" data-conta="recupero-da-interessi">Recupero crediti</a>.</p>',
+             'pignoramento, vedi <a href="/recupero-crediti/" data-conta="recupero-da-interessi">Recupero crediti a Vicenza e Bassano del Grappa</a>.</p>',
              'rimando alla valutazione del credito')
 # dati strutturati collegati: l'applicazione fa parte del sito, ha un autore e una data; riquadro dell'autore
 _m = re.search(r'<script type="application/ld\+json">(.*?)</script>', h, re.S)
