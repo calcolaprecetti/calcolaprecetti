@@ -72,7 +72,7 @@ def con_nodi(ld):
     extra = [{"@type": "WebSite", "@id": SITO_ID, "name": "calcolaprecetti.it", "url": BASE + "/", "inLanguage": "it-IT",
               "publisher": {"@id": PERSONA_ID}}]
     if '"@id": "%s", "name"' % PERSONA_ID not in testo:
-        extra.append({"@type": "Person", "@id": PERSONA_ID, "name": NOME, "jobTitle": "Avvocato", "url": BASE + '/chi-sono/'})
+        extra.append({k: _person[k] for k in ("@type", "@id", "name", "jobTitle", "url", "memberOf", "workLocation")})
     return dict(ld, **{'@graph': ld['@graph'] + extra})
 
 
@@ -80,8 +80,8 @@ def autore():
     """Riquadro con chi cura la pagina e la data dell'ultima modifica (la scrive finalize.py)."""
     foto = ('<img src="%s" alt="" width="56" height="56" loading="lazy" decoding="async">' % PHOTO) if PHOTO else ''
     return ('<aside class="autore" aria-label="Chi cura la pagina">%s<p>A cura dell\'<a href="/chi-sono/">avv. %s</a>, '
-            'iscritto all\'Ordine degli Avvocati di %s.<span class="agg">Pagina aggiornata il '
-            '<time datetime="__AGGIORNATA__">__AGGIORNATA_IT__</time>.</span></p></aside>\n' % (foto, NOME, FORO))
+            'con studio a %s e iscritto all\'Ordine degli Avvocati di %s.<span class="agg">Pagina aggiornata il '
+            '<time datetime="__AGGIORNATA__">__AGGIORNATA_IT__</time>.</span></p></aside>\n' % (foto, NOME, STUDIO, FORO))
 
 
 # =========================================================================== termini del precetto
@@ -297,14 +297,16 @@ C_PATH = '/chi-sono/'
 NOME = 'Alessandro Moro'
 FORO = 'Vicenza'
 LINKEDIN_PERSONALE = 'https://www.linkedin.com/in/alessandro-moro-524b7115a/'
-STUDIO_A = 'Bassano del Grappa (VI)'
-C_DESC = 'Avv. %s, del Foro di %s: chi cura calcolaprecetti.it e come scrivergli.' % (NOME, FORO)
+STUDIO = 'Bassano del Grappa'  # città dello studio: titoli, testi e dati strutturati
+STUDIO_A = STUDIO + ' (VI)'
+C_TITLE = 'Avv. %s, avvocato a %s (VI)' % (NOME, STUDIO)
+C_DESC = 'Avv. %s, avvocato a %s del Foro di %s: recupero crediti, chi cura calcolaprecetti.it e come scrivergli.' % (NOME, STUDIO, FORO)
 PHOTO = '/assets/foto.jpg' if os.path.exists(os.path.join(SITE, 'assets', 'foto.jpg')) else None
 C_PHOTO = ('<img class="chi-photo" src="%s" alt="Avv. %s" width="112" height="112">' % (PHOTO, NOME) if PHOTO else
            '<div class="chi-photo" role="img" aria-label="Spazio per la foto"><span>Foto</span></div>')
 C_LINKEDIN = ('<a href="%s" target="_blank" rel="noopener noreferrer">Il mio profilo</a>' % LINKEDIN_PERSONALE
               if LINKEDIN_PERSONALE else ph('collegamento al profilo'))
-VAL_CHI = ('      <p>Se hai un credito da recuperare, nella pagina <a href="/recupero-crediti/" data-conta="recupero-da-chi">Recupero crediti</a> '
+VAL_CHI = ('      <p>Se hai un credito da recuperare, nella pagina <a href="/recupero-crediti/" data-conta="recupero-da-chi">Recupero crediti a Vicenza e Bassano del Grappa</a> '
            'trovi come lavoro; se prima vuoi un parere scritto, c\'è la <a href="/valutazione-credito/">valutazione del credito</a>.</p>\n')
 NL_CHI = ('      <p>Ogni due settimane scrivo un consiglio pratico sul recupero crediti: lo ricevi con la '
           '<a href="/newsletter/">newsletter</a>.</p>\n')
@@ -316,7 +318,7 @@ C_BODY = '\n'.join([
     '      ' + C_PHOTO,
     '      <div>',
     '        <h1 class="g-title">Avv. <mark>%s</mark></h1>' % NOME,
-    '        <p class="g-lead">Avvocato del Foro di %s.</p>' % FORO,
+    '        <p class="g-lead">Avvocato a %s, del Foro di %s.</p>' % (STUDIO, FORO),
     '      </div>',
     '    </div>',
     '  </div>',
@@ -548,13 +550,16 @@ K_BODY = intro('<a href="/valutazione-credito/">Valutazione del credito</a> <spa
 
 # =========================================================================== recupero crediti (servizio, parte «Per i creditori»)
 R_PATH = '/recupero-crediti/'
-R_TITLE = 'Recupero crediti con un avvocato: dalla diffida al pignoramento'
-R_DESC = ('Fatture non pagate, compensi, prestiti: recupero crediti per imprese, professionisti e privati, dalla diffida '
-          'al pignoramento, con preventivo scritto.')
-R_OG = 'Recupero crediti per imprese, professionisti e privati: diffida, decreto ingiuntivo, precetto e pignoramento.'
-R_BODY = intro('Recupero crediti', 'Recupero <mark>crediti</mark>',
-               "Assisto imprese, professionisti e privati che devono recuperare un credito: dalla lettera di diffida al "
-               "decreto ingiuntivo, fino al precetto e al pignoramento. Prima di iniziare ricevi un preventivo scritto.") + """
+R_LUOGO = 'Vicenza e Bassano del Grappa'  # dove si cerca un avvocato per il recupero crediti: titolo, intestazione, rimandi
+R_TITLE = 'Avvocato recupero crediti a ' + R_LUOGO
+R_DESC = ('Avvocato a Bassano del Grappa, Foro di Vicenza: recupero crediti per imprese, professionisti e privati, dalla '
+          'diffida al pignoramento. Preventivo scritto.')
+R_OG = ('Recupero crediti a ' + R_LUOGO + ' per imprese, professionisti e privati: diffida, decreto ingiuntivo, precetto '
+        'e pignoramento.')
+R_BODY = intro('Recupero crediti', '<mark>Recupero crediti</mark> a ' + R_LUOGO,
+               "Sono avvocato a Bassano del Grappa, iscritto all'Ordine di Vicenza. Assisto imprese, professionisti e privati "
+               "che devono recuperare un credito: dalla lettera di diffida al decreto ingiuntivo, fino al precetto e al "
+               "pignoramento. Prima di iniziare ricevi un preventivo scritto.") + """
 
 <main class="wrap page">
   <div class="chi svc">
@@ -605,8 +610,11 @@ R_BODY = intro('Recupero crediti', 'Recupero <mark>crediti</mark>',
         <li>L'incasso non si può garantire: dipende da chi è il debitore e da cosa possiede. Prima di iniziare ti dico cosa è realistico aspettarsi.</li>
       </ul>
 
-      <h2>Dove</h2>
-      <p>Lo studio è a """ + STUDIO_A + """ e sono iscritto all'Ordine degli Avvocati di """ + FORO + """. Seguo pratiche anche fuori provincia: atti, depositi e notifiche sono telematici e ci si può sentire a distanza.</p>
+      <h2>A Vicenza, a Bassano del Grappa e fuori provincia</h2>
+      <p>Lo studio è a """ + STUDIO_A + """ e sono iscritto all'Ordine degli Avvocati di """ + FORO + """: seguo il recupero crediti di imprese, professionisti e privati di Bassano, di Vicenza e della provincia.</p>
+      <p>Per Bassano del Grappa il tribunale è oggi quello di Vicenza, che nel 2013 ha assorbito quello di Bassano.</p>
+      <p>Spesso il credito si può far valere qui anche se il debitore sta altrove: quando la somma è già determinata, per esempio un prezzo concordato, il pagamento va fatto al domicilio del creditore, e il decreto ingiuntivo si può chiedere al giudice di quel luogo (art. 1182 c.c. e art. 20 c.p.c.). Se il debitore è un consumatore, invece, è competente il giudice del luogo in cui abita.</p>
+      <p>Seguo pratiche anche fuori provincia: atti, depositi e notifiche sono telematici e ci si può sentire a distanza.</p>
     </article>
   </div>
 </main>
@@ -672,7 +680,7 @@ if __name__ == '__main__':
                       'altro', L_BODY, ['info.js'], noscript='')),
     ]
     if CHI_SONO:
-        pages.append((C_PATH, page('Chi sono – calcolaprecetti.it', C_DESC, C_PATH, C_DESC, C_LD,
+        pages.append((C_PATH, page(C_TITLE, C_DESC, C_PATH, C_DESC, C_LD,
                                    'chi', C_BODY, ['info.js'], noscript='')))  # info.js: piè di pagina e contatti
     if VALUTAZIONE:
         V_SERVIZIO = {"@type": "Service", "@id": BASE + V_PATH + '#servizio', "name": "Valutazione del credito",
@@ -689,11 +697,13 @@ if __name__ == '__main__':
         pages.append((K_PATH, page('Condizioni del parere – calcolaprecetti.it', K_DESC, K_PATH, K_DESC,
                                    simple_ld('Condizioni del parere', K_PATH, K_DESC), 'valutazione', K_BODY, ['info.js'], noscript='')))
     R_LD = {"@context": "https://schema.org", "@graph": [
-        {"@type": "WebPage", "name": "Recupero crediti", "url": BASE + R_PATH, "description": R_DESC, "inLanguage": "it-IT",
+        {"@type": "WebPage", "name": "Recupero crediti a " + R_LUOGO, "url": BASE + R_PATH, "description": R_DESC, "inLanguage": "it-IT",
          "isPartOf": {"@id": SITO_ID}, "dateModified": AGG, "mainEntity": {"@id": BASE + R_PATH + '#servizio'}},
         {"@type": "Service", "@id": BASE + R_PATH + '#servizio', "name": "Recupero crediti",
          "serviceType": "Assistenza legale per il recupero crediti", "description": R_DESC, "url": BASE + R_PATH,
-         "provider": {"@id": PERSONA_ID}, "areaServed": {"@type": "Country", "name": "Italia"}},
+         "provider": {"@id": PERSONA_ID},
+         "areaServed": [{"@type": "City", "name": "Bassano del Grappa"}, {"@type": "City", "name": "Vicenza"},
+                        {"@type": "AdministrativeArea", "name": "Provincia di Vicenza"}, {"@type": "Country", "name": "Italia"}]},
         crumbs_ld('Recupero crediti', R_PATH)]}
     pages.append((R_PATH, page(R_TITLE, R_DESC, R_PATH, R_OG, R_LD,
                                'recupero', R_BODY, ['info.js'], noscript='', autore_box=True)))
