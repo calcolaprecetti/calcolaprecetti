@@ -556,7 +556,7 @@ R_DESC = ('Avvocato a Bassano del Grappa, Foro di Vicenza: recupero crediti per 
           'diffida al pignoramento. Preventivo scritto.')
 R_OG = ('Recupero crediti a ' + R_LUOGO + ' per imprese, professionisti e privati: diffida, decreto ingiuntivo, precetto '
         'e pignoramento.')
-R_BODY = intro('Recupero crediti', '<mark>Recupero crediti</mark> a ' + R_LUOGO,
+R_BODY = intro('Recupero crediti', '<mark>Recupero crediti</mark> <br>a ' + R_LUOGO.replace('Bassano del Grappa', 'Bassano&nbsp;del&nbsp;Grappa'),
                "Sono avvocato a Bassano del Grappa, iscritto all'Ordine di Vicenza. Assisto imprese, professionisti e privati "
                "che devono recuperare un credito: dalla lettera di diffida al decreto ingiuntivo, fino al precetto e al "
                "pignoramento. Prima di iniziare ricevi un preventivo scritto.") + """
@@ -564,7 +564,9 @@ R_BODY = intro('Recupero crediti', '<mark>Recupero crediti</mark> a ' + R_LUOGO,
 <main class="wrap page">
   <div class="chi svc">
     <aside class="svc-card" id="affida" aria-labelledby="hAffida">
-      <p class="send-l" id="hAffida">Affidami il recupero</p>
+      """ + ('<div class="svc-head"><img class="svc-foto" src="%s" alt="Avv. %s" width="52" height="52" decoding="async">'
+            '<p class="send-l" id="hAffida">Affidami il recupero</p></div>' % (PHOTO, NOME) if PHOTO else
+            '<p class="send-l" id="hAffida">Affidami il recupero</p>') + """
       <p class="svc-lead">Scrivimi chi sei, quanto ti devono e da quando, e chi è il debitore: il nome mi serve per verificare che non ci siano conflitti di interessi.</p>
       <ul class="svc-list">
         <li>Preventivo scritto prima di iniziare</li>
