@@ -47,6 +47,7 @@ SCROLL = {  # tabelle che scorrono di lato: nome letto dai lettori di schermo
     'tabPrecetto': 'Tabella del compenso del precetto',
     'miniTable': 'Dettaglio del calcolo degli interessi moratori',
     'ratesTable': 'Tabella dei tassi moratori dal 2002',
+    'costiTable': 'Costi del decreto ingiuntivo per valore del credito',  # guida al decreto ingiuntivo
 }
 # caratteri usati da tutte le pagine fin dal primo schermo: testo (Titillium) e titoli (EB Garamond).
 # Gli altri pesi arrivano subito dopo; il latino esteso (file -ext) solo se la pagina ne ha bisogno.
@@ -62,10 +63,18 @@ for f in html_files():
     if 'class="skip"' not in s:
         s, n = re.subn(r'(<body[^>]*>)', r'\1\n<a class="skip" href="#main">Salta al contenuto</a>', s, count=1)
         assert n == 1, rel + ': manca <body>'
+    if '<main id="main"' not in s and '<main class="g-main">' in s:  # guida: titolo, indice laterale e testo in un'unica area principale
+        hero = '<div class="wrap g-hero">'
+        assert s.count(hero) == 1 and s.count('<main class="g-main">') == 1, rel + ': titolo o testo della guida non trovati'
+        assert s.count('  </main>\n</div>') == 1 and s.count('</main>') == 1, rel + ': fine del testo della guida non trovata'
+        s = s.replace(hero, '<main id="main" tabindex="-1">\n' + hero, 1)
+        s = s.replace('<main class="g-main">', '<div class="g-main">', 1)
+        s = s.replace('  </main>\n</div>', '  </div>\n</div>\n</main>', 1)
     if '<main id="main"' not in s:  # il titolo (g-hero) entra nell'area principale
-        hero = '<div class="wrap g-hero solo">'
-        assert s.count(hero) == 1, rel + ': titolo della pagina non trovato'
-        m = re.findall(r'<main class="(wrap [a-z]+)">', s)
+        heroes = re.findall(r'<div class="wrap g-hero(?: solo)?">', s)
+        assert len(heroes) == 1, rel + ': titolo della pagina non trovato'
+        hero = heroes[0]
+        m = re.findall(r'<main class="(wrap [a-z-]+)">', s)
         assert len(m) == 1 and s.count('</main>') == 1, rel + ': <main> non trovato'
         assert s.index(hero) < s.index('<main class='), rel + ': titolo dopo <main>'
         s = s.replace(hero, '<main id="main" tabindex="-1">\n' + hero, 1)

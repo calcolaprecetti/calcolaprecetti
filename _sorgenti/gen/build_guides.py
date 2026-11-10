@@ -17,8 +17,7 @@ import re
 GEN = os.path.dirname(os.path.abspath(__file__))
 SITE = os.path.dirname(os.path.dirname(GEN))
 BASE = 'https://calcolaprecetti.it'
-UPD_ISO = '2026-10-06'
-UPD_IT = '6 ottobre 2026'
+GUIDE_PUBBLICATE = '2026-11-10'  # prima pubblicazione delle guide (datePublished); la data di modifica la scrive finalize.py
 COPY = ('<!-- calcolaprecetti.it - (c) 2026 il titolare indicato nelle Note legali '
         '(https://calcolaprecetti.it/note-legali/). Tutti i diritti riservati. Vietata la riproduzione, '
         'anche parziale, senza autorizzazione scritta. Licenza: file LICENSE. -->')
@@ -29,7 +28,7 @@ G3 = '/guide/precetto-notificato/'
 
 
 # --------------------------------------------------------------------------- parti comuni
-GUIDE = False  # sezione «Guide»: spenta finché le guide non sono controllate (True per rimetterla: schede, piè di pagina, rimandi)
+GUIDE = True  # sezione «Guide» (False per toglierla: schede, piè di pagina, rimandi e pagine delle guide)
 TABS = [  # parte «Per gli avvocati»: gli strumenti
     ('/', '<span><span class="tl">Somme del </span><span class="tm">precetto</span></span>', 'home'),
     ('/termini-precetto/', '<span><span class="tm">Termini</span><span class="tl"> del precetto</span></span>', 'termini'),
@@ -206,7 +205,7 @@ def head(title, desc, path, og_desc, jsonld, og_type='article', base=BASE, site_
         '<meta property="og:type" content="%s">' % og_type,
     ]
     if og_type == 'article':
-        lines.append('<meta property="article:modified_time" content="%s">' % UPD_ISO)
+        lines.append('<meta property="article:modified_time" content="__AGGIORNATA__">')  # la data la scrive finalize.py
     lines += [
         '<meta name="theme-color" content="#1E3F8C">',
     ] + ([
@@ -250,7 +249,7 @@ def faq_html(faqs):
 
 
 def gloss_html(items):
-    out = ['<section id="parole">', '<h2>Parole difficili, tradotte</h2>', '<dl class="g-gloss">']
+    out = ['<section id="parole">', '<h2>Parole «difficili», tradotte</h2>', '<dl class="g-gloss">']
     for t, d in items:
         out.append('<div><dt>%s</dt><dd>%s</dd></div>' % (t, d))
     out += ['</dl>', '</section>']
@@ -260,6 +259,13 @@ def gloss_html(items):
 def minutes(body):
     words = len(plain(body).split())
     return max(3, int(math.ceil(words / 200.0))), words
+
+
+def comuni():
+    """Dati e parti condivisi con le altre pagine (sito, persona, riquadro dell'autore): stanno in build_pages.py, che a sua
+    volta importa questo file, quindi si caricano solo quando servono."""
+    import build_pages
+    return build_pages
 
 
 def guide_page(g, site=None):
@@ -272,15 +278,16 @@ def guide_page(g, site=None):
         {"@type": "ListItem", "position": 1, "name": "Home", "item": base + "/"},
         {"@type": "ListItem", "position": 2, "name": site['crumbs'][0], "item": base + site['crumbs'][1].split('#')[0]},
         {"@type": "ListItem", "position": 3, "name": g['crumb'], "item": base + path}]}
+    bp = comuni()
     article_ld = {"@type": "Article", "headline": g['title'], "description": g['desc'], "inLanguage": "it-IT",
-                  "datePublished": UPD_ISO, "dateModified": UPD_ISO, "mainEntityOfPage": base + path,
-                  "author": site['author'], "publisher": site['publisher']}
+                  "datePublished": GUIDE_PUBBLICATE, "dateModified": bp.AGG, "mainEntityOfPage": base + path,
+                  "author": {"@id": bp.PERSONA_ID}, "publisher": {"@id": bp.PERSONA_ID}, "isPartOf": {"@id": bp.SITO_ID}}
     if site.get('image', True):
         article_ld["image"] = BASE + "/og-image.png"
     faq_ld = {"@type": "FAQPage", "mainEntity": [
         {"@type": "Question", "name": plain(q), "acceptedAnswer": {"@type": "Answer", "text": plain(a)}}
         for q, a in g['faqs']]}
-    ld = {"@context": "https://schema.org", "@graph": [article_ld, crumbs_ld, faq_ld]}
+    ld = bp.con_nodi({"@context": "https://schema.org", "@graph": [article_ld, crumbs_ld, faq_ld]})
 
     toc = '\n'.join('      <li><a href="#%s">%s</a></li>' % (i, t) for i, t in g['toc'])
     brief = '\n'.join('      <li>%s</li>' % b for b in g['brief'])
@@ -295,7 +302,7 @@ def guide_page(g, site=None):
         '    <nav class="crumbs" aria-label="Percorso"><a href="/">Home</a> <span>›</span> <a href="%s">%s</a> <span>›</span> %s</nav>' % (site['crumbs'][1], site['crumbs'][0], g['crumb']),
         '    <h1 class="g-title">%s</h1>' % g['h1'],
         '    <p class="g-lead">%s</p>' % g['lead'],
-        '    <p class="g-meta"><span>Aggiornata il <time datetime="%s">%s</time></span><span>%d minuti di lettura</span><span>%s</span></p>' % (UPD_ISO, UPD_IT, mins, g['per']),
+        '    <p class="g-meta"><span>Aggiornata il <time datetime="__AGGIORNATA__">__AGGIORNATA_IT__</time></span><span>%d minuti di lettura</span><span>%s</span></p>' % (mins, g['per']),
         '  </div>',
         '  <aside class="g-brief" aria-labelledby="briefTitle">',
         '    <h2 id="briefTitle">In breve</h2>',
@@ -319,10 +326,10 @@ def guide_page(g, site=None):
         site['end'],
         '',
         '<div class="g-end">',
-        '<p>Questa guida spiega le regole generali e non sostituisce un parere sul tuo caso.</p>',
-        '<p>%s</p>' % site['byline'],
+        '<p>Questa guida spiega le regole generali e non sostituisce un parere sul tuo caso specifico.</p>',
         '<details><summary>Norme citate</summary><p>%s</p></details>' % g['norme'],
         '</div>',
+        bp.autore(data=False).rstrip('\n'),  # chi cura la guida, come nelle altre pagine (la data è già sotto il titolo)
         '  </main>',
         '</div>',
         '',
@@ -334,7 +341,7 @@ def guide_page(g, site=None):
     return '\n'.join(parts).replace('\n\n\n', '\n\n'), mins, words
 
 
-SHARE = '''<div class="g-share">
+SHARE = '''<section class="g-share" aria-label="Per gli avvocati">
   <div class="wrap">
     <p><strong>Sei un avvocato?</strong> Questa guida è scritta per i tuoi clienti: copia il collegamento e mandagliela per mail o in un messaggio.</p>
     <div class="g-share-btns">
@@ -343,15 +350,13 @@ SHARE = '''<div class="g-share">
     </div>
     <span class="g-share-msg" id="copyMsg" role="status"></span>
   </div>
-</div>'''
+</section>'''
 
 TOOL = {  # calcolaprecetti.it: le guide sono «da mandare ai clienti», con la barra per gli avvocati
     'base': BASE, 'site_name': 'calcolaprecetti.it', 'copy': COPY, 'image': True,
     'nav': lambda: nav('guida'), 'top': SHARE,
     'crumbs': ('Guide per i clienti', '/guide/#clienti'),
     'content': lambda s: s, 'end': '',
-    'byline': 'A cura di ' + BY.replace('></span>', '>calcolaprecetti.it</span>'),
-    'author': ORG, 'publisher': dict(ORG, logo={"@type": "ImageObject", "url": BASE + "/favicon-192.png"}),
     'contact': CONTACT, 'footer': FOOTER, 'tail': TAIL,
 }
 

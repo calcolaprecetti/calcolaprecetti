@@ -13,7 +13,7 @@ const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '
 // items: la prima voce di capitale della home, così la pagina non si sposta quando lo script la crea
 const IDS = ['items', 'privacyBody', 'legalBody', 'tabLegali', 'tabMora', 'tabPrecetto', 'casiBody', 'registroBody', 'ratesTable',
   'nowLegal', 'nowLegalSrc', 'nowLegalYear', 'nowMora', 'nowMoraSem', 'nowMoraSrc', 'nowRate', 'nowSem', 'nowSrc', 'nowAgri'];
-const CLASSES = ['js-updated', 'js-titolare', 'js-accessori'];
+const CLASSES = ['js-updated', 'js-titolare', 'js-accessori', 'js-mora-rate', 'js-legal-rate'];  // js-*-rate: tassi in vigore scritti nelle guide
 
 function pages(dir, out = []) {
   for (const f of fs.readdirSync(dir)) {

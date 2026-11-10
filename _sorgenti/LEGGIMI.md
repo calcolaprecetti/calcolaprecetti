@@ -26,6 +26,7 @@ Servono Python 3, Node.js e Playwright con Chromium (per la copia statica delle 
 | Home: descrizione e testi aggiunti alla pagina di partenza | `gen/patch_site.py`, sezione «home» |
 | Titoli, descrizioni e testi di termini, tassi, privacy, note legali, chi sono, recupero crediti, valutazione, condizioni, pagina di ringraziamento della valutazione, pagina 404 | `gen/build_pages.py` |
 | Home: spiegazione sotto il calcolo, compenso del precetto, domande frequenti | `gen/patch_site.py`, `HOME_FAQ` e `HOME_INFO` |
+| Testi delle guide e dell'indice `/guide/` (titoli, descrizioni, paragrafi, domande frequenti, esempi) | `gen/guide_testi.py`; data di prima pubblicazione (`GUIDE_PUBBLICATE`) e modello delle pagine in `gen/build_guides.py` |
 | Barra «Per gli avvocati / Per i creditori» e schede di ciascuna parte (`TABS`, `TABS_CREDITORI`, `nav`), piè di pagina, sezioni accese o spente (`GUIDE`, `CHI_SONO`, `VALUTAZIONE`, `NEWSLETTER`), prezzo e modulo della valutazione | `gen/build_guides.py` |
 | Dati del titolare | `v5/assets/core.js` (`SITO`: nome, email), `gen/build_guides.py` (`PIVA`), `gen/build_pages.py` (`NOME`, `FORO`, `STUDIO_A`); data dell'informativa in `gen/patch_site.py` |
 | Calcolo delle somme del precetto | `v5/assets/app.js` |
@@ -53,6 +54,8 @@ piè di pagina), le immagini (`assets/foto.jpg`, `og-image.png`, icone, `logo.sv
 - `gen/prerender.js`: scrive nell'HTML i contenuti che le pagine producono con JavaScript.
 - `gen/pages.css`, `gen/guide.css`: parti del foglio di stile.
 - `gen/guide.js`: script delle guide, copiato in `assets/` solo quando le guide sono accese.
+- `gen/guide_testi.py`: testi delle tre guide e dell'indice `/guide/`.
+- `gen/calc.js`: ricalcola con il motore del sito (`assets/core.js`) gli esempi numerici delle guide: `node _sorgenti/gen/calc.js`.
 - `gen/preview.py`: anteprima delle pagine in file autosufficienti, in una cartella temporanea fuori dal repository.
 - `gen/check.js`, `gen/check_site.js`, `gen/test_conta.js`: controlli, lanciati da `controlla.py`.
 - `gen/facsimile.html`, `gen/build_facsimile.js`: immagine del facsimile del parere (`assets/facsimile-parere.webp`).
@@ -77,16 +80,12 @@ piè di pagina), le immagini (`assets/foto.jpg`, `og-image.png`, icone, `logo.sv
   da Google con le visite che arrivano da google.com (uno scarto che cresce indica un problema del contatore) e seguire il
   percorso: pagine viste → rimandi ai servizi → `inizia-valutazione` → visite alla pagina di ringraziamento.
 
-## Guide: bozze fuori dal repository
+## Guide
 
-I testi delle tre guide (fattura non pagata, decreto ingiuntivo, precetto notificato) sono bozze da rivedere e non
-stanno nel repository: sono nel file `guide_testi.py`, consegnato a parte insieme a `calc.js` (verifica degli
-esempi delle guide con il motore di calcolo). Per pubblicarle:
-
-1. rivedere i testi;
-2. copiare `guide_testi.py` e `calc.js` in `_sorgenti/gen/` e togliere la riga di `guide_testi.py` da `_sorgenti/.gitignore`;
-3. mettere `GUIDE = True` in `gen/build_guides.py` e adattare alle pagine delle guide il passaggio di `gen/finalize.py`
-   che porta il titolo dentro `<main>` (oggi riconosce solo le pagine con `g-hero solo` e un unico `<main class="wrap ...">`);
-4. generare, controllare e pubblicare come sopra.
+Le tre guide (fattura non pagata, decreto ingiuntivo, precetto notificato) e l'indice `/guide/` sono accese
+(`GUIDE = True` in `gen/build_guides.py`). I testi sono in `gen/guide_testi.py`, rivisti dal titolare il 10.11.2026.
+La data «Aggiornata il» di ogni guida si scrive da sola, come per le altre pagine (dalla sitemap, `gen/lastmod.json`);
+la data di prima pubblicazione è `GUIDE_PUBBLICATE` e non va cambiata. Se si modificano gli esempi numerici, controllarli
+con `node _sorgenti/gen/calc.js`; poi generare, controllare e pubblicare come sopra.
 
 I sorgenti sono coperti dalla stessa licenza del repository (file `LICENSE`: tutti i diritti riservati).
