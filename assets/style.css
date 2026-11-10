@@ -679,13 +679,6 @@ main:focus{outline:none}
 
 /* indice delle guide */
 .g-index>h2{scroll-margin-top:12px}
-.g-atto{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
-@media(min-width:760px){.g-atto{grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}}
-.g-atto a{display:flex;flex-direction:column;gap:3px;height:100%;background:#fff;border:1px solid var(--line);border-left:4px solid var(--ink);border-radius:10px;padding:14px 18px 16px;color:var(--text);text-decoration:none}
-.g-atto a:hover{border-color:var(--ink);background:var(--ink-soft)}
-.g-atto .k{font-size:.74rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
-.g-atto strong{font-size:1.14rem;color:var(--ink);line-height:1.3}
-.g-atto .d{font-size:.93rem;color:var(--muted);line-height:1.45}
 .g-how{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
 @media(min-width:760px){.g-how{grid-template-columns:repeat(3,minmax(0,1fr));gap:28px}}
 .g-how li{border-top:2px solid var(--text);padding-top:10px;line-height:1.5}

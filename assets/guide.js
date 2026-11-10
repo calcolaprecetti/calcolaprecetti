@@ -1,5 +1,5 @@
 /*! calcolaprecetti.it - (c) 2026 il titolare indicato nelle Note legali (https://calcolaprecetti.it/note-legali/). Tutti i diritti riservati. Vietata la riproduzione, anche parziale, senza autorizzazione scritta. Licenza: file LICENSE. */
-/* Pagine delle guide: dati del piè di pagina, collegamento da mandare al cliente, tassi in vigore scritti nel testo e i tre calcoli rapidi
+/* Pagine delle guide: dati del piè di pagina, collegamento da copiare (se c'è la barra), tassi in vigore scritti nel testo e i tre calcoli rapidi
    (data-quick="mora", "termini", "costi"). Usa il motore e le tabelle di core.js: qui non ci sono tassi. */
 (function () {
   'use strict';
@@ -26,7 +26,7 @@
     if (mt) mt.textContent = SITO.email;
   }
 
-  /* ---------- barra per gli avvocati: copia o condividi il collegamento della guida ---------- */
+  /* ---------- barra per gli avvocati: copia o condividi il collegamento (c'è solo con CONDIVIDI = True in build_guides.py) ---------- */
   var cl = $('#copyLink'), sh = $('#shareLink'), cm = $('#copyMsg');
   if (cl && cm) {
     var link = function () { return location.href.split('#')[0]; };

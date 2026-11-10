@@ -499,23 +499,13 @@ def cards(info, href=lambda path: path):
     return '\n'.join(out), items
 
 
-ATTO = [  # scaffale per l'avvocato: le pagine tecniche, con il calcolo accanto
-    ('/termini-precetto/', 'Calcolo e regole', 'Termini del precetto',
-     'I 10 e i 90 giorni, la proroga dei festivi e la sospensione per la ricerca dei beni.'),
-    ('/interessi-moratori/', 'Calcolo e tabella', 'Interessi moratori',
-     'Tasso BCE più 8 punti semestre per semestre, la tabella dal 2002 e i casi particolari.'),
-    ('/tassi/', 'Tabelle e verifiche', 'Tassi, fonti e verifiche',
-     'Interessi legali e moratori, compenso del precetto, casi svolti a mano e registro.'),
-]
-
-
 def index_page(info):
+    """Indice delle guide, nella parte «Per i creditori»."""
     path = '/guide/'
-    title = "Guide sul recupero crediti: per l'atto e per i clienti"
-    desc = ('Approfondimenti per scrivere il precetto (termini, interessi, tassi) e guide semplici da mandare ai clienti: '
-            'fattura non pagata, decreto ingiuntivo, precetto notificato.')
+    title = 'Guide sul recupero crediti per chi deve farsi pagare'
+    desc = ('Tre guide semplici per chi deve farsi pagare: fattura non pagata, decreto ingiuntivo, precetto notificato. '
+            'Cosa fare, con quali tempi e costi.')
     card_list, items = cards(info)
-    atto = '\n'.join('<li><a href="%s"><span class="k">%s</span><strong>%s</strong><span class="d">%s</span></a></li>' % a for a in ATTO)
     bp = comuni()
     ld = {"@context": "https://schema.org", "@graph": [
         {"@type": "CollectionPage", "name": title, "description": desc, "url": BASE + path, "inLanguage": "it-IT",
@@ -526,34 +516,29 @@ def index_page(info):
         {"@type": "ItemList", "itemListElement": items}]}
     ld = bp.con_nodi(ld)
     parts = [
-        head(title, desc, path, "Gli approfondimenti per scrivere il precetto e le guide semplici da mandare ai clienti.", ld, og_type='website'),
+        head(title, desc, path, 'Dal primo sollecito al pignoramento, in tre guide brevi e senza gergo.', ld, og_type='website'),
         '<body class="guide">',
         nav('guide'),
         '',
         '<div class="wrap g-hero">',
         '  <div>',
         '    <nav class="crumbs" aria-label="Percorso"><a href="/">Home</a> <span>›</span> Guide</nav>',
-        '    <h1 class="g-title">Guide <mark>per te e per i tuoi clienti</mark></h1>',
-        "    <p class=\"g-lead\">Due scaffali: gli approfondimenti che servono a te per scrivere l'atto e le guide semplici da mandare a chi deve farsi pagare.</p>",
+        '    <h1 class="g-title">Guide <mark>per chi deve farsi pagare</mark></h1>',
+        '    <p class="g-lead">Il percorso dal primo sollecito al pignoramento, in tre guide brevi e senza gergo: cosa fare, in che ordine, '
+        'con quali tempi e costi.</p>',
         '  </div>',
         '  <aside class="g-brief" aria-labelledby="briefTitle">',
-        '    <h2 id="briefTitle">Come usarle</h2>',
+        '    <h2 id="briefTitle">Da dove partire</h2>',
         '    <ul>',
-        "      <li><mark>Per l'atto.</mark> Le regole tecniche, con il calcolo accanto e le fonti.</li>",
-        '      <li><mark>Per i clienti.</mark> Cosa fare, in che ordine, con quali tempi e costi, senza gergo.</li>',
-        '      <li><mark>Da mandare.</mark> Ogni guida ha il suo collegamento: copialo e mandalo per mail o in un messaggio.</li>',
+        '      <li><mark>Fattura scaduta?</mark> Parti dalla prima: sollecito, diffida e quanto ti spetta tra interessi di mora e € 40.</li>',
+        '      <li><mark>Serve il giudice?</mark> La seconda: tempi e costi del decreto ingiuntivo.</li>',
+        '      <li><mark>Precetto notificato?</mark> La terza: i 10 e i 90 giorni e quando può partire il pignoramento.</li>',
         '    </ul>',
         '  </aside>',
         '</div>',
         '',
         '<main class="wrap g-index">',
-        "<h2 id=\"atto\">Approfondimenti per l'atto</h2>",
-        '<p class="g-sub">Per chi scrive il precetto: le regole, il calcolo accanto e le fonti di ogni numero.</p>',
-        '<ul class="g-atto">',
-        atto,
-        '</ul>',
-        '<h2 id="clienti">Da mandare ai clienti</h2>',
-        '<p class="g-sub">Il percorso dal primo sollecito al pignoramento, in tre guide brevi. Ognuna si apre con il tasto per copiarne il collegamento.</p>',
+        '<h2 id="elenco">Le tre guide</h2>',
         '<ol class="g-path">',
         card_list,
         '</ol>',

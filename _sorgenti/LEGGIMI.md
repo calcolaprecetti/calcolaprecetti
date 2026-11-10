@@ -83,7 +83,9 @@ piè di pagina), le immagini (`assets/foto.jpg`, `og-image.png`, icone, `logo.sv
 ## Guide
 
 Le tre guide (fattura non pagata, decreto ingiuntivo, precetto notificato) e l'indice `/guide/` sono accese
-(`GUIDE = True` in `gen/build_guides.py`). I testi sono in `gen/guide_testi.py`, rivisti dal titolare il 10.11.2026.
+(`GUIDE = True` in `gen/build_guides.py`) e stanno nella parte «Per i creditori», con la scheda «Guide» prima di «Chi sono».
+I testi sono in `gen/guide_testi.py`, rivisti dal titolare il 10.11.2026. La barra per gli avvocati in cima alle guide
+(«Sei un avvocato? … copia il collegamento») è spenta: `CONDIVIDI = False` in `gen/build_guides.py`.
 La data «Aggiornata il» di ogni guida si scrive da sola, come per le altre pagine (dalla sitemap, `gen/lastmod.json`);
 la data di prima pubblicazione è `GUIDE_PUBBLICATE` e non va cambiata. Se si modificano gli esempi numerici, controllarli
 con `node _sorgenti/gen/calc.js`; poi generare, controllare e pubblicare come sopra.
