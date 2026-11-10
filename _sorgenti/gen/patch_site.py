@@ -313,8 +313,7 @@ if GUIDE:
               "      (contributo unificato e compenso medio: i calcoli leggono i numeri\n"
               "      scritti nelle righe, attributi data-cu e data-comp) e la soglia del\n"
               "      giudice di pace (data-gdp, oggi 10000; 30000 dal 31.10.2027, salvo\n"
-              "      altri rinvii); in ogni guida la data «Aggiornata il» e, nei dati\n"
-              "      in cima al file, dateModified.\n\n   Regole:",
+              "      altri rinvii). La data «Aggiornata il» si aggiorna da sola.\n\n   Regole:",
               'istruzioni per le guide')
 if NEWSLETTER:
     js = swap(js,

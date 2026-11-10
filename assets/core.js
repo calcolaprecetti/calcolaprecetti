@@ -52,6 +52,15 @@ var SITO = {
       interessi moratori» con i tassi dell'anno nuovo
       (_sorgenti/v5/interessi-moratori/index.html).
 
+   6) Guide (cartella «guide») - i tassi scritti nel testo e i calcoli
+      rapidi leggono queste tabelle e si aggiornano da soli. Vanno invece
+      corretti a mano, nel file della singola guida, quando cambia la
+      legge: nella guida al decreto ingiuntivo la tabella dei costi
+      (contributo unificato e compenso medio: i calcoli leggono i numeri
+      scritti nelle righe, attributi data-cu e data-comp) e la soglia del
+      giudice di pace (data-gdp, oggi 10000; 30000 dal 31.10.2027, salvo
+      altri rinvii). La data «Aggiornata il» si aggiorna da sola.
+
    Regole: decimali con il punto (2.40, non 2,40); date AAAA-MM-GG;
    testi tra apostrofi (se il testo contiene un apostrofo, racchiuderlo
    tra virgolette doppie); virgola a fine riga come nelle righe presenti.

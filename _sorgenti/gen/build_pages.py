@@ -76,12 +76,13 @@ def con_nodi(ld):
     return dict(ld, **{'@graph': ld['@graph'] + extra})
 
 
-def autore():
-    """Riquadro con chi cura la pagina e la data dell'ultima modifica (la scrive finalize.py)."""
+def autore(data=True):
+    """Riquadro con chi cura la pagina e la data dell'ultima modifica (la scrive finalize.py). data=False: senza la data,
+    per le pagine che la mostrano già altrove (le guide, sotto il titolo)."""
     foto = ('<img src="%s" alt="" width="56" height="56" loading="lazy" decoding="async">' % PHOTO) if PHOTO else ''
+    agg = ('<span class="agg">Pagina aggiornata il <time datetime="__AGGIORNATA__">__AGGIORNATA_IT__</time>.</span>' if data else '')
     return ('<aside class="autore" aria-label="Chi cura la pagina">%s<p>A cura dell\'<a href="/chi-sono/">avv. %s</a>, '
-            'con studio a %s e iscritto all\'Ordine degli Avvocati di %s.<span class="agg">Pagina aggiornata il '
-            '<time datetime="__AGGIORNATA__">__AGGIORNATA_IT__</time>.</span></p></aside>\n' % (foto, NOME, STUDIO, FORO))
+            'con studio a %s e iscritto all\'Ordine degli Avvocati di %s.%s</p></aside>\n' % (foto, NOME, STUDIO, FORO, agg))
 
 
 # =========================================================================== termini del precetto
