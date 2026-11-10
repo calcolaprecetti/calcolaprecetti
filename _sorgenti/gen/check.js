@@ -120,12 +120,15 @@ const url = (f, h) => 'file://' + path.join(DIR, f) + (h || '');
 
   if (fs.existsSync(path.join(DIR, 'guide.html'))) {
   await p.goto(url('guide.html'));
-  console.log('\nGuide:', await txt('#atto'), '|', (await p.locator('.g-atto strong').allInnerTexts()).join(', '), '|', await txt('#clienti'), '|',
-    (await p.locator('.g-card h3').allInnerTexts()).join(', '));
+  const parte = async () => (await p.locator('.aud a[aria-current]').allInnerTexts()).join(', ') + ' › ' +
+    (await p.locator('.tools a[aria-current]').allInnerTexts()).join(', ');
+  console.log('\nGuide:', await txt('h1'), '|', await parte(), '|', (await p.locator('.g-card h3').allInnerTexts()).join(', '));
   await p.goto(url('fattura-non-pagata.html'));
-  await p.click('#copyLink');
-  await p.waitForTimeout(200);
-  console.log('Guida 1, copia il collegamento:', await txt('#copyMsg'), '| condividi visibile:', await p.locator('#shareLink').isVisible());
+  if (await p.locator('#copyLink').count()) { // barra per gli avvocati (CONDIVIDI in build_guides.py)
+    await p.click('#copyLink');
+    await p.waitForTimeout(200);
+    console.log('Guida 1, copia il collegamento:', await txt('#copyMsg'), '| condividi visibile:', await p.locator('#shareLink').isVisible());
+  } else console.log('Guida 1:', await parte(), '| barra per gli avvocati spenta');
   console.log('  strumento:', await txt('#qOutMora'));
   await p.goto(url('decreto-ingiuntivo.html'));
   await p.fill('#qValore', '8000');

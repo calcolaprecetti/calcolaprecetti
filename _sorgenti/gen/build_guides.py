@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Parti comuni a tutte le pagine di calcolaprecetti.it (barra, piè di pagina, intestazione, interruttori delle
-sezioni) e modello delle pagine della sezione «Guide» (indice + tre guide).
+sezioni) e modello delle pagine della sezione «Guide» (indice + tre guide), nella parte «Per i creditori».
 
-I testi delle guide stanno in guide_testi.py: sono bozze da rivedere e restano fuori dal repository finché non
-si pubblicano (istruzioni in _sorgenti/LEGGIMI.md). Le domande frequenti sono scritte una volta sola e
-finiscono sia nella pagina sia nei dati strutturati, così restano identiche.
+I testi delle guide stanno in guide_testi.py. Le domande frequenti sono scritte una volta sola e finiscono sia
+nella pagina sia nei dati strutturati, così restano identiche.
 """
 import html
 import json
@@ -34,11 +33,11 @@ TABS = [  # parte «Per gli avvocati»: gli strumenti
     ('/termini-precetto/', '<span><span class="tm">Termini</span><span class="tl"> del precetto</span></span>', 'termini'),
     ('/interessi-moratori/', '<span><span class="tl">Calcolo interessi </span><span class="tm">moratori</span></span>', 'mora'),
     ('/tassi/', '<span><span class="tm">Tassi</span><span class="tl"> e fonti</span></span>', 'tassi'),
-] + ([('/guide/', 'Guide', 'guide')] if GUIDE else [])
-TABS_CREDITORI = [  # parte «Per i creditori»: lo studio (valutazione e «Chi sono» si aggiungono più sotto)
+]
+TABS_CREDITORI = [  # parte «Per i creditori»: lo studio (valutazione, guide e «Chi sono» si aggiungono più sotto)
     ('/recupero-crediti/', '<span><span class="tm">Recupero</span><span class="tl"> crediti</span></span>', 'recupero'),
 ]
-CREDITORI = {'recupero', 'valutazione', 'chi', 'newsletter'}  # pagine della parte «Per i creditori»
+CREDITORI = {'recupero', 'valutazione', 'guide', 'guida', 'chi', 'newsletter'}  # pagine della parte «Per i creditori»
 AUD_A = ('<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><rect x="3" y="1.5" width="10" height="13" '
          'rx="1.5" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M5.5 4.5h5M5.5 8h1M9.5 8h1M5.5 11h1M9.5 11h1" '
          'stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>')  # calcolatrice
@@ -49,7 +48,7 @@ AUD_C = ('<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" foc
 
 def nav(current, actions=''):
     """Barra «Per gli avvocati | Per i creditori», intestazione e schede della parte in cui sta la pagina.
-    current: home, termini, mora, tassi, guide (indice), guida (una guida) per gli avvocati; recupero, valutazione, chi
+    current: home, termini, mora, tassi per gli avvocati; recupero, valutazione, guide (indice), guida (una guida), chi
     per i creditori; altro (privacy, note legali, 404): nessuna delle due, con le schede degli strumenti."""
     lato = 'c' if current in CREDITORI else ('' if current == 'altro' else 'a')
 
@@ -137,6 +136,8 @@ PIVA = '04591770245'  # partita IVA del titolare: va in home page quando il sito
 if VALUTAZIONE:
     TABS_CREDITORI.insert(len(TABS_CREDITORI) - (1 if CHI_SONO else 0),
                           ('/valutazione-credito/', '<span><span class="tm">Valutazione</span><span class="tl"> del credito</span></span>', 'valutazione'))
+if GUIDE:  # le guide sono per chi deve farsi pagare: scheda nella parte «Per i creditori», prima di «Chi sono»
+    TABS_CREDITORI.insert(len(TABS_CREDITORI) - (1 if CHI_SONO else 0), ('/guide/', 'Guide', 'guide'))
 
 FOOTER = '''<footer class="foot">
   <div class="wrap">
@@ -159,8 +160,9 @@ FOOTER = '''<footer class="foot">
        if VALUTAZIONE else '') + '''      </nav>
 ''' + ('''      <nav class="foot-col" aria-label="Guide">
         <h2>Guide</h2>
-        <a href="/guide/#atto">Approfondimenti per l'atto</a>
-        <a href="/guide/#clienti">Da mandare ai clienti</a>
+        <a href="''' + G1 + '''">Fattura non pagata</a>
+        <a href="''' + G2 + '''">Decreto ingiuntivo</a>
+        <a href="''' + G3 + '''">Precetto notificato</a>
       </nav>
 ''' if GUIDE else '') + '''      <nav class="foot-col" aria-label="Verifiche">
         <h2>Verifiche</h2>
@@ -341,6 +343,9 @@ def guide_page(g, site=None):
     return '\n'.join(parts).replace('\n\n\n', '\n\n'), mins, words
 
 
+# Barra in cima alle guide per gli avvocati che le mandano ai clienti («Sei un avvocato? … copia il collegamento»). Spenta dal
+# 10.11.2026, quando le guide sono passate nella parte «Per i creditori» (True per rimetterla; lo script è in guide.js).
+CONDIVIDI = False
 SHARE = '''<section class="g-share" aria-label="Per gli avvocati">
   <div class="wrap">
     <p><strong>Sei un avvocato?</strong> Questa guida è scritta per i tuoi clienti: copia il collegamento e mandagliela per mail o in un messaggio.</p>
@@ -352,10 +357,10 @@ SHARE = '''<section class="g-share" aria-label="Per gli avvocati">
   </div>
 </section>'''
 
-TOOL = {  # calcolaprecetti.it: le guide sono «da mandare ai clienti», con la barra per gli avvocati
+TOOL = {  # calcolaprecetti.it: guide per chi deve farsi pagare, nella parte «Per i creditori»
     'base': BASE, 'site_name': 'calcolaprecetti.it', 'copy': COPY, 'image': True,
-    'nav': lambda: nav('guida'), 'top': SHARE,
-    'crumbs': ('Guide per i clienti', '/guide/#clienti'),
+    'nav': lambda: nav('guida'), 'top': SHARE if CONDIVIDI else '',
+    'crumbs': ('Guide', '/guide/'),
     'content': lambda s: s, 'end': '',
     'contact': CONTACT, 'footer': FOOTER, 'tail': TAIL,
 }
@@ -411,11 +416,7 @@ if __name__ == '__main__':
             os.remove(GUIDE_JS)
         print('guide spente: cartella «guide» e assets/guide.js tolti dal sito')
         raise SystemExit
-    try:  # testi delle guide: bozze fuori dal repository finché non si pubblicano
-        from guide_testi import GUIDA1, GUIDA2, GUIDA3, CARDS, index_page
-    except ImportError:
-        raise SystemExit('GUIDE = True, ma manca _sorgenti/gen/guide_testi.py con i testi delle guide '
-                         '(bozze consegnate a parte): vedi _sorgenti/LEGGIMI.md')
+    from guide_testi import GUIDA1, GUIDA2, GUIDA3, CARDS, index_page  # testi delle guide
     shutil.copyfile(os.path.join(GEN, 'guide.js'), GUIDE_JS)
     info = []
     for g in (GUIDA1, GUIDA2, GUIDA3):
