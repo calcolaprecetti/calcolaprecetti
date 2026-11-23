@@ -472,7 +472,7 @@ GUIDA3 = {
         ('Quanto dura un precetto?',
          '90 giorni dalla notifica. Se in quel tempo il pignoramento non inizia il precetto perde efficacia, ma il creditore può notificarne uno nuovo finché il credito non è prescritto.'),
         ('Posso pagare a rate?',
-         'Prima del pignoramento solo se il creditore è d\'accordo. Dopo il pignoramento puoi chiedere al giudice la conversione: versi subito almeno un sesto del dovuto e il resto in rate mensili, fino a 48.'),
+         'Prima del pignoramento solo se il creditore è d\'accordo. Dopo il pignoramento puoi chiedere al giudice la conversione: versi subito almeno un sesto del dovuto e il resto in rate mensili, fino a 48, se sono pignorati beni mobili o immobili.'),
         ('Avevo già pagato. Cosa faccio?',
          'Manda subito la prova del pagamento all\'avvocato del creditore, per iscritto. Se il precetto non viene ritirato serve l\'opposizione all\'esecuzione.'),
         ('Il precetto può arrivare per PEC?',
