@@ -1,13 +1,35 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Testi delle guide di calcolaprecetti.it: guida 1, 2, 3 e indice /guide/.
+"""Testi delle guide di calcolaprecetti.it: guide 1, 2, 3, 4 e indice /guide/.
 
-Rivedute dal titolare il 10.11.2026. Dopo ogni modifica: python3 _sorgenti/genera.py e python3 _sorgenti/controlla.py;
-per gli esempi numerici, node _sorgenti/gen/calc.js.
-Le parti comuni (intestazione, piè di pagina, modello della pagina) restano in build_guides.py.
+Guide 1, 2 e 3 rivedute dal titolare il 10.11.2026; guida 4 (pignoramento di conto e stipendio) approvata il 23.11.2026.
+Dopo ogni modifica: python3 _sorgenti/genera.py e python3 _sorgenti/controlla.py; per gli esempi numerici,
+node _sorgenti/gen/calc.js. Le parti comuni (intestazione, piè di pagina, modello della pagina) restano in build_guides.py.
 """
+import math
+
 from build_guides import *  # noqa: F401,F403  parti comuni e funzioni per le pagine
-from build_guides import G1, G2, G3  # noqa: F401  indirizzi delle tre guide
+from build_guides import G1, G2, G3, G4  # noqa: F401  indirizzi delle guide
+
+# Assegno sociale: le soglie che non si possono pignorare (art. 545 c.p.c.) sono agganciate al suo importo mensile.
+# Va aggiornato ogni gennaio con la circolare INPS sulla rivalutazione (per il 2026: circolare 19 dicembre 2025, n. 153).
+# Lo usano il testo della guida 4 e il suo calcolo rapido; nell'anno dopo, finché non si aggiorna, il calcolo lo segnala.
+ASSEGNO_SOCIALE = 546.24
+ASSEGNO_ANNO = 2026
+PENSIONE_MIN = 1000.00  # minimo che resta comunque libero sulla pensione (art. 545, settimo comma, c.p.c.)
+SOGLIA_PENSIONE = max(PENSIONE_MIN, round(2 * ASSEGNO_SOCIALE, 2))  # pensione: il doppio dell'assegno sociale
+SOGLIA_CONTO = round(3 * ASSEGNO_SOCIALE, 2)  # conto: stipendi e pensioni accreditati prima del pignoramento
+
+
+def num(x):
+    """1092.48 -> '1.092,48'."""
+    return '{:,.2f}'.format(x).replace(',', ' ').replace('.', ',').replace(' ', '.')
+
+
+def eur(x, cent=None):
+    """Importo in euro: senza centesimi se è tondo (€ 1.600), con i centesimi se no o se richiesto (€ 1.092,48)."""
+    s = num(x)
+    return '€ ' + (s if cent or (cent is None and not s.endswith(',00')) else s[:-3])
 
 # =========================================================================== guida 1
 G1_BODY = '\n'.join([
@@ -407,7 +429,8 @@ G3_BODY = '\n'.join([
     step(1, 'Segna due date: giorno 11 e giorno 90', '<p>Se lasci passare i 90 giorni devi rifare il precetto, e le spese del primo di regola restano a te.</p>'),
     step(2, 'Aspetta i 10 giorni', '<p>Prima non puoi pignorare. Solo se c\'è pericolo nel ritardo il presidente del tribunale può autorizzare l\'esecuzione immediata.</p>'),
     step(3, 'Scopri cosa pignorare', '<p>Passati i 10 giorni chiedi all\'ufficiale giudiziario la ricerca telematica dei beni: interroga le banche dati pubbliche su conti, rapporti di lavoro e veicoli. Mentre la ricerca è in corso i 90 giorni restano sospesi.</p>'),
-    step(4, 'Scegli il pignoramento', '<p>Conto corrente e crediti verso terzi sono di solito la via più rapida. Gli immobili sono la più lunga e costosa.</p>'),
+    step(4, 'Scegli il pignoramento', '<p>Conto corrente e crediti verso terzi sono di solito la via più rapida. Gli immobili sono la più lunga e costosa.</p>'
+         '\n<p>Come funziona: <a href="%s">Pignoramento di conto corrente e stipendio</a>.</p>' % G4),
     step(5, 'Se arriva un acconto, rifai il conto', '<p>I pagamenti parziali coprono prima spese e interessi, poi il capitale. Il <a href="/">calcolo delle somme del precetto</a> lo fa da solo.</p>'),
     step(6, 'Se arriva una proposta di rate, valutala', '<p>Ma non lasciare scadere i 90 giorni senza un accordo scritto.</p>'),
     '</ol>',
@@ -462,11 +485,191 @@ GUIDA3 = {
 <li>Se l'hai ricevuto: il decimo giorno. Entro quella data paghi, tratti o ti opponi.</li>
 <li>Se l'hai notificato: il giorno 11 e il giorno 90.</li>
 </ul>
-<div class="actions"><a class="btn btn-primary" href="/termini-precetto/">Calcola i termini del precetto</a><a class="btn btn-secondary" href="/">Calcola le somme del precetto</a></div>
-</section>''',
+<div class="actions"><a class="btn btn-primary" href="/termini-precetto/">Calcola i termini del precetto</a><a class="btn btn-secondary" href="/">Calcola le somme del precetto</a><a class="btn btn-secondary" href="%s">Guida successiva: pignoramento</a></div>
+</section>''' % G4,
     'norme': ('Codice di procedura civile, artt. 474, 479, 480, 481, 482, 492-bis, 495, 545, 615 e 617. Codice civile, art. 1194. '
               'D.P.R. 29 settembre 1973, n. 602, art. 76. D.Lgs. 12 gennaio 2019, n. 14 (Codice della crisi d\'impresa e dell\'insolvenza). '
               'Legge 7 ottobre 1969, n. 742, art. 3.'),
+}
+
+
+# =========================================================================== guida 4
+def _tempo(mesi):
+    """29 -> '2 anni e 5 mesi'."""
+    a, m = divmod(mesi, 12)
+    return ' e '.join(([('1 anno' if a == 1 else '%d anni' % a)] if a else []) + ([('1 mese' if m == 1 else '%d mesi' % m)] if m else []))
+
+
+_ES_STIP, _ES_CRED, _ES_PENS = 1600.0, 9000.0, 1200.0  # esempio: stipendio netto, credito del precetto, pensione netta
+_ES_QUINTO = round(_ES_STIP / 5, 2)
+_ES_MESI = int(math.ceil(_ES_CRED / _ES_QUINTO))
+_ES_QPENS = round((_ES_PENS - SOGLIA_PENSIONE) / 5, 2)
+
+G4_BODY = '\n'.join([
+    '<section id="cose">',
+    '<h2>Cos\'è, in parole semplici</h2>',
+    '<p>Il pignoramento presso terzi serve a farsi pagare con i soldi che altri devono al debitore. Il «terzo» è chi gli deve qualcosa: la banca, che custodisce il suo conto; il datore di lavoro, che gli paga lo stipendio; l\'INPS, che gli paga la pensione; i suoi clienti, se è un\'impresa.</p>',
+    '<p>Da quando riceve l\'atto, il terzo non può più dare quei soldi al debitore. Li tiene fermi e, quando il giudice lo ordina, li versa a te.</p>',
+    '<p>Per partire servono un titolo esecutivo, per esempio un decreto ingiuntivo esecutivo, e un precetto notificato da almeno 10 giorni e da non più di 90. Come si contano quei giorni lo spiega la guida <a href="%s">Precetto notificato: cosa succede adesso</a>.</p>' % G3,
+    note('In parole semplici', 'Non devi più convincere il debitore a pagare. Il giudice ordina a chi ha i suoi soldi di darli a te.'),
+    '</section>',
+    '',
+    '<section id="cosa">',
+    '<h2>Cosa puoi pignorare</h2>',
+    '<ul>',
+    '<li><strong>Il conto corrente.</strong> La banca blocca il saldo fino all\'importo del precetto aumentato della metà, che copre interessi e spese. Per i crediti fino a € 3.200 la maggiorazione è fissa: € 1.000 fino a € 1.100, € 1.600 oltre.</li>',
+    '<li><strong>Lo stipendio.</strong> Il datore di lavoro trattiene ogni mese la parte pignorabile e te la versa, finché il credito non è pagato. Vale anche per il TFR, se il rapporto di lavoro finisce.</li>',
+    '<li><strong>La pensione.</strong> Paga l\'INPS, o l\'ente che la eroga, con regole simili. Una parte, però, resta sempre al pensionato.</li>',
+    '<li><strong>I crediti verso i clienti,</strong> se il debitore è un\'impresa o un professionista: fatture che altri devono pagargli, canoni di affitto, somme dovute da enti pubblici.</li>',
+    '</ul>',
+    '<p>Con un solo atto puoi pignorare presso più terzi, per esempio due banche e il datore di lavoro. Se le somme bloccate superano di molto il credito, il debitore può chiedere al giudice di ridurre il pignoramento.</p>',
+    '<p>Non sai dove ha il conto o chi gli paga lo stipendio? Prima del pignoramento c\'è la ricerca telematica dei beni, spiegata nella guida <a href="%s#notificato">Precetto notificato</a>.</p>' % G3,
+    '</section>',
+    '',
+    '<section id="limiti">',
+    '<h2>Quanto si può prendere</h2>',
+    '<p>Al debitore la legge lascia sempre il necessario per vivere. Le soglie sono agganciate all\'assegno sociale dell\'INPS, che nel %d è di %s al mese.</p>' % (ASSEGNO_ANNO, eur(ASSEGNO_SOCIALE)),
+    '<ul>',
+    '<li><strong>Stipendio: un quinto del netto.</strong> Su %s al mese, %s. Non c\'è una soglia minima: anche uno stipendio basso si pignora per un quinto.</li>' % (eur(_ES_STIP), eur(_ES_QUINTO)),
+    '<li><strong>Pensione: un quinto di quello che supera il minimo.</strong> Il minimo è il doppio dell\'assegno sociale, e comunque almeno € 1.000: nel %d sono %s. Su una pensione di %s si pignorano %s al mese.</li>' % (ASSEGNO_ANNO, eur(SOGLIA_PENSIONE), eur(_ES_PENS), eur(_ES_QPENS)),
+    '<li><strong>Conto corrente: tutto il saldo, con un limite per stipendi e pensioni.</strong> Delle somme arrivate sul conto come stipendio o pensione prima del pignoramento resta libero il triplo dell\'assegno sociale: nel %d %s. Le altre somme si pignorano per intero. Stipendi e pensioni che arrivano dopo la notifica seguono le regole qui sopra.</li>' % (ASSEGNO_ANNO, eur(SOGLIA_CONTO)),
+    '<li><strong>Altri pignoramenti o una cessione del quinto.</strong> La tua quota può ridursi, o devi aspettare il tuo turno. In ogni caso tutte le trattenute insieme non superano la metà dello stipendio.</li>',
+    '</ul>',
+    '<div class="g-conto">',
+    '<p class="g-conto-t"><b>Esempio.</b> Credito di %s tra capitale, interessi e spese del precetto. Il debitore è dipendente, con uno stipendio netto di %s.</p>' % (eur(_ES_CRED), eur(_ES_STIP)),
+    '<div class="g-rows">',
+    row('Quota pignorabile ogni mese, un quinto', eur(_ES_QUINTO, True)),
+    row('Mensilità per coprire il credito', '%d' % _ES_MESI),
+    row('Tempo, più o meno', _tempo(_ES_MESI), tot=True),
+    '</div>',
+    '<p class="g-conto-n">Tredicesima e TFR accorciano i tempi. Gli interessi, che corrono fino al pagamento, li allungano.</p>',
+    '</div>',
+    '<div class="panel g-tool" id="strumento" data-quick="pignorabile" data-as="%.2f" data-anno="%d" data-min="%.2f">' % (ASSEGNO_SOCIALE, ASSEGNO_ANNO, PENSIONE_MIN),
+    '<span class="g-note-l">Lo strumento</span>',
+    '<h3 class="g-tool-t">Quanto si può pignorare</h3>',
+    '<fieldset class="field">',
+    '<legend>Cosa vuoi pignorare</legend>',
+    '<div class="chips">',
+    '<label class="chip on"><input type="radio" name="qTipo" value="stipendio" checked>Stipendio</label>',
+    '<label class="chip"><input type="radio" name="qTipo" value="pensione">Pensione</label>',
+    '<label class="chip"><input type="radio" name="qTipo" value="conto">Conto corrente</label>',
+    '</div>',
+    '</fieldset>',
+    '<div class="pair">',
+    '<label class="field"><span class="label" id="qRedL">Stipendio netto al mese</span><span class="money"><span class="sign">€</span><input type="text" inputmode="decimal" id="qReddito" value="%s" placeholder="0,00"></span></label>' % num(_ES_STIP),
+    '<label class="field"><span class="label">Credito da recuperare</span><span class="money"><span class="sign">€</span><input type="text" inputmode="decimal" id="qCredito" value="%s" placeholder="0,00"></span></label>' % num(_ES_CRED),
+    '</div>',
+    '<p class="hint">I dati dell\'esempio sono già inseriti: sostituiscili con i tuoi. Restano sul tuo dispositivo.</p>',
+    '<div class="g-out" id="qOutPign" aria-live="polite"><p class="empty">Per vedere il calcolo attiva JavaScript nel browser.</p></div>',
+    '<p class="hint">Vale per i crediti di imprese, professionisti e privati. Per gli alimenti e per le imposte riscosse dall\'Agenzia delle Entrate-Riscossione le regole sono diverse.</p>',
+    '</div>',
+    '</section>',
+    '',
+    '<section id="tappe">',
+    '<h2>Le tappe, dalla notifica al pagamento</h2>',
+    '<p class="g-sub">Per ogni tappa trovi il termine fissato dalla legge. Decide il tribunale del luogo in cui il debitore ha la residenza o la sede.</p>',
+    '<ol class="g-steps">',
+    step(1, 'L\'atto di pignoramento', '<p>L\'avvocato prepara l\'atto e l\'ufficiale giudiziario lo notifica al debitore e a ogni terzo. Dentro ci sono il credito, i terzi e la data dell\'udienza.</p>\n'
+         + law(('Per legge', 'Dall\'11° al 90° giorno dalla notifica del precetto.'))),
+    step(2, 'Il terzo blocca le somme', '<p>Dal giorno della notifica il terzo diventa custode: non può più pagare al debitore, nei limiti visti sopra. Sul conto il debitore non può più usare le somme bloccate; il resto del conto resta suo.</p>'),
+    step(3, 'La dichiarazione del terzo', law(('Per legge', 'Entro 10 giorni, per PEC o raccomandata al creditore.'))
+         + '\n<p>La banca dice se il conto c\'è e quanto contiene, il datore di lavoro quanto paga di stipendio. Se il terzo non risponde, il giudice fissa una nuova udienza; se non si presenta nemmeno lì, il credito si considera non contestato.</p>'),
+    step(4, 'L\'iscrizione a ruolo', law(('Per legge', 'Entro 30 giorni da quando l\'ufficiale giudiziario restituisce l\'atto notificato. Poi, entro l\'udienza, l\'avviso dell\'iscrizione va notificato al terzo.'))
+         + '\n<p>Sono passaggi dell\'avvocato, ma conviene che tu li conosca: se ne salta uno, il pignoramento perde efficacia e le somme si sbloccano.</p>'),
+    step(5, 'L\'udienza e l\'assegnazione', law(
+        ('Per legge', 'Almeno 10 giorni dopo la notifica del pignoramento.'),
+        ('In pratica', 'Di solito da uno a tre mesi dopo la notifica. Dipende dal tribunale.'))
+         + '\n<p>Con l\'ordinanza di assegnazione il giudice ordina al terzo di pagare a te il credito, gli interessi e le spese del pignoramento.</p>'),
+    step(6, 'Il pagamento', law(
+        ('Conto corrente', 'In un\'unica volta, dopo l\'ordinanza.'),
+        ('Stipendio e pensione', 'Ogni mese, finché il credito non è pagato.'))
+         + '\n<p>Se il debitore cambia lavoro, il pignoramento non lo segue: serve un nuovo atto contro il nuovo datore di lavoro.</p>'),
+    '</ol>',
+    '</section>',
+    '',
+    '<section id="costi">',
+    '<h2>I costi</h2>',
+    '<p>Quattro voci da anticipare.</p>',
+    '<ul>',
+    '<li><strong>Contributo unificato:</strong> € 43 se il credito è sotto € 2.500, € 139 da € 2.500 in su.</li>',
+    '<li><strong>Anticipazione forfettaria:</strong> € 27.</li>',
+    '<li><strong>Notifica:</strong> i diritti dell\'ufficiale giudiziario, per il debitore e per ogni terzo.</li>',
+    '<li><strong>Compenso dell\'avvocato.</strong> Lo concordi con lui per iscritto prima di iniziare.</li>',
+    '</ul>',
+    '<p>Nell\'ordinanza il giudice mette le spese del pignoramento a carico del debitore e te le assegna insieme al credito: se il terzo ha abbastanza, le recuperi. Se il pignoramento non trova niente, restano a te. Per questo conviene sapere prima dove cercare.</p>',
+    '<p>Anche un pignoramento rimasto senza esito, però, serve: è uno dei casi in cui puoi recuperare l\'IVA della fattura non pagata. Ne parla la guida <a href="%s#debitore">Fattura non pagata</a>; per i dettagli chiedi al tuo commercialista.</p>' % G1,
+    '</section>',
+    '',
+    '<section id="errori">',
+    '<h2>Gli errori che costano</h2>',
+    '<ul class="g-err">',
+    '<li><strong>Pignorare alla cieca.</strong> Un atto alla banca sbagliata costa quanto uno giusto. Prima si cerca dove sono i soldi, poi si pignora.</li>',
+    '<li><strong>Puntare su una pensione bassa.</strong> Fino a %s al mese non si prende nulla, e appena sopra pochi euro. Meglio cercare un conto o un altro reddito.</li>' % eur(SOGLIA_PENSIONE),
+    '<li><strong>Saltare un termine.</strong> Iscrizione a ruolo entro 30 giorni e avviso al terzo entro l\'udienza: se ne manca uno, il pignoramento perde efficacia.</li>',
+    '<li><strong>Far scadere il precetto.</strong> Il pignoramento va iniziato entro 90 giorni dalla notifica del precetto. Dopo serve un precetto nuovo, con altre spese.</li>',
+    '<li><strong>Perdere di vista il debitore.</strong> Se cambia lavoro, il vecchio pignoramento non lo segue. Tieni d\'occhio i pagamenti e, se si fermano, avvisa il tuo avvocato.</li>',
+    '</ul>',
+    '</section>',
+])
+
+GUIDA4 = {
+    'path': G4,
+    'pubblicata': '2026-11-23',  # prima pubblicazione (datePublished): il giorno in cui va online
+    'crumb': 'Pignoramento di conto e stipendio',
+    'title': 'Pignoramento di conto corrente e stipendio: come funziona',
+    'desc': ('Come si pignorano conto corrente, stipendio e pensione del debitore: quanto si può prendere, in che tempi, '
+             'con quali costi. Con il calcolo della quota.'),
+    'og': 'Conto, stipendio e pensione: quanto si può pignorare, in che tempi e con quali costi. Con il calcolo della quota pignorabile.',
+    'h1': 'Pignoramento di conto corrente e stipendio: <mark>come funziona</mark>',
+    'lead': ('Il precetto è scaduto e il debitore non ha pagato. Ora si pignora quello che altri gli devono: il saldo in banca, '
+             'lo stipendio, la pensione. Come funziona, quanto si prende e in che tempi.'),
+    'per': 'Per chi deve farsi pagare',
+    'brief': [
+        '<mark>Ti paga chi deve soldi al debitore.</mark> La banca per il conto, il datore di lavoro per lo stipendio, l\'INPS per la pensione.',
+        '<mark>Dallo stipendio, un quinto al mese.</mark> Dalla pensione, un quinto di quello che supera %s, la soglia del %d.' % (eur(SOGLIA_PENSIONE), ASSEGNO_ANNO),
+        '<mark>Dal giorno della notifica le somme sono bloccate.</mark> Poi il giudice le assegna a te, di solito in pochi mesi.',
+    ],
+    'toc': [('cose', 'Cos\'è, in parole semplici'), ('cosa', 'Cosa puoi pignorare'), ('limiti', 'Quanto si può prendere'),
+            ('strumento', 'Lo strumento: quanto si può pignorare'), ('tappe', 'Le tappe, dalla notifica al pagamento'), ('costi', 'I costi'),
+            ('errori', 'Gli errori che costano'), ('parole', 'Parole difficili, tradotte'), ('domande', 'Domande frequenti'),
+            ('mossa', 'La mossa da fare oggi')],
+    'body': G4_BODY,
+    'gloss': [
+        ('Terzo pignorato', 'Chi deve soldi al debitore e riceve l\'atto: la banca, il datore di lavoro, l\'INPS, un cliente del debitore.'),
+        ('Dichiarazione del terzo', 'La risposta scritta del terzo: dice se deve qualcosa al debitore, e quanto.'),
+        ('Iscrizione a ruolo', 'Il deposito in tribunale degli atti del pignoramento: apre la procedura davanti al giudice.'),
+        ('Ordinanza di assegnazione', 'Il provvedimento con cui il giudice ordina al terzo di pagare il creditore.'),
+        ('Assegno sociale', 'La prestazione dell\'INPS a cui la legge aggancia le soglie che non si possono pignorare. Nel %d è di %s al mese.'
+         % (ASSEGNO_ANNO, eur(ASSEGNO_SOCIALE))),
+        ('Cessione del quinto', 'Il prestito che si rimborsa con una trattenuta fissa sullo stipendio o sulla pensione.'),
+    ],
+    'faqs': [
+        ('Si può pignorare un conto corrente senza soldi?',
+         'Sì, ma di solito rende poco: la banca blocca quello che c\'è sul conto quando riceve l\'atto. In alcuni casi possono restare bloccate anche le somme che arrivano dopo, ma è meglio non farci affidamento. Per questo conviene puntare sul conto su cui arrivano le entrate.'),
+        ('Quanto dura il blocco del conto?',
+         'Fino all\'ordinanza del giudice, di solito qualche mese. Il conto non si chiude: il debitore può usare le somme che superano l\'importo bloccato. Il blocco cade prima se il creditore salta un termine o rinuncia.'),
+        ('Il conto è cointestato. Si può pignorare?',
+         'Sì, ma al creditore va solo la parte del debitore. Se gli intestatari sono due si presume la metà, salvo prova contraria; se sono tre, un terzo.'),
+        ('Lo stipendio è già pignorato da un altro creditore. Conviene pignorarlo lo stesso?',
+         'Puoi farlo, ma di solito aspetti il tuo turno: il quinto non raddoppia. Conviene se il primo pignoramento sta per finire, o insieme ad altro da pignorare, come un conto.'),
+        ('Il debitore ha perso il lavoro. Cosa succede?',
+         'Il pignoramento resta sul TFR e sulle altre somme dovute per la fine del rapporto, sempre per un quinto. Se trova un nuovo lavoro, serve un nuovo atto contro il nuovo datore di lavoro.'),
+        ('Dopo il pignoramento il debitore può pagare a rate?',
+         'Può chiedere al giudice la conversione, cioè pagare il dovuto, con le spese, al posto di ciò che è pignorato. Le rate fino a 48 mesi sono previste solo se sono pignorati beni mobili o immobili: con conto, stipendio o pensione pignorati non ci sono.'),
+        ('Le regole sono le stesse quando pignora l\'Agenzia delle Entrate-Riscossione?',
+         'No. L\'agente della riscossione pignora senza passare dal giudice e sullo stipendio trattiene da un decimo a un quinto, secondo l\'importo. Questa guida riguarda chi recupera un credito privato: imprese, professionisti, persone.'),
+    ],
+    'mossa': '''<section class="g-move" id="mossa">
+<h2>La mossa da fare <mark>oggi</mark></h2>
+<p>Scrivi quello che sai del debitore: in che banca ha il conto, chi gli paga lo stipendio, chi sono i suoi clienti. Se non lo sai, è il momento della ricerca dei beni. Poi <a href="/recupero-crediti/#affida" data-conta="recupero-da-guide">contattami</a> e valutiamo insieme cosa conviene pignorare.</p>
+<div class="actions"><a class="btn btn-primary" href="/recupero-crediti/#affida" data-conta="recupero-da-guide">Contattami</a><a class="btn btn-secondary" href="/termini-precetto/">Calcola i termini del precetto</a></div>
+</section>''',
+    'norme': ('Codice di procedura civile, artt. 26-bis, 492-bis, 495, 496, 501, 543, 545, 546, 547, 548, 549, 551-bis e 553. Codice civile, art. 1298. '
+              'D.P.R. 30 maggio 2002, n. 115, artt. 13 e 30. D.P.R. 5 gennaio 1950, n. 180, art. 68. D.P.R. 29 settembre 1973, n. 602, artt. 72-bis e 72-ter. '
+              'D.P.R. 26 ottobre 1972, n. 633, art. 26. D.L. 9 agosto 2022, n. 115, art. 21-bis, convertito dalla legge 21 settembre 2022, n. 142. '
+              'D.L. 2 marzo 2024, n. 19, art. 25, convertito dalla legge 29 aprile 2024, n. 56. D.Lgs. 31 ottobre 2024, n. 164. '
+              'Circolare INPS 19 dicembre 2025, n. 153, per l\'importo dell\'assegno sociale %d. '
+              'Corte di cassazione, sezione terza civile, 4 aprile 2026, n. 8478, sugli obblighi del terzo per le somme sopravvenute.' % ASSEGNO_ANNO),
 }
 
 
@@ -478,8 +681,10 @@ CARDS = {  # titolo e riassunto di ogni guida negli indici (anche nella bozza de
          'Quanto ci vuole, quanto anticipi e chi paga alla fine. Con i numeri, tappa per tappa.'),
     G3: ('Precetto notificato: cosa succede adesso',
          'I 10 e i 90 giorni, cosa può fare chi lo riceve e cosa deve fare chi lo ha notificato.'),
+    G4: ('Pignoramento di conto corrente e stipendio',
+         'Come si pignorano conto, stipendio e pensione: quanto si prende, in che tempi e con quali costi.'),
 }
-for _g in (GUIDA1, GUIDA2, GUIDA3):
+for _g in (GUIDA1, GUIDA2, GUIDA3, GUIDA4):
     _g['index_title'] = CARDS[_g['path']][0]
 
 
@@ -503,7 +708,7 @@ def index_page(info):
     """Indice delle guide, nella parte «Per i creditori»."""
     path = '/guide/'
     title = 'Guide sul recupero crediti per chi deve farsi pagare'
-    desc = ('Tre guide semplici per chi deve farsi pagare: fattura non pagata, decreto ingiuntivo, precetto notificato. '
+    desc = ('Quattro guide semplici per chi deve farsi pagare: fattura non pagata, decreto ingiuntivo, precetto, pignoramento. '
             'Cosa fare, con quali tempi e costi.')
     card_list, items = cards(info)
     bp = comuni()
@@ -516,7 +721,7 @@ def index_page(info):
         {"@type": "ItemList", "itemListElement": items}]}
     ld = bp.con_nodi(ld)
     parts = [
-        head(title, desc, path, 'Dal primo sollecito al pignoramento, in tre guide brevi e senza gergo.', ld, og_type='website'),
+        head(title, desc, path, 'Dal primo sollecito al pignoramento, in quattro guide brevi e senza gergo.', ld, og_type='website'),
         '<body class="guide">',
         nav('guide'),
         '',
@@ -524,7 +729,7 @@ def index_page(info):
         '  <div>',
         '    <nav class="crumbs" aria-label="Percorso"><a href="/">Home</a> <span>›</span> Guide</nav>',
         '    <h1 class="g-title">Guide <mark>per chi deve farsi pagare</mark></h1>',
-        '    <p class="g-lead">Il percorso dal primo sollecito al pignoramento, in tre guide brevi e senza gergo: cosa fare, in che ordine, '
+        '    <p class="g-lead">Il percorso dal primo sollecito al pignoramento, in quattro guide brevi e senza gergo: cosa fare, in che ordine, '
         'con quali tempi e costi.</p>',
         '  </div>',
         '  <aside class="g-brief" aria-labelledby="briefTitle">',
@@ -533,12 +738,13 @@ def index_page(info):
         '      <li><mark>Fattura scaduta?</mark> Parti dalla prima: sollecito, diffida e quanto ti spetta tra interessi di mora e € 40.</li>',
         '      <li><mark>Serve il giudice?</mark> La seconda: tempi e costi del decreto ingiuntivo.</li>',
         '      <li><mark>Precetto notificato?</mark> La terza: i 10 e i 90 giorni e quando può partire il pignoramento.</li>',
+        '      <li><mark>Il precetto non è bastato?</mark> La quarta: come si pignorano conto, stipendio e pensione.</li>',
         '    </ul>',
         '  </aside>',
         '</div>',
         '',
         '<main class="wrap g-index">',
-        '<h2 id="elenco">Le tre guide</h2>',
+        '<h2 id="elenco">Le quattro guide</h2>',
         '<ol class="g-path">',
         card_list,
         '</ol>',

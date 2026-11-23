@@ -48,3 +48,13 @@ const st = { end: '2026-10-06', items: [{ desc: '', amount: '8000', type: 'mora'
 const res = C.compute(st);
 console.log('\nPRECETTO esempio:'); res.rows.forEach(x => console.log('  ' + x.label + ' = ' + C.num(x.amount)));
 console.log('  TOTALE', C.num(res.total), 'valore', res.valore, 'fee', res.fee);
+
+// Guida 4: quanto si può pignorare, con l'assegno sociale scritto nella pagina generata (data-as, data-min)
+const g4 = require('path').resolve(__dirname, '..', '..', 'guide', 'pignoramento-conto-corrente-stipendio', 'index.html');
+if (fs.existsSync(g4)) {
+  const h = fs.readFileSync(g4, 'utf8'), AS = +h.match(/data-as="([\d.]+)"/)[1], minP = +h.match(/data-min="([\d.]+)"/)[1];
+  const sP = Math.max(minP, C.r2(2 * AS)), sC = C.r2(3 * AS), quinto = C.r2(1600 / 5);
+  console.log(`\nPIGNORAMENTO assegno sociale ${C.num(AS)}: soglia pensione ${C.num(sP)}, soglia conto ${C.num(sC)}`);
+  console.log(`  stipendio 1.600: quinto ${C.num(quinto)}, mensilità per 9.000: ${Math.ceil(9000 / quinto)}`);
+  console.log(`  pensione 1.200: quota ${C.num(C.r2((1200 - sP) / 5))} al mese`);
+}

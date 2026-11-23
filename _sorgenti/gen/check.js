@@ -136,6 +136,14 @@ const url = (f, h) => 'file://' + path.join(DIR, f) + (h || '');
   await p.goto(url('precetto-notificato.html'));
   await p.fill('#qNotifica', '2026-10-02');
   console.log('Guida 3, 02.10.2026:', await txt('#qOutTermini'));
+  if (fs.existsSync(path.join(DIR, 'pignoramento.html'))) {
+    await p.goto(url('pignoramento.html'));
+    console.log('Guida 4, stipendio 1.600 e credito 9.000:', await txt('#qOutPign'));
+    await p.click('label.chip:has-text("Pensione")'); await p.fill('#qReddito', '1200');
+    console.log('  pensione 1.200:', await txt('#qOutPign'));
+    await p.click('label.chip:has-text("Conto corrente")'); await p.fill('#qReddito', '2000');
+    console.log('  conto 2.000:', await txt('#qOutPign'), '| etichetta:', await txt('#qRedL'));
+  }
   }
   await p.goto(url('interessi-moratori.html'));
   await p.fill('[data-s=cap]', '1394,25'); await p.fill('[data-s=from]', '2025-09-25'); await p.fill('[data-s=to]', '2026-09-21');

@@ -1,46 +1,50 @@
 {
  "/": {
-  "impronta": "5dcf1c93c65f8a7b",
-  "data": "2026-11-10"
+  "impronta": "e86cdfc7d4f1bb72",
+  "data": "2026-11-23"
  },
  "/termini-precetto/": {
-  "impronta": "e0ef77079ceec2e5",
-  "data": "2026-11-10"
+  "impronta": "59749f2383808872",
+  "data": "2026-11-23"
  },
  "/interessi-moratori/": {
-  "impronta": "0323acd159a00366",
-  "data": "2026-11-10"
+  "impronta": "a1f94ec53d69eb42",
+  "data": "2026-11-23"
  },
  "/tassi/": {
-  "impronta": "869c597b91631275",
-  "data": "2026-11-10"
+  "impronta": "46d53e2ae8cbc581",
+  "data": "2026-11-23"
  },
  "/chi-sono/": {
-  "impronta": "e4e3695a5a04968b",
-  "data": "2026-11-10"
+  "impronta": "0a94c1455531e428",
+  "data": "2026-11-23"
  },
  "/valutazione-credito/": {
-  "impronta": "5abfab0aa2d2ba43",
-  "data": "2026-11-10"
+  "impronta": "32de1fb5b4db53d0",
+  "data": "2026-11-23"
  },
  "/recupero-crediti/": {
-  "impronta": "f69e382c702f9632",
-  "data": "2026-11-10"
+  "impronta": "3157af0487e50d5c",
+  "data": "2026-11-23"
  },
  "/guide/": {
-  "impronta": "cca27860109d3273",
-  "data": "2026-11-10"
+  "impronta": "83d24bc8f2507c7e",
+  "data": "2026-11-23"
  },
  "/guide/fattura-non-pagata/": {
-  "impronta": "5ae2a8cf5f00d69c",
-  "data": "2026-11-10"
+  "impronta": "d1f5873653009950",
+  "data": "2026-11-23"
  },
  "/guide/decreto-ingiuntivo-tempi-costi/": {
-  "impronta": "4932837a3c774109",
-  "data": "2026-11-10"
+  "impronta": "c4a09f6dd3e619f9",
+  "data": "2026-11-23"
  },
  "/guide/precetto-notificato/": {
-  "impronta": "ccab7ab34e278696",
-  "data": "2026-11-10"
+  "impronta": "608285d17c55881a",
+  "data": "2026-11-23"
+ },
+ "/guide/pignoramento-conto-corrente-stipendio/": {
+  "impronta": "7032103318098449",
+  "data": "2026-11-23"
  }
 }

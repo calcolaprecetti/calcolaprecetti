@@ -1,6 +1,7 @@
 /*! calcolaprecetti.it - (c) 2026 il titolare indicato nelle Note legali (https://calcolaprecetti.it/note-legali/). Tutti i diritti riservati. Vietata la riproduzione, anche parziale, senza autorizzazione scritta. Licenza: file LICENSE. */
-/* Pagine delle guide: dati del piè di pagina, collegamento da copiare (se c'è la barra), tassi in vigore scritti nel testo e i tre calcoli rapidi
-   (data-quick="mora", "termini", "costi"). Usa il motore e le tabelle di core.js: qui non ci sono tassi. */
+/* Pagine delle guide: dati del piè di pagina, collegamento da copiare (se c'è la barra), tassi in vigore scritti nel testo e i quattro
+   calcoli rapidi (data-quick="mora", "termini", "costi", "pignorabile"). Usa il motore e le tabelle di core.js: qui non ci sono
+   tassi. L'assegno sociale del calcolo «pignorabile» arriva dalla pagina (data-as, scritto da guide_testi.py). */
 (function () {
   'use strict';
   if (typeof Core === 'undefined') return;
@@ -153,5 +154,57 @@
     val.addEventListener('input', runC);
     val.addEventListener('blur', function () { fmtMoney(val); });
     runC();
+  }
+
+  /* ---------- quanto si può pignorare: stipendio, pensione, conto (art. 545 c.p.c.); soglie dall'assegno sociale della pagina ---------- */
+  var qp = $('[data-quick=pignorabile]');
+  if (qp) {
+    var AS = +qp.dataset.as, annoAS = +qp.dataset.anno, minP = +qp.dataset.min;
+    var sogliaP = Math.max(minP, C.r2(2 * AS)), sogliaC = C.r2(3 * AS);
+    var red = $('#qReddito'), cre = $('#qCredito'), outP = $('#qOutPign'), labP = $('#qRedL'), tipi = $$('input[name=qTipo]', qp);
+    var LAB = { stipendio: 'Stipendio netto al mese', pensione: 'Pensione netta al mese', conto: 'Somme sul conto arrivate da stipendio o pensione' };
+    var tempo = function (m) {
+      var a = Math.floor(m / 12), r = m % 12;
+      return [a ? (a === 1 ? '1 anno' : a + ' anni') : '', r ? (r === 1 ? '1 mese' : r + ' mesi') : ''].filter(Boolean).join(' e ');
+    };
+    var riga = function (dt, dd, big) { return '<div' + (big ? ' class="big"' : '') + '><dt>' + esc(dt) + '</dt><dd>' + esc(dd) + '</dd></div>'; };
+    var runP = function () {
+      var tipo = 'stipendio';
+      tipi.forEach(function (i) { if (i.checked) tipo = i.value; i.parentNode.classList.toggle('on', i.checked); });
+      labP.textContent = LAB[tipo];
+      var v = C.parseNum(red.value), k = C.parseNum(cre.value), righe = '', note = [], hint = '', q;
+      if (!(v > 0)) { outP.innerHTML = '<p class="empty">Scrivi l\'importo.</p>'; return; }
+      if (tipo === 'conto') {
+        q = v > sogliaC ? C.r2(v - sogliaC) : 0;
+        righe = riga('Resta libero, il triplo dell\'assegno sociale', C.eur(Math.min(v, sogliaC))) + riga('Si può pignorare', C.eur(q), !(k > 0));
+        if (k > 0) righe += q >= k ? riga('Copre il credito', 'sì', true) : riga('Resta da recuperare', C.eur(C.r2(k - q)), true);
+        hint = 'Le altre somme sul conto si pignorano per intero. Stipendi e pensioni accreditati dopo la notifica seguono le regole dello stipendio e della pensione.';
+      } else {
+        if (tipo === 'stipendio') {
+          q = C.r2(v / 5);
+          righe = riga('Quota pignorabile al mese, un quinto', C.eur(q)) + riga('Resta al debitore', C.eur(C.r2(v - q)));
+          note.push('Con una cessione del quinto o un altro pignoramento la quota può essere più bassa: tutte le trattenute insieme non superano la metà dello stipendio.');
+        } else {
+          q = v > sogliaP ? C.r2((v - sogliaP) / 5) : 0;
+          righe = riga('Non si può pignorare', C.eur(Math.min(v, sogliaP))) + riga('Quota pignorabile al mese', C.eur(q));
+        }
+        if (q > 0 && k > 0) {
+          var mesi = Math.ceil(k / q);
+          righe += riga('Mensilità per coprire il credito', String(mesi), true);
+          hint = 'Più o meno ' + tempo(mesi) + '. ' + (tipo === 'stipendio' ? 'Tredicesima e TFR accorciano' : 'La tredicesima accorcia') +
+            ' i tempi; gli interessi, che corrono fino al pagamento, li allungano.';
+          if (mesi > 120) note.push('Servono più di dieci anni: conviene cercare anche altro da pignorare, come un conto.');
+        } else if (!(q > 0)) note.push('Con questo importo il pignoramento non rende nulla: conviene cercare altro da pignorare.');
+      }
+      if (today >= C.toDay((annoAS + 1) + '-01-01')) note.push('Le soglie usano l\'assegno sociale del ' + annoAS + ' (' + C.eur(AS) + '): dal ' + (annoAS + 1) + ' l\'importo cambia, verifica quello aggiornato.');
+      outP.innerHTML = '<dl class="totals">' + righe + '</dl>' + (hint ? '<p class="hint">' + esc(hint) + '</p>' : '') +
+        note.map(function (m) { return '<p class="warn">' + esc(m) + '</p>'; }).join('');
+    };
+    tipi.forEach(function (i) { i.addEventListener('change', runP); });
+    [red, cre].forEach(function (el) {
+      el.addEventListener('input', runP);
+      el.addEventListener('blur', function () { fmtMoney(el); });
+    });
+    runP();
   }
 })();
