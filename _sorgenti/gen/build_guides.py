@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Parti comuni a tutte le pagine di calcolaprecetti.it (barra, piè di pagina, intestazione, interruttori delle
-sezioni) e modello delle pagine della sezione «Guide» (indice + tre guide), nella parte «Per i creditori».
+sezioni) e modello delle pagine della sezione «Guide» (indice + quattro guide), nella parte «Per i creditori».
 
 I testi delle guide stanno in guide_testi.py. Le domande frequenti sono scritte una volta sola e finiscono sia
 nella pagina sia nei dati strutturati, così restano identiche.
@@ -16,7 +16,8 @@ import re
 GEN = os.path.dirname(os.path.abspath(__file__))
 SITE = os.path.dirname(os.path.dirname(GEN))
 BASE = 'https://calcolaprecetti.it'
-GUIDE_PUBBLICATE = '2026-11-10'  # prima pubblicazione delle guide (datePublished); la data di modifica la scrive finalize.py
+GUIDE_PUBBLICATE = '2026-11-10'  # prima pubblicazione delle guide 1-3 (datePublished; le guide dopo hanno la loro, chiave 'pubblicata');
+                                 # la data di modifica la scrive finalize.py
 COPY = ('<!-- calcolaprecetti.it - (c) 2026 il titolare indicato nelle Note legali '
         '(https://calcolaprecetti.it/note-legali/). Tutti i diritti riservati. Vietata la riproduzione, '
         'anche parziale, senza autorizzazione scritta. Licenza: file LICENSE. -->')
@@ -24,6 +25,7 @@ COPY = ('<!-- calcolaprecetti.it - (c) 2026 il titolare indicato nelle Note lega
 G1 = '/guide/fattura-non-pagata/'
 G2 = '/guide/decreto-ingiuntivo-tempi-costi/'
 G3 = '/guide/precetto-notificato/'
+G4 = '/guide/pignoramento-conto-corrente-stipendio/'
 
 
 # --------------------------------------------------------------------------- parti comuni
@@ -163,6 +165,7 @@ FOOTER = '''<footer class="foot">
         <a href="''' + G1 + '''">Fattura non pagata</a>
         <a href="''' + G2 + '''">Decreto ingiuntivo</a>
         <a href="''' + G3 + '''">Precetto notificato</a>
+        <a href="''' + G4 + '''">Pignoramento</a>
       </nav>
 ''' if GUIDE else '') + '''      <nav class="foot-col" aria-label="Verifiche">
         <h2>Verifiche</h2>
@@ -282,7 +285,7 @@ def guide_page(g, site=None):
         {"@type": "ListItem", "position": 3, "name": g['crumb'], "item": base + path}]}
     bp = comuni()
     article_ld = {"@type": "Article", "headline": g['title'], "description": g['desc'], "inLanguage": "it-IT",
-                  "datePublished": GUIDE_PUBBLICATE, "dateModified": bp.AGG, "mainEntityOfPage": base + path,
+                  "datePublished": g.get('pubblicata', GUIDE_PUBBLICATE), "dateModified": bp.AGG, "mainEntityOfPage": base + path,
                   "author": {"@id": bp.PERSONA_ID}, "publisher": {"@id": bp.PERSONA_ID}, "isPartOf": {"@id": bp.SITO_ID}}
     if site.get('image', True):
         article_ld["image"] = BASE + "/og-image.png"
@@ -416,10 +419,10 @@ if __name__ == '__main__':
             os.remove(GUIDE_JS)
         print('guide spente: cartella «guide» e assets/guide.js tolti dal sito')
         raise SystemExit
-    from guide_testi import GUIDA1, GUIDA2, GUIDA3, CARDS, index_page  # testi delle guide
+    from guide_testi import GUIDA1, GUIDA2, GUIDA3, GUIDA4, CARDS, index_page  # testi delle guide
     shutil.copyfile(os.path.join(GEN, 'guide.js'), GUIDE_JS)
     info = []
-    for g in (GUIDA1, GUIDA2, GUIDA3):
+    for g in (GUIDA1, GUIDA2, GUIDA3, GUIDA4):
         page, mins, words = guide_page(g)
         f = write(g['path'], page)
         info.append((g, mins, CARDS[g['path']][1]))

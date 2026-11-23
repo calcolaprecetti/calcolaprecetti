@@ -29,6 +29,7 @@ PAGES = {  # indirizzo del sito -> (file sorgente, file dell'anteprima)
     '/guide/fattura-non-pagata/': ('guide/fattura-non-pagata/index.html', 'fattura-non-pagata.html'),
     '/guide/decreto-ingiuntivo-tempi-costi/': ('guide/decreto-ingiuntivo-tempi-costi/index.html', 'decreto-ingiuntivo.html'),
     '/guide/precetto-notificato/': ('guide/precetto-notificato/index.html', 'precetto-notificato.html'),
+    '/guide/pignoramento-conto-corrente-stipendio/': ('guide/pignoramento-conto-corrente-stipendio/index.html', 'pignoramento.html'),
     '/tassi/': ('tassi/index.html', 'tassi.html'),
     '/privacy/': ('privacy/index.html', 'privacy.html'),
     '/note-legali/': ('note-legali/index.html', 'note-legali.html'),

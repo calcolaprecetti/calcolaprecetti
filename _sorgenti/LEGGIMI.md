@@ -27,6 +27,7 @@ Servono Python 3, Node.js e Playwright con Chromium (per la copia statica delle 
 | Titoli, descrizioni e testi di termini, tassi, privacy, note legali, chi sono, recupero crediti, valutazione, condizioni, pagina di ringraziamento della valutazione, pagina 404 | `gen/build_pages.py` |
 | Home: spiegazione sotto il calcolo, compenso del precetto, domande frequenti | `gen/patch_site.py`, `HOME_FAQ` e `HOME_INFO` |
 | Testi delle guide e dell'indice `/guide/` (titoli, descrizioni, paragrafi, domande frequenti, esempi) | `gen/guide_testi.py`; data di prima pubblicazione (`GUIDE_PUBBLICATE`) e modello delle pagine in `gen/build_guides.py` |
+| Assegno sociale (ogni gennaio, dalla circolare INPS di dicembre): soglie della guida sul pignoramento e del suo calcolo | `gen/guide_testi.py`, `ASSEGNO_SOCIALE` e `ASSEGNO_ANNO` |
 | Barra «Per gli avvocati / Per i creditori» e schede di ciascuna parte (`TABS`, `TABS_CREDITORI`, `nav`), piè di pagina, sezioni accese o spente (`GUIDE`, `CHI_SONO`, `VALUTAZIONE`, `NEWSLETTER`), prezzo e modulo della valutazione | `gen/build_guides.py` |
 | Dati del titolare | `v5/assets/core.js` (`SITO`: nome, email), `gen/build_guides.py` (`PIVA`), `gen/build_pages.py` (`NOME`, `FORO`, `STUDIO_A`); data dell'informativa in `gen/patch_site.py` |
 | Calcolo delle somme del precetto | `v5/assets/app.js` |
@@ -82,9 +83,11 @@ piè di pagina), le immagini (`assets/foto.jpg`, `og-image.png`, icone, `logo.sv
 
 ## Guide
 
-Le tre guide (fattura non pagata, decreto ingiuntivo, precetto notificato) e l'indice `/guide/` sono accese
+Le quattro guide (fattura non pagata, decreto ingiuntivo, precetto notificato, pignoramento di conto e stipendio) e l'indice `/guide/` sono accese
 (`GUIDE = True` in `gen/build_guides.py`) e stanno nella parte «Per i creditori», con la scheda «Guide» prima di «Chi sono».
-I testi sono in `gen/guide_testi.py`, rivisti dal titolare il 10.11.2026. La barra per gli avvocati in cima alle guide
+I testi sono in `gen/guide_testi.py`: le prime tre rivedute dal titolare il 10.11.2026, la quarta approvata il 23.11.2026.
+La quarta usa l'assegno sociale (`ASSEGNO_SOCIALE`, `ASSEGNO_ANNO`): ogni gennaio va aggiornato, e fino ad allora il suo calcolo
+avverte che le soglie sono quelle dell'anno prima. La barra per gli avvocati in cima alle guide
 («Sei un avvocato? … copia il collegamento») è spenta: `CONDIVIDI = False` in `gen/build_guides.py`.
 La data «Aggiornata il» di ogni guida si scrive da sola, come per le altre pagine (dalla sitemap, `gen/lastmod.json`);
 la data di prima pubblicazione è `GUIDE_PUBBLICATE` e non va cambiata. Se si modificano gli esempi numerici, controllarli

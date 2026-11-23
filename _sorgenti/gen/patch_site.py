@@ -275,10 +275,11 @@ print('sitemap.xml')
 wr('sitemap.xml', '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + ''.join(
     '  <url><loc>https://calcolaprecetti.it%s</loc></url>\n' % p for p in (
         '/', '/termini-precetto/', '/interessi-moratori/', '/tassi/', '/recupero-crediti/')
-    + (('/guide/', '/guide/fattura-non-pagata/', '/guide/decreto-ingiuntivo-tempi-costi/', '/guide/precetto-notificato/') if GUIDE else ())
+    + (('/guide/', '/guide/fattura-non-pagata/', '/guide/decreto-ingiuntivo-tempi-costi/', '/guide/precetto-notificato/',
+        '/guide/pignoramento-conto-corrente-stipendio/') if GUIDE else ())
     + (('/chi-sono/',) if CHI_SONO else ()) + (('/valutazione-credito/',) if VALUTAZIONE else ())
     + (('/newsletter/',) if NEWSLETTER else ())) + '</urlset>\n')
-print('  %d indirizzi' % (5 + (4 if GUIDE else 0) + (1 if CHI_SONO else 0) + (1 if NEWSLETTER else 0) + (1 if VALUTAZIONE else 0)))
+print('  %d indirizzi' % (5 + (5 if GUIDE else 0) + (1 if CHI_SONO else 0) + (1 if NEWSLETTER else 0) + (1 if VALUTAZIONE else 0)))
 for f in ('LICENSE', 'assets/docx.js'):
     print(f)
     wr(f, url(rd(f), 'intestazione'))

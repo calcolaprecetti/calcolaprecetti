@@ -4,7 +4,8 @@ const BASE = 'http://localhost:8765';
 const fs = require('fs'), path = require('path');
 const pages = ['/', '/termini-precetto/', '/interessi-moratori/', '/tassi/', '/privacy/', '/note-legali/', '/chi-sono/', '/valutazione-credito/', '/recupero-crediti/', '/valutazione-credito/grazie/']
   .concat(fs.existsSync(path.join(__dirname, '..', '..', 'guide', 'index.html'))  // guide accese
-    ? ['/guide/', '/guide/fattura-non-pagata/', '/guide/decreto-ingiuntivo-tempi-costi/', '/guide/precetto-notificato/'] : []);
+    ? ['/guide/', '/guide/fattura-non-pagata/', '/guide/decreto-ingiuntivo-tempi-costi/', '/guide/precetto-notificato/',
+       '/guide/pignoramento-conto-corrente-stipendio/'] : []);
 (async () => {
   const b = await chromium.launch();
   let bad = 0; const seen = new Set();
