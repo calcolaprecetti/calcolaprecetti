@@ -145,6 +145,7 @@ GUIDA1 = {
     'h1': 'Fattura non pagata: cosa fare, <mark>passo per passo</mark>',
     'lead': 'Il cliente non paga. Qui trovi cosa fare, in che ordine e quanto ti spetta: sei passi, dal primo sollecito al pignoramento.',
     'per': 'Per imprese e professionisti',
+    'cima': ('Hai un credito da recuperare?', '/recupero-crediti/#affida', 'recupero-da-guide-cima'),
     'brief': [
         '<mark>Gli interessi partono da soli.</mark> Tra imprese non serve nessuna lettera: dal giorno dopo la scadenza maturano interessi di mora, oggi al <span class="js-mora-rate">10,40%</span> l\'anno. <a href="/interessi-moratori/">Verifica il tasso aggiornato</a>.',
         '<mark>Ti spettano anche € 40 per fattura,</mark> come rimborso fisso dei costi di recupero.',
@@ -308,13 +309,14 @@ G2_BODY = '\n'.join([
 GUIDA2 = {
     'path': G2,
     'crumb': 'Decreto ingiuntivo: tempi e costi',
-    'title': 'Decreto ingiuntivo: tempi e costi, spiegati semplice',
+    'title': 'Quanto costa un decreto ingiuntivo e quanto tempo ci vuole',
     'desc': ('Quanto ci vuole e quanto costa un decreto ingiuntivo: i termini tappa per tappa, il contributo unificato, '
              'il compenso dell\'avvocato e chi paga alla fine.'),
     'og': 'Quanto ci vuole, quanto anticipi e chi paga alla fine: il decreto ingiuntivo con i numeri, tappa per tappa.',
     'h1': 'Decreto ingiuntivo: <mark>tempi e costi</mark>',
     'lead': 'Quanto ci vuole, quanto anticipi e chi paga alla fine. Con i numeri, tappa per tappa.',
     'per': 'Per imprese e professionisti',
+    'cima': ('Hai un credito da recuperare?', '/recupero-crediti/#affida', 'recupero-da-guide-cima'),
     'brief': [
         '<mark>È un ordine di pagamento, non una causa.</mark> Il giudice decide sui documenti, senza convocare il debitore.',
         '<mark>Da tre a sei mesi, di solito,</mark> per avere in mano il titolo con cui pignorare, se il debitore non si oppone.',
@@ -447,6 +449,7 @@ GUIDA3 = {
     'h1': 'Precetto notificato: <mark>cosa succede adesso</mark>',
     'lead': 'Che tu l\'abbia ricevuto o fatto notificare, da oggi contano due numeri: 10 e 90.',
     'per': 'Per chi l\'ha ricevuto e per chi l\'ha notificato',
+    'cima': ('Hai ricevuto un precetto o devi notificarne uno?', '/chi-sono/#hContatti', 'contatto-da-guide-cima'),
     'brief': [
         '<mark>Il precetto è l\'ultimo avviso.</mark> Chi lo riceve ha almeno 10 giorni per pagare.',
         '<mark>Dal giorno 11 può partire il pignoramento,</mark> senza altri avvisi: conto corrente, stipendio, beni, immobili.',
@@ -624,6 +627,7 @@ GUIDA4 = {
     'lead': ('Il precetto è scaduto e il debitore non ha pagato. Ora si pignora quello che altri gli devono: il saldo in banca, '
              'lo stipendio, la pensione. Come funziona, quanto si prende e in che tempi.'),
     'per': 'Per chi deve farsi pagare',
+    'cima': ('Hai un credito da recuperare?', '/recupero-crediti/#affida', 'recupero-da-guide-cima'),
     'brief': [
         '<mark>Ti paga chi deve soldi al debitore.</mark> La banca per il conto, il datore di lavoro per lo stipendio, l\'INPS per la pensione.',
         '<mark>Dallo stipendio, un quinto al mese.</mark> Dalla pensione, un quinto di quello che supera %s, la soglia del %d.' % (eur(SOGLIA_PENSIONE), ASSEGNO_ANNO),

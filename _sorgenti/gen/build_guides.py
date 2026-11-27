@@ -308,6 +308,9 @@ def guide_page(g, site=None):
         '    <h1 class="g-title">%s</h1>' % g['h1'],
         '    <p class="g-lead">%s</p>' % g['lead'],
         '    <p class="g-meta"><span>Aggiornata il <time datetime="__AGGIORNATA__">__AGGIORNATA_IT__</time></span><span>%d minuti di lettura</span><span>%s</span></p>' % (mins, g['per']),
+    ] + ([  # contatto in cima, facoltativo: (domanda, collegamento, nome dell'azione contata)
+        fix('    <p class="g-cima">%s <a href="%s" data-conta="%s">Scrivimi: valutiamo insieme il tuo caso</a></p>' % g['cima'])
+    ] if g.get('cima') else []) + [
         '  </div>',
         '  <aside class="g-brief" aria-labelledby="briefTitle">',
         '    <h2 id="briefTitle">In breve</h2>',

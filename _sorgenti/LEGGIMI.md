@@ -21,7 +21,8 @@ Servono Python 3, Node.js e Playwright con Chromium (per la copia statica delle 
 | Cosa | Dove |
 |---|---|
 | Tassi legali (ogni dicembre), tassi moratori (gennaio e luglio), compenso del precetto, registro degli aggiornamenti | `v5/assets/core.js`, oggetto `TABELLE` (istruzioni in testa al file) |
-| Anno nella pagina interessi moratori (ogni gennaio): titolo, descrizione, intestazione | `gen/patch_site.py`, sezione «interessi moratori» |
+| Pagina interessi moratori: anno e ultimo tasso nel titolo, nella descrizione e nell'intestazione | da soli, dall'ultima riga di `bce` in `v5/assets/core.js` (`gen/patch_site.py`, sezione «interessi moratori») |
+| Pagina interessi moratori, a ogni nuovo semestre: paragrafo «Tasso degli interessi moratori» e prodotti agricoli | `v5/interessi-moratori/index.html` |
 | Home: titolo e calcolatore | `v5/index.html` |
 | Home: descrizione e testi aggiunti alla pagina di partenza | `gen/patch_site.py`, sezione «home» |
 | Titoli, descrizioni e testi di termini, tassi, privacy, note legali, chi sono, recupero crediti, valutazione, condizioni, pagina di ringraziamento della valutazione, pagina 404 | `gen/build_pages.py` |

@@ -85,6 +85,21 @@ def autore(data=True):
             'con studio a %s e iscritto all\'Ordine degli Avvocati di %s.%s</p></aside>\n' % (foto, NOME, STUDIO, FORO, agg))
 
 
+DOMICILIATARIO = True  # riquadro «Per i colleghi» sotto gli strumenti di calcolo (home, termini, interessi moratori); False per toglierlo
+
+
+def domiciliatario():
+    """Riquadro per i colleghi che cercano un domiciliatario, sotto il calcolo. Vuoto se DOMICILIATARIO è spento."""
+    if not DOMICILIATARIO:
+        return ''
+    return ('<aside class="domic" aria-labelledby="domicTitle">\n'
+            '  <p class="send-l" id="domicTitle">Per i colleghi</p>\n'
+            '  <p><strong>Ti serve un domiciliatario a Vicenza o a Bassano del Grappa?</strong> Ho lo studio a Bassano e sono iscritto '
+            'all\'Ordine di Vicenza: posso seguire udienze e pignoramenti al Tribunale di Vicenza. '
+            '<a href="/chi-sono/#hContatti" data-conta="domiciliazione">Scrivimi</a></p>\n'
+            '</aside>\n')
+
+
 # =========================================================================== termini del precetto
 T_PATH = '/termini-precetto/'
 T_TITLE = 'Calcolo della scadenza del precetto: 10 e 90 giorni (artt. 480-481 c.p.c.)'
@@ -672,9 +687,12 @@ if __name__ == '__main__':
     P_DESC = ('Informativa privacy di calcolaprecetti.it: nessun cookie, i dati dei calcoli restano nel browser, statistiche delle visite'
               + (', newsletter' if NEWSLETTER else '') + ' e valutazione del credito.')
     L_DESC = "Note legali di calcolaprecetti.it: titolare del sito, limiti dello strumento di calcolo e diritti d'autore."
+    _fine_calcolo = '  </section>\n\n  <article class="prose">'
+    assert T_BODY.count(_fine_calcolo) == 1, 'termini: fine del calcolo'
+    T_BODY_DOMIC = T_BODY.replace(_fine_calcolo, '  </section>\n' + domiciliatario() + '\n  <article class="prose">')
     pages = [
         (T_PATH, page(T_TITLE, T_DESC, T_PATH, 'I 10 e i 90 giorni del precetto, con la proroga dei festivi e la sospensione per la ricerca dei beni.',
-                      T_LD, 'termini', T_BODY, ['termini.js'], autore_box=True)),
+                      T_LD, 'termini', T_BODY_DOMIC, ['termini.js'], autore_box=True)),
         (X_PATH, page(X_TITLE, X_DESC, X_PATH, 'Interessi legali e moratori, compenso del precetto: le tabelle del sito con le fonti e i casi di verifica.',
                       X_LD, 'tassi', X_BODY, ['info.js'], autore_box=True)),
         (P_PATH, page('Informativa privacy – calcolaprecetti.it', P_DESC, P_PATH, P_DESC, simple_ld('Informativa privacy', P_PATH, P_DESC),
