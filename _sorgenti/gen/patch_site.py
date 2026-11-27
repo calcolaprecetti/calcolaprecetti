@@ -109,7 +109,7 @@ HOME_FAQ = [
      'dalla notifica, il precetto perde efficacia (art. 481 c.p.c.). Le date esatte, con festivi e sospensioni, le calcoli '
      'nella pagina dei <a href="/termini-precetto/">termini del precetto</a>.'),
 ]
-from build_pages import autore as _autore  # noqa: E402
+from build_pages import autore as _autore, domiciliatario  # noqa: E402
 AUTORE_HOME = _autore()
 HOME_INFO = """<section class="home-info" aria-label="Come si calcola e domande frequenti">
   <div class="prose">
@@ -167,6 +167,7 @@ h = swap(h, '    </div>\n    <p class="sr-only" aria-live="polite" id="srTotal">
          '    <p class="after"><a href="/termini-precetto/">Precetto notificato? Calcola i termini di 10 e 90 giorni</a></p>\n' +
          '    <p class="after"><a href="/recupero-crediti/" data-conta="recupero-da-home">Devi recuperare un credito? Avvocato per il recupero crediti a Vicenza e Bassano del Grappa</a></p>\n' +
          ('    <p class="after"><a href="/newsletter/">Un consiglio sul recupero crediti ogni due settimane: iscriviti alla newsletter</a></p>\n' if NEWSLETTER else '') +
+         ''.join('    ' + r + '\n' for r in domiciliatario().splitlines()) +
          '    <p class="sr-only" aria-live="polite" id="srTotal"></p>\n', 'rimando alla pagina dei termini')
 h = block(h, '<section class="wrap termini-wrap" id="termini"', '<section class="wrap contact"', '', 'via il riquadro dei termini')
 h = block(h, '<section class="wrap legal" id="info" hidden>', '<footer class="foot">', '', 'via le sezioni nascoste')
@@ -205,6 +206,26 @@ wr('index.html', h)
 
 # ---------------------------------------------------------------- interessi moratori
 print('interessi-moratori/index.html')
+# Ultimo tasso moratorio pubblicato: ultima riga della tabella «bce» di core.js più la maggiorazione. Titolo, descrizione
+# e intestazione della pagina lo leggono da qui e cambiano da soli quando si aggiunge un semestre alla tabella.
+_core = rd('assets/core.js')
+_bce = re.findall(r"\['(\d{4})-(01|07)-01', (\d+(?:\.\d+)?)", re.search(r'\n  bce: \[(.*?)\n  \],', _core, re.S).group(1))
+assert len(_bce) > 20 and _bce == sorted(_bce, key=lambda r: r[:2]), 'tabella dei tassi BCE in core.js'
+MORA_ANNO, _sem, _rif = _bce[-1]
+_piu = float(re.search(r'\n  maggiorazioneMora: (\d+(?:\.\d+)?),', _core).group(1))
+
+
+def _pc(x):
+    return ('%.2f' % x).replace('.', ',') + '%'
+
+
+MORA_TASSO = _pc(float(_rif) + _piu)
+MORA_TITOLO = 'Interessi moratori %s: tasso %s e calcolo gratuito' % (MORA_ANNO, MORA_TASSO)
+MORA_DESC = ('Interessi di mora nel %s semestre %s: %s (tasso BCE %s più %g punti, D.Lgs. 231/2002). '
+             'Calcolo gratuito, con le fonti e la tabella dal 2002.'
+             % ('primo' if _sem == '01' else 'secondo', MORA_ANNO, MORA_TASSO, _pc(float(_rif)), _piu))
+assert len(MORA_TITOLO) <= 60 and len(MORA_DESC) <= 160, 'titolo o descrizione troppo lunghi'
+print('  ultimo tasso moratorio: %s, %s semestre %s' % (MORA_TASSO, 'primo' if _sem == '01' else 'secondo', MORA_ANNO))
 h = url(rd('interessi-moratori/index.html'), 'intestazione')
 h = block(h, '<header class="top">', '</nav>\n', nav('mora') + '\n', 'barra a quattro schede', keep_end=False)
 h = swap(h, '''<div class="wrap intro">
@@ -214,7 +235,7 @@ h = swap(h, '''<div class="wrap intro">
 </div>''', '''<div class="wrap g-hero solo">
   <div>
     <nav class="crumbs" aria-label="Percorso"><a href="/">Home</a> <span>›</span> Calcolo interessi moratori</nav>
-    <h1 class="g-title">Calcolo degli <mark>interessi moratori 2026</mark></h1>
+    <h1 class="g-title">Calcolo degli <mark>interessi moratori ''' + MORA_ANNO + '''</mark></h1>
     <p class="g-lead">Interessi moratori, o interessi di mora, nelle transazioni commerciali: calcolo gratuito, semestre per semestre, con la fonte di ogni tasso.</p>
   </div>
 </div>''', 'apertura come nelle guide')
@@ -252,6 +273,10 @@ _app[0].update({'isPartOf': {'@id': SITO_ID}, 'author': {'@id': PERSONA_ID}, 'da
 h = h[:_m.start(1)] + json.dumps(con_nodi(_ld), ensure_ascii=False) + h[_m.end(1):]
 h = swap(h, '  </article>\n</main>', '  </article>\n' + autore() + '</main>', 'riquadro dell\'autore')
 h = swap(h, '<button type="button" class="btn btn-primary" id="miniCopy">', '<button type="button" class="btn btn-primary" id="miniCopy" data-conta="copia-moratori">', 'copia contata')
+if domiciliatario():
+    h = swap(h, '  </section>\n\n  <article class="prose">\n    <h2>Cosa sono gli interessi moratori</h2>',
+             '  </section>\n' + domiciliatario() + '\n  <article class="prose">\n    <h2>Cosa sono gli interessi moratori</h2>',
+             'riquadro per i colleghi sotto il calcolo')
 if NEWSLETTER:
     h = swap(h, 'La tabella completa dal 2002 è più sotto.</p>',
              'La tabella completa dal 2002 è più sotto. Per sapere quando cambia, iscriviti alla <a href="/newsletter/">newsletter</a>.</p>',
@@ -262,12 +287,10 @@ h = swap(h, "senza doverli provare e salvo il maggior danno (art. 6). Nel precet
          "<a href=\"/\">calcolo delle somme del precetto</a> si aggiunge con una casella.</p>",
          'i 40 euro nel precetto solo se riconosciuti nel titolo')
 for t in ('<title>%s</title>', '<meta property="og:title" content="%s">'):
-    h = swap(h, t % 'Interessi moratori 2026: calcolo online e tasso (D.Lgs. 231/2002)',
-             t % 'Interessi moratori 2026: calcolo e tasso (D.Lgs. 231/2002)', 'titolo più corto')
+    h = swap(h, t % 'Interessi moratori 2026: calcolo online e tasso (D.Lgs. 231/2002)', t % MORA_TITOLO, 'titolo con l\'ultimo tasso')
 h = re.sub(r'<meta name="description" content="Calcolo gratuito degli interessi moratori \(interessi di mora\)[^"]*">',
-           '<meta name="description" content="Calcolo gratuito degli interessi di mora sulle fatture non pagate: tasso BCE più 8 punti, '
-           'semestre per semestre, con le fonti. Tabella dal 2002.">', h, count=1)
-assert 'Tabella dal 2002.">' in h, 'descrizione degli interessi moratori'
+           '<meta name="description" content="%s">' % MORA_DESC, h, count=1)
+assert '<meta name="description" content="%s">' % MORA_DESC in h, 'descrizione degli interessi moratori'
 wr('interessi-moratori/index.html', h)
 
 # ---------------------------------------------------------------- sitemap, licenza, altri file
@@ -305,8 +328,8 @@ js = swap(js, "  informativaAggiornata: '22.09.2026'",
           "  statistiche: { servizio: 'umami', codice: 'bb2d5a3e-273f-4655-af5b-b3fdc692f6df' }", 'data dell\'informativa e statistiche')
 if GUIDE:
     js = swap(js,
-              "      (_sorgenti/v5/interessi-moratori/index.html).\n\n   Regole:",
-              "      (_sorgenti/v5/interessi-moratori/index.html).\n\n"
+              "agricoli (_sorgenti/v5/interessi-moratori/index.html).\n\n   Regole:",
+              "agricoli (_sorgenti/v5/interessi-moratori/index.html).\n\n"
               "   6) Guide (cartella «guide») - i tassi scritti nel testo e i calcoli\n"
               "      rapidi leggono queste tabelle e si aggiornano da soli. Vanno invece\n"
               "      corretti a mano, nel file della singola guida, quando cambia la\n"

@@ -40,11 +40,11 @@ var SITO = {
    4) Registro - aggiungere IN CIMA a "registro" una riga con la data e
       cosa è cambiato; aggiornare "aggiornamento" (mese a fondo pagina).
 
-   5) Ogni gennaio - pagina degli interessi moratori: cambiare l'anno
-      (es. 2026 -> 2027) nel titolo, nella descrizione e nell'intestazione
-      (_sorgenti/gen/patch_site.py) e aggiornare il paragrafo «Tasso degli
-      interessi moratori» con i tassi dell'anno nuovo
-      (_sorgenti/v5/interessi-moratori/index.html).
+   5) Pagina degli interessi moratori - titolo, descrizione e intestazione
+      prendono anno e tasso dall'ultima riga di "bce" e cambiano da soli.
+      A ogni nuovo semestre vanno aggiornati a mano, con anno e tassi, il
+      paragrafo «Tasso degli interessi moratori» e quello sui prodotti
+      agricoli (_sorgenti/v5/interessi-moratori/index.html).
 
    Regole: decimali con il punto (2.40, non 2,40); date AAAA-MM-GG;
    testi tra apostrofi (se il testo contiene un apostrofo, racchiuderlo

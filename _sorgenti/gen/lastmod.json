@@ -1,15 +1,15 @@
 {
  "/": {
-  "impronta": "e86cdfc7d4f1bb72",
-  "data": "2026-11-23"
+  "impronta": "bcae7d334d9ecea1",
+  "data": "2026-11-27"
  },
  "/termini-precetto/": {
-  "impronta": "59749f2383808872",
-  "data": "2026-11-23"
+  "impronta": "c612fe0495965a2c",
+  "data": "2026-11-27"
  },
  "/interessi-moratori/": {
-  "impronta": "a1f94ec53d69eb42",
-  "data": "2026-11-23"
+  "impronta": "c8ef425e02cd96f6",
+  "data": "2026-11-27"
  },
  "/tassi/": {
   "impronta": "46d53e2ae8cbc581",
@@ -32,19 +32,19 @@
   "data": "2026-11-23"
  },
  "/guide/fattura-non-pagata/": {
-  "impronta": "d1f5873653009950",
-  "data": "2026-11-23"
+  "impronta": "fa41088a296696bb",
+  "data": "2026-11-27"
  },
  "/guide/decreto-ingiuntivo-tempi-costi/": {
-  "impronta": "c4a09f6dd3e619f9",
-  "data": "2026-11-23"
+  "impronta": "1cb71bf55dc73dc2",
+  "data": "2026-11-27"
  },
  "/guide/precetto-notificato/": {
-  "impronta": "39a0240e241d7618",
-  "data": "2026-11-23"
+  "impronta": "712ff56c71cab5cd",
+  "data": "2026-11-27"
  },
  "/guide/pignoramento-conto-corrente-stipendio/": {
-  "impronta": "7032103318098449",
-  "data": "2026-11-23"
+  "impronta": "f42bff66ee804ecd",
+  "data": "2026-11-27"
  }
 }
